@@ -13,13 +13,31 @@ div#header {
 }
 
 div#game-wrapper {
-    width: 1500px;
+    width: 80%;
     height: 360px;
-    border: 2px solid black;
+    border: 2px solid #888;
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
     margin: auto;
+}
+
+div#game-sky {
+    background-color: #b0d6ff;
+    width: 100%;
+    height: 75%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+div#game-ground {
+    background-color: #c5e2af;
+    width: 100%;
+    height: 25%;
+    position: absolute;
+    top: 75%;
+    left: 0;
 }
