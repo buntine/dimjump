@@ -4,11 +4,20 @@
 
 (defn setup []
   (q/frame-rate 10)
+  (q/no-stroke)
   {:num 10})
 
+(defn draw-ground []
+  (q/with-fill
+    [197 226 175]
+    (q/rect 0 200 500 200))) ; TODO: Calcuate correctly: 25% of "height", 100% of width. Positioned at 75% from top.
+
 (defn draw [state]
-  (q/fill (q/color 150 150 150))
-  (q/rect (:num state) 30 30 30))
+  (q/background (q/color 176 214 255))
+  (draw-ground)
+  (q/with-fill
+    [150 150 150]
+    (q/rect (:num state) 30 30 30)))
 
 (defn progress [state]
   {:num (inc (:num state))})

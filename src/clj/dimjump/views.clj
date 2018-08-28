@@ -14,8 +14,6 @@
 
 (defn game-wrapper []
   [:div {:id "game-wrapper"}
-    [:div {:id "game-sky"}]
-    [:div {:id "game-ground"}]
     [:canvas {:id "game"}]])
 
 (defn homepage []
