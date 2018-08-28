@@ -4,8 +4,10 @@
 (defn head [title]
   [:head
      [:title title]
-     (page/include-css "/css/styles.css")
-     (page/include-js "/js/main.js")])
+     (page/include-css "/css/styles.css")])
+
+(defn footer []
+  (page/include-js "/js/main.js"))
 
 (defn header []
   [:div {:id "header"}])
@@ -21,4 +23,5 @@
     (head "Dim Jump")
     [:body
       (header)
-      (game-wrapper)]))
+      (game-wrapper)
+      (footer)]))

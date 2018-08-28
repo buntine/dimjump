@@ -8,11 +8,13 @@
                  [hiccup "1.0.5"]
                  [org.clojure/clojurescript "1.10.339"]
                  [org.clojure/java.jdbc "0.6.0"]
+                 [quil "2.7.1"]
                  [com.h2database/h2 "1.4.193"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-figwheel "0.5.16"]]
   :cljsbuild {:builds [{:source-paths ["src/cljs"]
-                        :figwheel {:websocket-host "0.0.0.0"}
+                        :figwheel {:websocket-host "0.0.0.0"
+                                   :on-jsload "dimjump.core/init"}
                         :id "dev"
                         :compiler {:optimizations :none
                                    :main "dimjump.core"
