@@ -1,1 +1,0 @@
-{:optimizations :none, :main "dimjump.core", :asset-path "js", :output-to "resources/public/js/main.js", :output-dir "resources/public/js", :source-map-timestamp true, :preloads [figwheel.connect], :external-config {:figwheel/config {:on-jsload "dimjump.core/init", :build-id "dev", :websocket-url "ws://0.0.0.0:3449/figwheel-ws"}}}
