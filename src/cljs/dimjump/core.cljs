@@ -9,26 +9,29 @@
 (defn setup []
   (q/no-stroke)
   {:frame 0
+   :floor-y (* 0.75 (:h dimensions))
    :dim (dim/initial-state q/load-image)})
 
 (defn inc-frame [state]
   (update state :frame inc))
 
-(defn draw-ground []
-  (q/with-fill
-    [197 226 175]
-    (q/rect 0
-            (* 0.75 (:h dimensions))
-            (:w dimensions)
-            (* 0.25 (:h dimensions)))))
+(defn draw-ground [state]
+  (let [floor-y (:floor-y state)]
+    (q/with-fill
+      [197 226 175]
+      (q/rect 0
+              floor-y
+              (:w dimensions)
+              (- (:h dimensions) floor-y)))))
 
 (defn key-pressed [state event]
-  (case (:key event)
-    :space (dim/toggle-duck state)))
+  (case (:key-code event)
+    32 (dim/toggle-duck state)
+    :else state))
 
 (defn draw [state]
   (q/background (q/color 176 214 255))
-  (draw-ground)
+  (draw-ground state)
   (dim/draw state))
 
 (defn progress [state]
@@ -44,6 +47,7 @@
     :frame-rate 60
     :setup setup
     :draw draw
+    :key-pressed key-pressed
     :update progress
     :middleware [m/fun-mode]))
 

@@ -4,8 +4,10 @@
 (defn initial-state [load-image]
   {:x 0
    :y 0
-   :frames [(load-image "/images/dim1.png")
-            (load-image "/images/dim2.png")]
+   :frames {:standing [(load-image "/images/dim1.png")
+                       (load-image "/images/dim2.png")]
+            :ducking [(load-image "/images/dim3.png")
+                      (load-image "/images/dim4.png")]}
    :ducking false
    :speed 3,
    :animation-speed 12})
@@ -14,7 +16,7 @@
   (update dim :x #(+ (:speed dim) %)))
 
 (defn toggle-duck [state]
-  (update state [:dim :ducking] not))
+  (update-in state [:dim :ducking] not))
 
 (defn progress [state]
   "Receives full game state and returns next state"
@@ -24,9 +26,11 @@
            (:dim state)
            accellerate)))
 
-(defn frame-for [frame, state]
+(defn frame-for [frame, dim]
   "Returns the PImage suitable for the given frame number"
-  ((:frames state) (mod (int (/ frame (:animation-speed state))) 2)))
+  (let [all-frames (:frames dim)
+        frames ((if (:ducking dim) :ducking :standing) all-frames)]
+    (frames (mod (int (/ frame (:animation-speed dim))) 2))))
 
 (defn draw [state]
   (let [dim (:dim state)]
