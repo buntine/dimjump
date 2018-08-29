@@ -1,5 +1,5 @@
 (ns dimjump.core
-  (:require [quil.core :as q]
+  (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
             [dimjump.dim :as dim]))
 
@@ -8,7 +8,11 @@
 
 (defn setup []
   (q/no-stroke)
-  {:dim dim/initial-state})
+  {:frame 0
+   :dim (dim/initial-state q/load-image)})
+
+(defn inc-frame [state]
+  (update state :frame inc))
 
 (defn draw-ground []
   (q/with-fill
@@ -18,6 +22,10 @@
             (:w dimensions)
             (* 0.25 (:h dimensions)))))
 
+(defn key-pressed [state event]
+  (case (:key event)
+    :space (dim/toggle-duck state)))
+
 (defn draw [state]
   (q/background (q/color 176 214 255))
   (draw-ground)
@@ -25,6 +33,7 @@
 
 (defn progress [state]
   (-> state
+      inc-frame
       dim/progress))
 
 (defn init []
