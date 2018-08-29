@@ -27,7 +27,7 @@
 (defn key-pressed [state event]
   (case (:key-code event)
     32 (dim/toggle-duck state)
-    :else state))
+    state))
 
 (defn draw [state]
   (q/background (q/color 176 214 255))

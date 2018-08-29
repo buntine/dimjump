@@ -33,7 +33,8 @@
     (frames (mod (int (/ frame (:animation-speed dim))) 2))))
 
 (defn draw [state]
-  (let [dim (:dim state)]
-    (q/image (frame-for (:frame state) dim)
+  (let [dim (:dim state)
+        img (frame-for (:frame state) dim)]
+    (q/image img
              (:x dim)
-             30)))
+             (- (:floor-y state) (.-height img)))))
