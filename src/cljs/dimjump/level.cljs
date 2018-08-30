@@ -11,5 +11,7 @@
                   w
                   h)))))
 
-(defn collision? [state]
+(defn collision? [obstacles, entity]
+  "Returns true if any obstacle in the level has collided
+   with the given entity (the player)"
   false)
