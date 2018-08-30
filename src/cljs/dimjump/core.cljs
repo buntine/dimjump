@@ -15,7 +15,8 @@
      :h (:h dimensions)
      :floor-y floor-y
      :gravity 0.8
-     :velocity -10
+     :velocity-big -10
+     :velocity-small -8
      :levels level/level-data
      :dim (dim/initial-state floor-y q/load-image)}))
 

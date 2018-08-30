@@ -33,11 +33,15 @@
     (update-in state [:dim :x] #(+ (:speed dim) %))))
 
 (defn start-jump [state]
-  (if (get-in state [:dim :jumping])
-    state
-    (-> state
-        toggle-jump
-        (assoc-in [:dim :v] (:velocity state)))))
+  (let [dim (:dim state)]
+    (if (:jumping dim)
+      state
+      (let [velocity (if (:ducking dim)
+                       (:velocity-small state)
+                       (:velocity-big state))]
+        (-> state
+            toggle-jump
+            (assoc-in [:dim :v] velocity))))))
 
 (defn end-jump [state]
   (-> state
