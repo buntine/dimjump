@@ -2,7 +2,8 @@
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
             [dimjump.dim :as dim]
-            [dimjump.level :as level]))
+            [dimjump.level :as level]
+            [dimjump.data :as data]))
 
 (def dimensions {:w (* 0.8 (.-innerWidth js/window))
                  :h 360})
@@ -17,7 +18,7 @@
      :gravity 0.8
      :velocity-big -10
      :velocity-small -8
-     :levels level/level-data
+     :levels data/levels
      :dim (dim/initial-state floor-y q/load-image)}))
 
 (defn inc-frame [state]
