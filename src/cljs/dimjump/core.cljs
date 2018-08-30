@@ -1,7 +1,8 @@
 (ns dimjump.core
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
-            [dimjump.dim :as dim]))
+            [dimjump.dim :as dim]
+            [dimjump.level :as level]))
 
 (def dimensions {:w (* 0.8 (.-innerWidth js/window))
                  :h 360})
@@ -13,6 +14,7 @@
      :floor-y floor-y
      :gravity 0.8
      :velocity -10
+     :levels level/level-data
      :dim (dim/initial-state floor-y q/load-image)}))
 
 (defn inc-frame [state]
@@ -36,12 +38,19 @@
 (defn draw [state]
   (q/background (q/color 176 214 255))
   (draw-ground state)
+  (level/draw state)
   (dim/draw state))
+
+(defn detect-collision [state]
+  (if (level/collision? state)
+    (dim/kill state)
+    state))
 
 (defn progress [state]
   (-> state
       inc-frame
-      dim/progress))
+      dim/progress
+      detect-collision))
 
 (defn init []
   (q/defsketch dim-jump

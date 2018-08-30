@@ -5,6 +5,8 @@
   {:x 0
    :y y
    :v 0
+   :level 0
+   :deaths 0
    :frames {:standing [(load-image "/images/dim1.png")
                        (load-image "/images/dim2.png")]
             :ducking [(load-image "/images/dim3.png")
@@ -25,29 +27,32 @@
   (let [dim (:dim state)]
     (update-in state [:dim :x] #(+ (:speed dim) %))))
 
-(defn start-velocity [state]
-  (assoc-in state [:dim :v] (:velocity state)))
-
 (defn start-jump [state]
   (if (get-in state [:dim :jumping])
     state
-    (->
-      state
+    (-> state
+        toggle-jump
+        (assoc-in [:dim :v] (:velocity state)))))
+
+(defn end-jump [state]
+  (-> state
       toggle-jump
-      start-velocity)))
+      (assoc-in [:dim :y] (:floor-y state))))
+
+(defn kill [state]
+  (-> state
+      (update-in [:dim :deaths] inc)
+      (assoc-in [:dim :x] 0)))
 
 (defn progress-jump [state]
   (let [dim (:dim state)
-        y (:y dim)]
-    (.log js/console (+ (:v dim) (:gravity state)))
+        next-y (+ (:y dim) (:v dim))]
     (if (:jumping dim)
-      (if (> y (:floor-y state))
-        (toggle-jump state)
-        (assoc state
-               :dim
-               (update dim
-                       :y #(+ % (:v dim))
-                       :v #(+ % (:gravity state)))))
+      (if (>= next-y (:floor-y state))
+        (end-jump state)
+        (-> state
+            (assoc-in [:dim :y] next-y)
+            (update-in [:dim :v] + (:gravity state))))
       state)))
 
 (defn progress [state]
