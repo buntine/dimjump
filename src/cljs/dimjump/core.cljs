@@ -7,10 +7,13 @@
                  :h 360})
 
 (defn setup []
-  (q/no-stroke)
-  {:frame 0
-   :floor-y (* 0.75 (:h dimensions))
-   :dim (dim/initial-state q/load-image)})
+  (let [floor-y (* 0.75 (:h dimensions))]
+    (q/no-stroke)
+    {:frame 0
+     :floor-y floor-y
+     :gravity 0.8
+     :velocity -10
+     :dim (dim/initial-state floor-y q/load-image)}))
 
 (defn inc-frame [state]
   (update state :frame inc))
@@ -27,6 +30,7 @@
 (defn key-pressed [state event]
   (case (:key-code event)
     32 (dim/toggle-duck state)
+    38 (dim/start-jump state)
     state))
 
 (defn draw [state]
