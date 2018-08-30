@@ -1,7 +1,9 @@
 (ns dimjump.data)
 
-(defn block [x w h]
-  {:x x :w w :h h})
+(defn block
+  ([x w h] (block x w h 0))
+  ([x w h offset]
+    {:x x :w w :h h :offset offset}))
 
 (def levels
   [[(block 200 20 20)

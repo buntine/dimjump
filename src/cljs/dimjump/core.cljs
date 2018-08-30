@@ -44,8 +44,8 @@
 
 (defn key-pressed [state event]
   (case (:key-code event)
-    32 (update state :dim dim/toggle-duck)
-    38 (update state :dim dim/start-jump)
+    40 (update state :dim dim/duck)
+    38 (update state :dim dim/jump)
     state))
 
 (defn draw [state]
@@ -57,7 +57,9 @@
 (defn detect-collision [state]
   (let [level (get-in state [:dim :level])
         obstacles (get-in state [:levels level])
-        collision (some (partial obstacle/collision? (:dim state)) obstacles)]
+        collision (some (partial obstacle/collision?
+                                 (:floor-y state)
+                                 (:dim state)) obstacles)]
     (if collision
       (update state :dim dim/kill)
       state)))

@@ -2,8 +2,10 @@
   (:require [quil.core :as q :include-macros true]))
 
 (defn initial-state [y load-image]
-  {:x 0
+  {:x -20
    :y y
+   :w 16
+   :h 24
    :v 0
    :level 0
    :deaths 0
@@ -15,7 +17,7 @@
                       (load-image "/images/dim4.png")]}
    :ducking false
    :jumping false
-   :speed 3,
+   :speed 3
    :animation-speed 12})
 
 (defn toggle-flag [flag]
@@ -26,12 +28,19 @@
 (def toggle-jump (toggle-flag :jumping))
 
 (defn reset [state]
-  (assoc state :x 0))
+  (assoc state :x -20))
 
 (defn accellerate [state]
   (update state :x + (:speed state)))
 
-(defn start-jump [state]
+(defn duck [state]
+  "Toggles ducking and doubles/halves height of player accordingly"
+  (let [operator (if (:ducking state) * /)]
+    (-> state
+        toggle-duck
+        (update :h operator 2))))
+
+(defn jump [state]
   "Initiates a small or big jump, depending on ducking status"
   (if (:jumping state)
     state
@@ -68,7 +77,7 @@
       (update :level inc)
       reset))
 
-(defn progress-level [state, width]
+(defn progress-level [state width]
   "Checks if it's necessary to go to the next level."
   (if (>= (:x state) width)
     (next-level state)
@@ -84,7 +93,7 @@
              (progress-jump (:floor-y state) (:gravity state))
              (progress-level (:w state)))))
 
-(defn frame-for [frame, state]
+(defn frame-for [frame state]
   "Returns the PImage suitable for the given frame number"
   (let [all-frames (:frames state)
         frames ((if (:ducking state) :ducking :standing) all-frames)]
