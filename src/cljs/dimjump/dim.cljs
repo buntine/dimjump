@@ -90,11 +90,9 @@
         frames ((if (:ducking state) :ducking :standing) all-frames)]
     (frames (mod (int (/ frame (:animation-speed state))) 2))))
 
-(defn draw [state]
-  "Receives full game state and renders player Coupling is permitted
-   here."
-  (let [dim (:dim state)
-        img (frame-for (:frame state) dim)]
+(defn draw [state frame-number]
+  "Receives player state and renders"
+  (let [img (frame-for frame-number state)]
     (q/image img
-             (:x dim)
-             (- (:y dim) (.-height img)))))
+             (:x state)
+             (- (:y state) (.-height img)))))

@@ -2,7 +2,7 @@
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
             [dimjump.dim :as dim]
-            [dimjump.level :as level]
+            [dimjump.obstacle :as obstacle]
             [dimjump.data :as data]))
 
 (def dimensions {:w (* 0.8 (.-innerWidth js/window))
@@ -33,6 +33,15 @@
               (:w dimensions)
               (- (:h dimensions) floor-y)))))
 
+(defn draw-level [state]
+  (let [level (get-in state [:dim :level])
+        obstacles (get-in state [:levels level])]
+    (doseq [o obstacles]
+      (obstacle/draw o (:floor-y state)))))
+
+(defn draw-dim [state]
+  (dim/draw (:dim state) (:frame state)))
+
 (defn key-pressed [state event]
   (case (:key-code event)
     32 (update state :dim dim/toggle-duck)
@@ -42,13 +51,14 @@
 (defn draw [state]
   (q/background (q/color 176 214 255))
   (draw-ground state)
-  (level/draw state)
-  (dim/draw state))
+  (draw-level state)
+  (draw-dim state))
 
 (defn detect-collision [state]
   (let [level (get-in state [:dim :level])
-        obstacles (get-in state [:levels level])]
-    (if (level/collision? obstacles (:dim state))
+        obstacles (get-in state [:levels level])
+        collision (some (partial obstacle/collision? (:dim state)) obstacles)]
+    (if collision
       (update state :dim dim/kill)
       state)))
 
