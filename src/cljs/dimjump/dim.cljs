@@ -23,6 +23,11 @@
 (def toggle-duck (toggle-flag :ducking))
 (def toggle-jump (toggle-flag :jumping))
 
+(defn reset [state]
+  (-> state
+    (assoc-in [:dim :x] 0)
+    end-jump))
+
 (defn accellerate [state]
   (let [dim (:dim state)]
     (update-in state [:dim :x] #(+ (:speed dim) %))))
@@ -42,7 +47,7 @@
 (defn kill [state]
   (-> state
       (update-in [:dim :deaths] inc)
-      (assoc-in [:dim :x] 0)))
+      reset))
 
 (defn progress-jump [state]
   (let [dim (:dim state)
@@ -55,12 +60,24 @@
             (update-in [:dim :v] + (:gravity state))))
       state)))
 
+(defn next-level [state]
+  (-> state
+      (update-in [:dim :level] inc)
+      reset))
+
+(defn progress-level [state]
+  (let [dim (:dim state)]
+    (if (>= (:x dim) (:w state))
+      (next-level state)
+      state)))
+
 (defn progress [state]
   "Receives full game state and returns next state"
   (->
     state
     accellerate
-    progress-jump))
+    progress-jump
+    progress-level))
 
 (defn frame-for [frame, dim]
   "Returns the PImage suitable for the given frame number"

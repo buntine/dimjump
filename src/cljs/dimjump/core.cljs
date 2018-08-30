@@ -11,6 +11,8 @@
   (let [floor-y (* 0.75 (:h dimensions))]
     (q/no-stroke)
     {:frame 0
+     :w (:w dimensions)
+     :h (:h dimensions)
      :floor-y floor-y
      :gravity 0.8
      :velocity -10
