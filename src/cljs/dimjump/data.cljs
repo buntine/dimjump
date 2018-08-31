@@ -9,7 +9,7 @@
 
 (defn block
   ([x w h] (block x w h 0))
-  ([x w h offset] (block x w h 0 (rect x w h 0)))
+  ([x w h offset] (block x w h offset (rect x w h offset)))
   ([x w h offset vertices]
     {:x x :w w :h h :offset offset :vertices vertices}))
 
@@ -37,6 +37,30 @@
     (block 510 100 7 17)
     (block 610 90 7 27)
     (block 740 20 20)]
+   [(block 110 20 20)
+    (block 200 20 20)
+    (block 290 20 20)
+    (block 350 100 5 27)
+    (block 490 35 12)
+    (block 600 20 40)
+    (block 740 20 30)]
+   [(block 120 140 8 17)
+    (block 325 32 31)
+    (block 420 200 12 27)
+    (block 646 20 20)]
+   [(block 120 500 5 27)
+    (block 660 30 20)
+    (block 760 30 20)]
+   [(block 120 20 20)
+    (block 190 20 20)
+    (block 260 20 20)
+    (block 330 20 20)
+    (block 400 20 20)
+    (block 490 20 20)
+    (block 560 20 20)
+    (block 630 20 20)
+    (block 700 20 20)
+    (block 770 20 20)]
   ])
 
 ; Example:

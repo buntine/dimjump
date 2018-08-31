@@ -6,8 +6,7 @@
             [dimjump.corpse :as corpse]
             [dimjump.data :as data]))
 
-(def dimensions {:w (* 0.8 (.-innerWidth js/window))
-                 :h 360})
+(def dimensions {:w 900 :h 200})
 
 (defn setup []
   (let [floor-y (* 0.70 (:h dimensions))]
