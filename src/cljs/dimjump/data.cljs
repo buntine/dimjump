@@ -26,6 +26,17 @@
     (block 400 20 20)
     (block 520 20 30)
     (block 700 35 15)]
+   [(block 115 8 8)
+    (block 123 8 8 8)
+    (block 131 8 8 16)
+    (block 139 8 8 8)
+    (block 147 8 8)
+    (block 220 37 9)
+    (block 350 25 25)
+    (block 420 90 7 27)
+    (block 510 100 7 17)
+    (block 610 90 7 27)
+    (block 740 20 20)]
   ])
 
 ; Example:
