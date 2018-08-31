@@ -10,11 +10,11 @@
 
 (defn draw [corpse]
   (let [{x :x y :y sprite :sprite alpha :alpha} corpse]
-    (q/tint 255, alpha)
+    (q/tint 255 alpha)
     (q/image sprite
              x
              (- y (.-height sprite)))
-    (q/tint 255, 255)))
+    (q/no-tint)))
 
 (defn progress [corpse]
   (update corpse :alpha - (:degradation corpse)))

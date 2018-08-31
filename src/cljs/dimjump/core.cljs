@@ -53,7 +53,7 @@
 (defn draw-start-game [state]
   (q/with-fill
     [100 100 100]
-    (q/text "Press any key to start",
+    (q/text "Press any key to start"
             (/ (:w state) 2)
             (/ (:floor-y state) 2))))
 
