@@ -11,10 +11,13 @@
 (defn setup []
   (let [floor-y (* 0.75 (:h dimensions))]
     (q/no-stroke)
+    (q/text-align :center :center)
+    (q/text-font (q/create-font "addstandard.ttf" 36))
     {:frame 0
      :w (:w dimensions)
      :h (:h dimensions)
      :floor-y floor-y
+     :started false
      :gravity 0.8
      :velocity-big -10
      :velocity-small -8
@@ -23,6 +26,9 @@
 
 (defn inc-frame [state]
   (update state :frame inc))
+
+(defn start-game [state]
+  (assoc state :started true))
 
 (defn draw-ground [state]
   (let [floor-y (:floor-y state)]
@@ -42,17 +48,28 @@
 (defn draw-dim [state]
   (dim/draw (:dim state) (:frame state)))
 
+(defn draw-start-game [state]
+  (q/with-fill
+    [100 100 100]
+    (q/text "Press any key to start",
+            (/ (:w state) 2)
+            (/ (:floor-y state) 2))))
+
 (defn key-pressed [state event]
-  (case (:key-code event)
-    40 (update state :dim dim/duck)
-    38 (update state :dim dim/jump)
-    state))
+  (let [started (start-game state)]
+    (case (:key-code event)
+      40 (update started :dim dim/duck)
+      38 (update started :dim dim/jump)
+      started)))
 
 (defn draw [state]
   (q/background (q/color 176 214 255))
   (draw-ground state)
   (draw-level state)
-  (draw-dim state))
+  (draw-dim state)
+  
+  (if (not (:started state))
+    (draw-start-game state)))
 
 (defn detect-collision [state]
   (let [level (get-in state [:dim :level])
@@ -65,10 +82,12 @@
       state)))
 
 (defn progress [state]
-  (-> state
-      inc-frame
-      dim/progress
-      detect-collision))
+  (if (:started state)
+    (-> state
+        inc-frame
+        dim/progress
+        detect-collision)
+    state))
 
 (defn init []
   (q/defsketch dim-jump
