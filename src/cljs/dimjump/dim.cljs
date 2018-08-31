@@ -21,67 +21,67 @@
    :animation-speed 12})
 
 (defn toggle-flag [flag]
-  (fn [state]
-    (update state flag not)))
+  (fn [dim]
+    (update dim flag not)))
 
 (def toggle-duck (toggle-flag :ducking))
 (def toggle-jump (toggle-flag :jumping))
 
-(defn reset [state]
-  (assoc state :x -20))
+(defn reset [dim]
+  (assoc dim :x -20))
 
-(defn accellerate [state]
-  (update state :x + (:speed state)))
+(defn accellerate [dim]
+  (update dim :x + (:speed dim)))
 
-(defn duck [state]
+(defn duck [dim]
   "Toggles ducking and doubles/halves height of player accordingly"
-  (let [operator (if (:ducking state) * /)]
-    (-> state
+  (let [operator (if (:ducking dim) * /)]
+    (-> dim
         toggle-duck
         (update :h operator 2))))
 
-(defn jump [state]
+(defn jump [dim]
   "Initiates a small or big jump, depending on ducking status"
-  (if (:jumping state)
-    state
-    (let [velocity (if (:ducking state)
-                     (:velocity-small state)
-                     (:velocity-big state))]
-      (-> state
+  (if (:jumping dim)
+    dim
+    (let [velocity (if (:ducking dim)
+                     (:velocity-small dim)
+                     (:velocity-big dim))]
+      (-> dim
           toggle-jump
           (assoc :v velocity)))))
 
-(defn end-jump [state y]
-  (-> state
+(defn end-jump [dim y]
+  (-> dim
       toggle-jump
       (assoc :y y)))
 
-(defn kill [state]
-  (-> state
+(defn kill [dim]
+  (-> dim
       (update :deaths inc)
       reset))
 
-(defn progress-jump [state floor-y gravity]
+(defn progress-jump [dim floor-y gravity]
   "Updates state to reflect players Y position during jump"
-  (let [next-y (+ (:y state) (:v state))]
-    (if (:jumping state)
+  (let [next-y (+ (:y dim) (:v dim))]
+    (if (:jumping dim)
       (if (>= next-y floor-y)
-        (end-jump state floor-y)
-        (-> state
+        (end-jump dim floor-y)
+        (-> dim
             (assoc :y next-y)
             (update :v + gravity)))
-      state)))
+      dim)))
 
-(defn next-level [state]
-  (-> state
+(defn next-level [dim]
+  (-> dim
       (update :level inc)
       reset))
 
-(defn progress-level [state width]
+(defn progress-level [dim width]
   "Checks if it's necessary to go to the next level."
-  (if (>= (:x state) width)
-    (next-level state)
-    state))
+  (if (>= (:x dim) width)
+    (next-level dim)
+    dim))
 
 (defn progress [state]
   "Receives full game state and returns next state. Coupling is permitted
@@ -93,15 +93,15 @@
              (progress-jump (:floor-y state) (:gravity state))
              (progress-level (:w state)))))
 
-(defn frame-for [frame state]
+(defn sprite-for [frame dim]
   "Returns the PImage suitable for the given frame number"
-  (let [all-frames (:frames state)
-        frames ((if (:ducking state) :ducking :standing) all-frames)]
-    (frames (mod (int (/ frame (:animation-speed state))) 2))))
+  (let [all-frames (:frames dim)
+        frames ((if (:ducking dim) :ducking :standing) all-frames)]
+    (frames (mod (int (/ frame (:animation-speed dim))) 2))))
 
-(defn draw [state frame-number]
+(defn draw [dim frame-number]
   "Receives player state and renders"
-  (let [img (frame-for frame-number state)]
-    (q/image img
-             (:x state)
-             (- (:y state) (.-height img)))))
+  (let [sprite (sprite-for frame-number dim)]
+    (q/image sprite
+             (:x dim)
+             (- (:y dim) (.-height sprite)))))

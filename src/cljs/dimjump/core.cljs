@@ -3,16 +3,17 @@
             [quil.middleware :as m]
             [dimjump.dim :as dim]
             [dimjump.obstacle :as obstacle]
+            [dimjump.corpse :as corpse]
             [dimjump.data :as data]))
 
 (def dimensions {:w (* 0.8 (.-innerWidth js/window))
                  :h 360})
 
 (defn setup []
-  (let [floor-y (* 0.75 (:h dimensions))]
+  (let [floor-y (* 0.70 (:h dimensions))]
     (q/no-stroke)
     (q/text-align :center :center)
-    (q/text-font (q/create-font "addstandard.ttf" 36))
+    (q/text-font (q/create-font "/fonts/addstandard.ttf" 36))
     {:frame 0
      :w (:w dimensions)
      :h (:h dimensions)
@@ -21,6 +22,7 @@
      :gravity 0.8
      :velocity-big -10
      :velocity-small -8
+     :corpses []
      :levels data/levels
      :dim (dim/initial-state floor-y q/load-image)}))
 
@@ -67,25 +69,43 @@
   (draw-ground state)
   (draw-level state)
   (draw-dim state)
+
+  (doseq [c (:corpses state)]
+    (corpse/draw c))
   
   (if (not (:started state))
     (draw-start-game state)))
 
+(defn kill-dim [state]
+  (let [dim (:dim state)
+        sprite (dim/sprite-for (:frame state) dim)]
+    (-> state
+        (update :dim dim/kill)
+        (update :corpses conj (corpse/create-from dim sprite)))))
+
 (defn detect-collision [state]
+  "Kills the dim if it hits anything"
   (let [level (get-in state [:dim :level])
         obstacles (get-in state [:levels level])
         collision (some (partial obstacle/collision?
                                  (:floor-y state)
                                  (:dim state)) obstacles)]
     (if collision
-      (update state :dim dim/kill)
+      (kill-dim state)
       state)))
+
+(defn progress-corpses [state]
+  "Continues corpses and removes any that are no longer visible"
+  (-> state
+      (update :corpses #(filter corpse/visible?
+                                (map corpse/progress %)))))
 
 (defn progress [state]
   (if (:started state)
     (-> state
         inc-frame
         dim/progress
+        progress-corpses
         detect-collision)
     state))
 
