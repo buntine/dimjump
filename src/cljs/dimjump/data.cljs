@@ -7,6 +7,7 @@
 
 (def levels
   [[(block 200 20 20)
+    (block 300 60 5 17)
     (block 400 20 20)]
    [(block 300 20 20)
     (block 500 20 20)

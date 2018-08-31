@@ -38,8 +38,8 @@
       [197 226 175]
       (q/rect 0
               floor-y
-              (:w dimensions)
-              (- (:h dimensions) floor-y)))))
+              (:w state)
+              (- (:h state) floor-y)))))
 
 (defn draw-level [state]
   (let [level (get-in state [:dim :level])
@@ -80,8 +80,8 @@
   (let [dim (:dim state)
         sprite (dim/sprite-for (:frame state) dim)]
     (-> state
-        (update :dim dim/kill)
-        (update :corpses conj (corpse/create-from dim sprite)))))
+        (update :corpses conj (corpse/spawn dim sprite))
+        (update :dim dim/kill))))
 
 (defn detect-collision [state]
   "Kills the dim if it hits anything"

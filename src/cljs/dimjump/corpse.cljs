@@ -1,7 +1,7 @@
 (ns dimjump.corpse
   (:require [quil.core :as q :include-macros true]))
 
-(defn create-from [{x :x y :y} sprite]
+(defn spawn [{x :x y :y} sprite]
   {:x x
    :y y
    :degradation 10
