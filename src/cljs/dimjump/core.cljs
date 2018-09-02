@@ -12,7 +12,10 @@
   (let [floor-y (* 0.70 (:h dimensions))]
     (q/no-stroke)
     (q/text-align :center :center)
-    (q/text-font (q/create-font "/fonts/addstandard.ttf" 36))
+    (q/text-font
+      (q/create-font
+        (q/load-font "/fonts/addstandard.ttf") 36))
+
     {:frame 0
      :w (:w dimensions)
      :h (:h dimensions)
