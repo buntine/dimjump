@@ -1,12 +1,18 @@
+@font-face {
+  font-family: 'AddStandard';
+  src: url('/fonts/addstandard.ttf');
+}
+
 body {
-    background-color: #ffffcc;
+    background-color: #333;
     width: 100%;
     padding: 0;
     margin: 0;
 }
 
 div#header {
-    width: 100%;
+    width: 80%;
+    margin: 0 auto;
     height: 145px;
     padding: 0;
     background: url('/images/title.png') top left no-repeat;

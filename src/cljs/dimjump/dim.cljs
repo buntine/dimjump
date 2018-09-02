@@ -1,5 +1,6 @@
 (ns dimjump.dim
-  (:require [quil.core :as q :include-macros true]))
+  (:require [quil.core :as q :include-macros true]
+             [dimjump.sound :as sound]))
 
 (defn spawn [y]
   {:x -20
@@ -15,6 +16,7 @@
                        (q/load-image "/images/dim2.png")]
             :ducking [(q/load-image "/images/dim3.png")
                       (q/load-image "/images/dim4.png")]}
+   :sound {:splat (sound/load-sound "/sounds/splat.wav")}
    :ducking false
    :jumping false
    :speed 3
