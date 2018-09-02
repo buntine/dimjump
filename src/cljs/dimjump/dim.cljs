@@ -1,7 +1,7 @@
 (ns dimjump.dim
   (:require [quil.core :as q :include-macros true]))
 
-(defn initial-state [y load-image]
+(defn spawn [y]
   {:x -20
    :y y
    :w 16
@@ -11,10 +11,10 @@
    :deaths 0
    :velocity-big -10
    :velocity-small -8
-   :frames {:standing [(load-image "/images/dim1.png")
-                       (load-image "/images/dim2.png")]
-            :ducking [(load-image "/images/dim3.png")
-                      (load-image "/images/dim4.png")]}
+   :frames {:standing [(q/load-image "/images/dim1.png")
+                       (q/load-image "/images/dim2.png")]
+            :ducking [(q/load-image "/images/dim3.png")
+                      (q/load-image "/images/dim4.png")]}
    :ducking false
    :jumping false
    :speed 3

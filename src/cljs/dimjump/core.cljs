@@ -23,7 +23,7 @@
      :velocity-small -8
      :corpses []
      :levels data/levels
-     :dim (dim/initial-state floor-y q/load-image)}))
+     :dim (dim/spawn floor-y)}))
 
 (defn inc-frame [state]
   (update state :frame inc))

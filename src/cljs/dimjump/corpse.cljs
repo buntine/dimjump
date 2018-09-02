@@ -4,8 +4,8 @@
 (defn spawn [{x :x y :y} sprite]
   {:x x
    :y y
-   :degradation 10
-   :sprite sprite 
+   :degradation 2
+   :sprite (q/load-image (.. sprite -sourceImg -src)) ; Effectively clones the current dim sprite.
    :alpha 255})
 
 (defn draw [corpse]
