@@ -4,7 +4,8 @@
             [dimjump.dim :as dim]
             [dimjump.obstacle :as obstacle]
             [dimjump.corpse :as corpse]
-            [dimjump.data :as data]))
+            [dimjump.data :as data]
+            [dimjump.sound :as sound]))
 
 (def dimensions {:w 900 :h 200})
 
@@ -21,8 +22,8 @@
      :floor-y floor-y
      :started false
      :gravity 0.8
-     :velocity-big -10
-     :velocity-small -8
+     :level 0
+     :sound {:splat (sound/load-sound "/sounds/splat.wav")}
      :corpses []
      :levels data/levels
      :dim (dim/spawn floor-y)}))
@@ -43,7 +44,7 @@
               (- (:h state) floor-y)))))
 
 (defn draw-level [state]
-  (let [level (get-in state [:dim :level])
+  (let [level (:level state)
         obstacles (get-in state [:levels level])]
     (doseq [o obstacles]
       (obstacle/draw o (:floor-y state)))))
@@ -86,7 +87,7 @@
 
 (defn detect-collision [state]
   "Kills the dim if it hits anything"
-  (let [level (get-in state [:dim :level])
+  (let [level (:level state)
         obstacles (get-in state [:levels level])
         collision (some (partial obstacle/collision?
                                  (:floor-y state)
@@ -97,15 +98,27 @@
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
+  (update state :corpses #(filter corpse/visible?
+                         (map corpse/progress %))))
+
+(defn go-to-next-level [state]
+  "Move to the next level"
   (-> state
-      (update :corpses #(filter corpse/visible?
-                                (map corpse/progress %)))))
+      (update :level inc)
+      (update :dim dim/reset)))
+
+(defn progress-level [state]
+  "Checks if it's necessary to go to the next level"
+  (if (dim/past? (:dim state) (:w state))
+      (go-to-next-level state)
+      state))
 
 (defn progress [state]
   (if (:started state)
     (-> state
         inc-frame
         dim/progress
+        progress-level
         progress-corpses
         detect-collision)
     state))

@@ -4,7 +4,7 @@
 (defn spawn [{x :x y :y} sprite]
   {:x x
    :y y
-   :degradation 2
+   :degradation 4
    :sprite (q/load-image (.. sprite -sourceImg -src)) ; Effectively clones the current dim sprite.
    :alpha 255})
 
