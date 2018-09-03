@@ -3,8 +3,8 @@
              [dimjump.sound :as sound]))
 
 (defn spawn [y]
-  {:x -20
-   :y y
+  {:trail 5
+   :points (take 5 (repeat {:x -20 :y y}))
    :w 16
    :h 24
    :v 0
@@ -29,11 +29,26 @@
 (def toggle-duck (toggle-flag :ducking))
 (def toggle-jump (toggle-flag :jumping))
 
-(defn reset [dim]
-  (assoc dim :x -20))
+(defn position [dim]
+  "Returns a map of current position and dimensions"
+  (let [last-point (last (:points dim))]
+    (merge last-point
+           (select-keys dim [:w :h]))))
 
-(defn accellerate [dim]
-  (update dim :x + (:speed dim)))
+(defn add-point 
+  ([dim {x :x y :y}]
+    (add-point dim x y))
+  ([dim x y]
+    (update dim :points (comp rest conj) {:x x :y y})))
+
+(defn add-point-y [dim y]
+  (add-point dim (:x dim) y))
+
+(defn add-point-x [dim x]
+  (add-point dim x (:y dim)))
+
+(defn reset [dim]
+  (add-point-x dim -20))
 
 (defn duck [dim]
   "Toggles ducking and doubles/halves height of player accordingly"
@@ -53,26 +68,44 @@
           toggle-jump
           (assoc :v velocity)))))
 
+;; REMOVE?
 (defn end-jump [dim y]
   (-> dim
       toggle-jump
-      (assoc :y y)))
+      (add-point-y y)))
 
 (defn kill [dim]
   (-> dim
       (update :deaths inc)
       reset))
 
-(defn progress-jump [dim floor-y gravity]
-  "Updates state to reflect players Y position during jump"
+(defn progress-velocity [dim gravity]
+  "Updates velocity during a jump"
+  (if (:jumping dim)
+    (update dim :v + gravity)
+    dim))
+
+(defn progress-jump [dim floor-y]
+  "Returns the next Y position for the dim during a jump"
   (let [next-y (+ (:y dim) (:v dim))]
     (if (:jumping dim)
-      (if (>= next-y floor-y)
-        (end-jump dim floor-y)
-        (-> dim
-            (assoc :y next-y)
-            (update :v + gravity)))
-      dim)))
+      (if (> next-y floor-y)
+        floor-y
+        next-y)
+      (:y dim))))
+
+(defn next-point [dim floor-y]
+  "Returns the next point at which the player should appear"
+  (let [next-x (+ (:x dim) (:speed dim))
+        next-y (progress-jump dim floor-y)]
+    {:x next-x
+     :y next-y}))
+
+(defn reposition [dim floor-y gravity]
+  (-> dim
+      (update-velocity gravity)
+      (next-point floor-y)
+      add-point))
 
 (defn next-level [dim]
   (-> dim
@@ -81,9 +114,10 @@
 
 (defn progress-level [dim width]
   "Checks if it's necessary to go to the next level."
-  (if (>= (:x dim) width)
-    (next-level dim)
-    dim))
+  (let [last-point (last (:points dim))]
+    (if (>= (:x last-point) width)
+      (next-level dim)
+      dim)))
 
 (defn progress [state]
   "Receives full game state and returns next state. Coupling is permitted
@@ -91,8 +125,7 @@
   (assoc state
          :dim
          (-> (:dim state)
-             accellerate
-             (progress-jump (:floor-y state) (:gravity state))
+             (reposition (:floor-y state) (:gravity state))
              (progress-level (:w state)))))
 
 (defn sprite-for [frame dim]
@@ -104,6 +137,8 @@
 (defn draw [dim frame-number]
   "Receives player state and renders"
   (let [sprite (sprite-for frame-number dim)]
+    (let [{x :x y :y} (last (:points dim))]
     (q/image sprite
-             (:x dim)
-             (- (:y dim) (.-height sprite)))))
+             x
+             (- y (.-height sprite)))
+    )))

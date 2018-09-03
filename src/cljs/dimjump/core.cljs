@@ -81,7 +81,7 @@
   (let [dim (:dim state)
         sprite (dim/sprite-for (:frame state) dim)]
     (-> state
-        (update :corpses conj (corpse/spawn dim sprite))
+        (update :corpses conj (corpse/spawn (dim/position dim) sprite))
         (update :dim dim/kill))))
 
 (defn detect-collision [state]
@@ -90,7 +90,7 @@
         obstacles (get-in state [:levels level])
         collision (some (partial obstacle/collision?
                                  (:floor-y state)
-                                 (:dim state)) obstacles)]
+                                 (dim/position (:dim state))) obstacles)]
     (if collision
       (kill-dim state)
       state)))
