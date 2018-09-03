@@ -11,3 +11,4 @@ pom.xml.asc
 /resources/public/js
 figwheel_server.log
 .*.sw*
+.rebel_*
