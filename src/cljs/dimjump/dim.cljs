@@ -1,6 +1,7 @@
 (ns dimjump.dim
   (:require [quil.core :as q :include-macros true]
-            [dimjump.data :as data :refer [constants]]))
+            [dimjump.data :as data :refer [constants]]
+            [dimjump.sound :as sound]))
 
 (defn spawn []
   {:points (take 5 (repeat {:x -20 :y (:floor-y constants)}))
@@ -85,6 +86,7 @@
     dim))
 
 (defn kill [dim]
+  (sound/play-sound :splat)
   (-> dim
       (update :deaths inc)
       reset))
@@ -128,7 +130,7 @@
            (cons n (trail-opacities next-n))))))
 
 (defn draw [dim frame-number]
-  "Receives player state and renders"
+  "Renders dim with fade-off trail relative to current speed"
   (let [sprite (sprite-for frame-number dim)
         points (reverse (:points dim))
         trail (take (count points) (trail-opacities))

@@ -8,16 +8,15 @@
    :sprite (q/load-image (.. sprite -sourceImg -src)) ; Effectively clones the current dim sprite.
    :alpha 255})
 
-(defn draw [corpse]
-  (let [{x :x y :y sprite :sprite alpha :alpha} corpse]
+(defn draw [{x :x y :y sprite :sprite alpha :alpha}]
     (q/tint 255 alpha)
     (q/image sprite
              x
              (- y (.-height sprite)))
-    (q/no-tint)))
+    (q/no-tint))
 
 (defn progress [corpse]
   (update corpse :alpha - (:degradation corpse)))
 
-(defn visible? [corpse]
-  (>= (:alpha corpse) 0))
+(defn visible? [{alpha :alpha}]
+  (>= alpha 0))

@@ -13,6 +13,7 @@
    :started false
    :level 0
    :corpses []
+   :sound true
    :levels data/levels
    :dim (dim/spawn)})
 
