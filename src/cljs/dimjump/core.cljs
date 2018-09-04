@@ -4,29 +4,20 @@
             [dimjump.dim :as dim]
             [dimjump.obstacle :as obstacle]
             [dimjump.corpse :as corpse]
-            [dimjump.data :as data]
-            [dimjump.sound :as sound]))
-
-(def dimensions {:w 900 :h 200})
+            [dimjump.data :as data]))
 
 (defn setup []
-  (let [floor-y (* 0.70 (:h dimensions))]
-    (q/no-stroke)
-    (q/text-align :center :center)
-    (q/text-font
-      (q/create-font "AddStandard" 36))
+  (q/no-stroke)
+  (q/text-align :center :center)
+  (q/text-font
+    (q/create-font "AddStandard" 36))
 
-    {:frame 0
-     :w (:w dimensions)
-     :h (:h dimensions)
-     :floor-y floor-y
-     :started false
-     :gravity 0.8
-     :level 0
-     :sound {:splat (sound/load-sound "/sounds/splat.wav")}
-     :corpses []
-     :levels data/levels
-     :dim (dim/spawn floor-y)}))
+  {:frame 0
+   :started false
+   :level 0
+   :corpses []
+   :levels data/levels
+   :dim (dim/spawn)})
 
 (defn inc-frame [state]
   (update state :frame inc))
@@ -34,20 +25,20 @@
 (defn start-game [state]
   (assoc state :started true))
 
-(defn draw-ground [state]
-  (let [floor-y (:floor-y state)]
+(defn draw-ground []
+  (let [{floor-y :floor-y w :w h :h} data/constants]
     (q/with-fill
       [197 226 175]
       (q/rect 0
               floor-y
-              (:w state)
-              (- (:h state) floor-y)))))
+              w
+              (- h floor-y)))))
 
 (defn draw-level [state]
   (let [level (:level state)
         obstacles (get-in state [:levels level])]
     (doseq [o obstacles]
-      (obstacle/draw o (:floor-y state)))))
+      (obstacle/draw o))))
 
 (defn draw-dim [state]
   (dim/draw (:dim state) (:frame state)))
@@ -56,8 +47,8 @@
   (q/with-fill
     [100 100 100]
     (q/text "Press any key to start"
-            (/ (:w state) 2)
-            (/ (:floor-y state) 2))))
+            (/ (:w data/constants) 2)
+            (/ (:floor-y data/constants) 2))))
 
 (defn key-pressed [state event]
   (let [started (start-game state)]
@@ -68,7 +59,7 @@
 
 (defn draw [state]
   (q/background (q/color 176 214 255))
-  (draw-ground state)
+  (draw-ground)
   (draw-level state)
   (draw-dim state)
 
@@ -90,7 +81,6 @@
   (let [level (:level state)
         obstacles (get-in state [:levels level])
         collision (some (partial obstacle/collision?
-                                 (:floor-y state)
                                  (dim/position (:dim state))) obstacles)]
     (if collision
       (kill-dim state)
@@ -109,7 +99,7 @@
 
 (defn progress-level [state]
   "Checks if it's necessary to go to the next level"
-  (if (dim/past? (:dim state) (:w state))
+  (if (dim/past? (:dim state) (:w data/constants))
       (go-to-next-level state)
       state))
 
@@ -117,7 +107,7 @@
   (if (:started state)
     (-> state
         inc-frame
-        dim/progress
+        (update :dim dim/progress)
         progress-level
         progress-corpses
         detect-collision)
@@ -127,7 +117,7 @@
   (q/defsketch dim-jump
     :host "game"
     :settings #(q/smooth 2)
-    :size (vals dimensions)
+    :size (vals data/dimensions)
     :frame-rate 60
     :setup setup
     :draw draw

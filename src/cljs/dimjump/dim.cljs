@@ -1,8 +1,9 @@
 (ns dimjump.dim
-  (:require [quil.core :as q :include-macros true]))
+  (:require [quil.core :as q :include-macros true]
+            [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [y]
-  {:points (take 5 (repeat {:x -20 :y y}))
+(defn spawn []
+  {:points (take 5 (repeat {:x -20 :y (:floor-y data/constants)}))
    :w 16
    :h 24
    :v 0
@@ -15,7 +16,7 @@
                       (q/load-image "/images/dim4.png")]}
    :ducking false
    :jumping false
-   :speed 3
+   :speed 5
    :animation-speed 12})
 
 (defn toggle-flag [flag]
@@ -64,10 +65,10 @@
           toggle-jump
           (assoc :v velocity)))))
 
-(defn finalize-jump [dim floor-y]
+(defn finalize-jump [dim]
   "If jump is finished then reset velocity and just status"
   (if (and (:jumping dim)
-           (= (:y (position dim)) floor-y))
+           (= (:y (position dim)) (:floor-y data/constants)))
     (-> dim
         toggle-jump
         (assoc :v 0))
@@ -78,36 +79,30 @@
       (update :deaths inc)
       reset))
 
-(defn progress-velocity [dim gravity]
+(defn progress-velocity [dim]
   "Updates velocity during a jump"
   (if (:jumping dim)
-    (update dim :v + gravity)
+    (update dim :v + (:gravity data/constants))
     dim))
 
-(defn next-y-position [dim floor-y]
+(defn next-y-position [dim]
   "Returns the next Y position for the dim (necessary during a jump)"
   (let [y (:y (position dim))
         next-y (+ y (:v dim))]
-    (min floor-y next-y)))
+    (min (:floor-y data/constants) next-y)))
 
 (defn next-x-position [dim]
   "Returns next X position for dim"
   (+ (:x (position dim)) (:speed dim)))
 
-(defn progress [state]
-  "Receives full game state and returns next state. Coupling is permitted
-   here"
-  (let [dim (:dim state)
-        floor-y (:floor-y state)
-        gravity (:gravity state)
-        next-x (next-x-position dim)
-        next-y (next-y-position dim floor-y)]
-    (assoc state
-         :dim
-         (-> dim
-             (add-point next-x next-y)
-             (progress-velocity gravity)
-             (finalize-jump floor-y)))))
+(defn progress [dim]
+  "Receives player state and returns next state."
+  (let [next-x (next-x-position dim)
+        next-y (next-y-position dim)]
+    (-> dim
+        (add-point next-x next-y)
+        progress-velocity
+        finalize-jump)))
 
 (defn sprite-for [frame dim]
   "Returns the PImage suitable for the given frame number"

@@ -1,4 +1,5 @@
-(ns dimjump.data)
+(ns dimjump.data
+  (:require [dimjump.sound :as sound]))
 
 (defn rect [x w h offset]
   "Returns set of vertices for given rectangle"
@@ -12,6 +13,15 @@
   ([x w h offset] (block x w h offset (rect x w h offset)))
   ([x w h offset vertices]
     {:x x :w w :h h :offset offset :vertices vertices}))
+
+(def dimensions {:w 900 :h 200})
+
+(def constants
+  {:floor-y (* 0.70 (:h dimensions))
+   :w (:w dimensions)
+   :h (:h dimensions)
+   :gravity 0.8
+   :sound {:splat (sound/load-sound "/sounds/splat.wav")}})
 
 (def levels
   [[(block 200 20 20)
