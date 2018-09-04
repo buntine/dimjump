@@ -10,14 +10,6 @@ body {
     margin: 0;
 }
 
-div#header {
-    width: 80%;
-    margin: 0 auto;
-    height: 145px;
-    padding: 0;
-    background: url('/images/title.png') top left no-repeat;
-}
-
 div#game-wrapper {
     width: 80%;
     min-width: 900px;

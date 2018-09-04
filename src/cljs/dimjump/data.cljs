@@ -1,5 +1,6 @@
 (ns dimjump.data
-  (:require [dimjump.sound :as sound]))
+  (:require [quil.core :as q :include-macros true]
+            [dimjump.sound :as sound]))
 
 (defn rect [x w h offset]
   "Returns set of vertices for given rectangle"
@@ -14,12 +15,17 @@
   ([x w h offset vertices]
     {:x x :w w :h h :offset offset :vertices vertices}))
 
+(def text
+  (memoize (fn [size]
+             (q/create-font "AddStandard" size))))
+
 (def dimensions {:w 900 :h 200})
 
 (def constants
   {:floor-y (* 0.70 (:h dimensions))
    :w (:w dimensions)
    :h (:h dimensions)
+   :speed-range (set (range 3 7))
    :gravity 0.8
    :sound {:splat (sound/load-sound "/sounds/splat.wav")}})
 

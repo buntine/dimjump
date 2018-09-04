@@ -4,13 +4,10 @@
             [dimjump.dim :as dim]
             [dimjump.obstacle :as obstacle]
             [dimjump.corpse :as corpse]
-            [dimjump.data :as data]))
+            [dimjump.data :as data :refer [constants]]))
 
 (defn setup []
   (q/no-stroke)
-  (q/text-align :center :center)
-  (q/text-font
-    (q/create-font "AddStandard" 36))
 
   {:frame 0
    :started false
@@ -26,13 +23,26 @@
   (assoc state :started true))
 
 (defn draw-ground []
-  (let [{floor-y :floor-y w :w h :h} data/constants]
+  (let [{floor-y :floor-y w :w h :h} constants]
     (q/with-fill
       [197 226 175]
       (q/rect 0
               floor-y
               w
               (- h floor-y)))))
+
+(defn draw-hud [{level :level}]
+  (let [{floor-y :floor-y w :w h :h} constants]
+    (q/text-font (data/text 18))
+    (q/text-align :left :top)
+    (q/with-fill
+      [116 154 195]
+      (q/text (str "Level " (inc level)) 10 5))
+    (q/text-font (data/text 32))
+    (q/text-align :right :baseline)
+    (q/with-fill
+      [130 159 108]
+      (q/text "Dim Jump" (- w 10) (- h 20)))))
 
 (defn draw-level [state]
   (let [level (:level state)
@@ -44,22 +54,31 @@
   (dim/draw (:dim state) (:frame state)))
 
 (defn draw-start-game [state]
-  (q/with-fill
-    [100 100 100]
-    (q/text "Press any key to start"
-            (/ (:w data/constants) 2)
-            (/ (:floor-y data/constants) 2))))
+  (let [{w :w h :h} constants]
+    (q/text-font (data/text 46))
+    (q/with-fill
+      [170 170 170 170]
+      (q/rect 0 0 w h))
+    (q/text-align :center :baseline)
+    (q/with-fill
+      [100 100 100]
+      (q/text "Press any key to start"
+              (/ w 2)
+              (/ h 2)))))
 
 (defn key-pressed [state event]
-  (let [started (start-game state)]
+  (let [game (start-game state)]
     (case (:key-code event)
-      40 (update started :dim dim/duck)
-      38 (update started :dim dim/jump)
-      started)))
+      40 (update game :dim dim/duck)
+      38 (update game :dim dim/jump)
+      37 (update game :dim dim/speed-down)
+      39 (update game :dim dim/speed-up)
+      game)))
 
 (defn draw [state]
   (q/background (q/color 176 214 255))
   (draw-ground)
+  (draw-hud state)
   (draw-level state)
   (draw-dim state)
 
@@ -99,7 +118,7 @@
 
 (defn progress-level [state]
   "Checks if it's necessary to go to the next level"
-  (if (dim/past? (:dim state) (:w data/constants))
+  (if (dim/past? (:dim state) (:w constants))
       (go-to-next-level state)
       state))
 

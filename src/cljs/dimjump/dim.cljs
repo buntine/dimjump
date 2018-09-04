@@ -3,10 +3,10 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defn spawn []
-  {:points (take 5 (repeat {:x -20 :y (:floor-y data/constants)}))
+  {:points (take 5 (repeat {:x -20 :y (:floor-y constants)}))
    :w 16
    :h 24
-   :v 0
+   :velocity 0
    :deaths 0
    :velocity-big -10
    :velocity-small -8
@@ -16,7 +16,7 @@
                       (q/load-image "/images/dim4.png")]}
    :ducking false
    :jumping false
-   :speed 5
+   :speed 3
    :animation-speed 12})
 
 (defn toggle-flag [flag]
@@ -43,6 +43,16 @@
   ([dim point]
     (update dim :points (comp vec rest conj) point)))
 
+(defn set-speed [{:keys [speed] :as dim} op]
+  "Applies the given op on the speed and updates it if the result is within
+  the bounds"
+  (if-let [next-speed ((:speed-range constants) (op speed))]
+    (assoc dim :speed next-speed)
+    dim))
+
+(defn speed-up [dim] (set-speed dim inc))
+(defn speed-down [dim] (set-speed dim dec))
+
 (defn reset [dim]
   "Moves dim back to start of the screen"
   (add-point dim -20 (:y (position dim))))
@@ -63,15 +73,15 @@
                      (:velocity-big dim))]
       (-> dim
           toggle-jump
-          (assoc :v velocity)))))
+          (assoc :velocity velocity)))))
 
 (defn finalize-jump [dim]
   "If jump is finished then reset velocity and just status"
   (if (and (:jumping dim)
-           (= (:y (position dim)) (:floor-y data/constants)))
+           (= (:y (position dim)) (:floor-y constants)))
     (-> dim
         toggle-jump
-        (assoc :v 0))
+        (assoc :velocity 0))
     dim))
 
 (defn kill [dim]
@@ -82,14 +92,14 @@
 (defn progress-velocity [dim]
   "Updates velocity during a jump"
   (if (:jumping dim)
-    (update dim :v + (:gravity data/constants))
+    (update dim :velocity + (:gravity constants))
     dim))
 
 (defn next-y-position [dim]
   "Returns the next Y position for the dim (necessary during a jump)"
   (let [y (:y (position dim))
-        next-y (+ y (:v dim))]
-    (min (:floor-y data/constants) next-y)))
+        next-y (+ y (:velocity dim))]
+    (min (:floor-y constants) next-y)))
 
 (defn next-x-position [dim]
   "Returns next X position for dim"
