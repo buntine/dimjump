@@ -1,6 +1,5 @@
 (ns dimjump.data
-  (:require [quil.core :as q :include-macros true]
-            [dimjump.sound :as sound]))
+  (:require [quil.core :as q :include-macros true]))
 
 (defn rect [x w h offset]
   "Returns set of vertices for given rectangle"
@@ -26,8 +25,7 @@
    :w (:w dimensions)
    :h (:h dimensions)
    :speed-range (set (range 3 7))
-   :gravity 0.8
-   :sound {:splat (sound/load-sound "/sounds/splat.wav")}})
+   :gravity 0.8})
 
 (def levels
   [[(block 200 20 20)

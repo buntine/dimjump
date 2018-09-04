@@ -4,6 +4,7 @@
             [dimjump.dim :as dim]
             [dimjump.obstacle :as obstacle]
             [dimjump.corpse :as corpse]
+            [dimjump.sound :as sound]
             [dimjump.data :as data :refer [constants]]))
 
 (defn setup []
@@ -90,6 +91,7 @@
     (draw-start-game state)))
 
 (defn kill-dim [state]
+  (sound/play-sound :splat)
   (let [dim (:dim state)
         sprite (dim/sprite-for (:frame state) dim)]
     (-> state

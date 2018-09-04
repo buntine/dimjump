@@ -1,7 +1,6 @@
 (ns dimjump.dim
   (:require [quil.core :as q :include-macros true]
-            [dimjump.data :as data :refer [constants]]
-            [dimjump.sound :as sound]))
+            [dimjump.data :as data :refer [constants]]))
 
 (defn spawn []
   {:points (take 5 (repeat {:x -20 :y (:floor-y constants)}))
@@ -86,7 +85,6 @@
     dim))
 
 (defn kill [dim]
-  (sound/play-sound :splat)
   (-> dim
       (update :deaths inc)
       reset))
