@@ -68,13 +68,20 @@
               (/ w 2)
               (/ h 2)))))
 
+(defn jump [state]
+  (if (:sound state)
+    (sound/play-sound (str "jump" (rand-int 7))))
+  (update state :dim dim/jump))
+
 (defn key-pressed [state event]
   (let [game (start-game state)]
     (case (:key-code event)
       40 (update game :dim dim/duck)
-      38 (update game :dim dim/jump)
+      38 (jump state)
       37 (update game :dim dim/speed-down)
       39 (update game :dim dim/speed-up)
+      80 (update game :started not)
+      83 (update game :sound not)
       game)))
 
 (defn draw [state]
@@ -91,7 +98,8 @@
     (draw-start-game state)))
 
 (defn kill-dim [state]
-  (sound/play-sound :splat)
+  (if (:sound state)
+    (sound/play-sound :splat))
   (let [dim (:dim state)
         sprite (dim/sprite-for (:frame state) dim)]
     (-> state
