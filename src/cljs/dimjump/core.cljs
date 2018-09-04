@@ -31,13 +31,13 @@
               w
               (- h floor-y)))))
 
-(defn draw-hud [{level :level}]
+(defn draw-hud [{level :level dim :dim}]
   (let [{floor-y :floor-y w :w h :h} constants]
-    (q/text-font (data/text 18))
+    (q/text-font (data/text 14))
     (q/text-align :left :top)
     (q/with-fill
       [116 154 195]
-      (q/text (str "Level " (inc level)) 10 5))
+        (q/text (str "Level " (inc level) " with " (:deaths dim) " deaths") 10 5))
     (q/text-font (data/text 32))
     (q/text-align :right :baseline)
     (q/with-fill
