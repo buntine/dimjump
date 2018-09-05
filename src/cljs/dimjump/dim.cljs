@@ -3,7 +3,9 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defn spawn []
-  {:points (take 5 (repeat {:x -20 :y (:floor-y constants)}))
+  {:points (take 5 (repeat {:x -20
+                            :y (:floor-y constants)
+                            :rotaion 0}))
    :w 16
    :h 24
    :velocity 0
@@ -36,8 +38,8 @@
     (>= (:x pos) x)))
 
 (defn add-point 
-  ([dim x y]
-    (add-point dim {:x x :y y}))
+  ([dim x y r]
+    (add-point dim {:x x :y y :rotation r}))
   ([dim point]
     (update dim :points (comp vec rest conj) point)))
 
@@ -53,7 +55,8 @@
 
 (defn reset [dim]
   "Moves dim back to start of the screen"
-  (add-point dim -20 (:y (position dim))))
+  (let [{y :y rotation :rotation} (position dim)]
+    (add-point dim -20 y rotation)))
 
 (defn duck [dim]
   "Toggles ducking and doubles/halves height of player accordingly"
@@ -79,6 +82,7 @@
            (= (:y (position dim)) (:floor-y constants)))
     (-> dim
         toggle-jump
+        (add-point (assoc (last (:points dim)) :rotation 0))
         (assoc :velocity 0))
     dim))
 
@@ -103,12 +107,20 @@
   "Returns next X position for dim"
   (+ (:x (position dim)) (:speed dim)))
 
+(defn next-rotation [dim]
+  "Returns next rotation value for dim (during a jump)"
+  (let [{rotation :rotation} (position dim)]
+    (if (:jumping dim)
+      (+ rotation (* Math/PI 0.079753))
+      rotation)))
+
 (defn progress [dim]
   "Receives player state and returns next state."
   (let [next-x (next-x-position dim)
-        next-y (next-y-position dim)]
+        next-y (next-y-position dim)
+        next-r (next-rotation dim)]
     (-> dim
-        (add-point next-x next-y)
+        (add-point next-x next-y next-r)
         progress-velocity
         finalize-jump)))
 
@@ -132,9 +144,13 @@
         trail (take (count points) (trail-opacities))
         trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
                                           points)]
-    (doseq [[{x :x y :y} opacity] trail-with-opacities]
-      (q/tint 255 opacity)
-      (q/image sprite
-               x
-               (- y (.-height sprite)))
-      (q/no-tint))))
+    (doseq [[{x :x y :y rotation :rotation} opacity] trail-with-opacities]
+      (let [distance-from-pi (Math/abs (- Math/PI rotation))]
+        (q/push-matrix)
+        (q/tint 255 opacity)
+        (q/translate (- x 0)
+                     (- y (* (:h dim) (/ distance-from-pi Math/PI))))
+        (q/rotate rotation)
+        (q/image sprite 0 0)
+        (q/no-tint)
+        (q/pop-matrix)))))
