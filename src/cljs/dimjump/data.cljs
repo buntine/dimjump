@@ -24,7 +24,9 @@
   {:floor-y (* 0.70 (:h dimensions))
    :w (:w dimensions)
    :h (:h dimensions)
-   :speed-range (set (range 3 7))
+   :speed-range (set (range 2 7))
+   :velocity-big -10
+   :velocity-small -8
    :gravity 0.8})
 
 (def levels

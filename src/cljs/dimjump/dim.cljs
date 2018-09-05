@@ -8,8 +8,6 @@
    :h 24
    :velocity 0
    :deaths 0
-   :velocity-big -10
-   :velocity-small -8
    :frames {:standing [(q/load-image "/images/dim1.png")
                        (q/load-image "/images/dim2.png")]
             :ducking [(q/load-image "/images/dim3.png")
@@ -64,13 +62,13 @@
         toggle-duck
         (update :h operator 2))))
 
-(defn jump [dim]
+(defn jump [{:keys [jumping ducking] :as dim}]
   "Initiates a small or big jump, depending on ducking status"
-  (if (:jumping dim)
+  (if jumping
     dim
-    (let [velocity (if (:ducking dim)
-                     (:velocity-small dim)
-                     (:velocity-big dim))]
+    (let [velocity (if ducking
+                     (:velocity-small constants)
+                     (:velocity-big constants))]
       (-> dim
           toggle-jump
           (assoc :velocity velocity)))))

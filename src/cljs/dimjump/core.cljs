@@ -9,6 +9,7 @@
 
 (defn setup []
   (q/no-stroke)
+  (q/frame-rate 60)
 
   {:frame 0
    :started false
@@ -148,7 +149,6 @@
     :host "game"
     :settings #(q/smooth 2)
     :size (vals data/dimensions)
-    :frame-rate 60
     :setup setup
     :draw draw
     :key-pressed key-pressed
