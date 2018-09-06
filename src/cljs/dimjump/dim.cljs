@@ -103,9 +103,10 @@
 
 (defn next-y-position [dim]
   "Returns the next Y position for the dim (necessary during a jump)"
-  (let [y (:y (position dim))
+  (let [floor (floor-y dim)
+        y (if (:jumping dim) (:y (position dim)) floor)
         next-y (+ y (:velocity dim))]
-    (min (floor-y dim) next-y)))
+    (min floor next-y)))
 
 (defn next-x-position [dim]
   "Returns next X position for dim"
