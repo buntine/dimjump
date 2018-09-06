@@ -33,9 +33,12 @@
            (select-keys dim [:w :h]))))
 
 (defn past? [dim x]
-  "Returns true is dim has travelled past given X point"
+  "Returns true if dim has travelled past given X point"
   (let [pos (position dim)]
     (>= (:x pos) x)))
+
+(defn floor-y [dim]
+ (- (:floor-y constants) (/ (:h dim) 2)))
 
 (defn add-point 
   ([dim x y r]
@@ -43,15 +46,16 @@
   ([dim point]
     (update dim :points (comp vec rest conj) point)))
 
-(defn set-speed [{:keys [speed] :as dim} op]
-  "Applies the given op on the speed and updates it if the result is within
-  the bounds"
-  (if-let [next-speed ((:speed-range constants) (op speed))]
-    (assoc dim :speed next-speed)
-    dim))
+(defn set-speed [op]
+  "Returns a function that applies the given op on the speed and updates
+  it if the result is within the bounds"
+  (fn [{:keys [speed] :as dim}]
+    (if-let [next-speed ((:speed-range constants) (op speed))]
+      (assoc dim :speed next-speed)
+      dim)))
 
-(defn speed-up [dim] (set-speed dim inc))
-(defn speed-down [dim] (set-speed dim dec))
+(def speed-up (set-speed inc))
+(def speed-down (set-speed dec))
 
 (defn reset [dim]
   "Moves dim back to start of the screen"
@@ -79,7 +83,7 @@
 (defn finalize-jump [dim]
   "If jump is finished then reset velocity and just status"
   (if (and (:jumping dim)
-           (= (:y (position dim)) (:floor-y constants)))
+           (= (:y (position dim)) (floor-y dim)))
     (-> dim
         toggle-jump
         (add-point (assoc (last (:points dim)) :rotation 0))
@@ -101,7 +105,7 @@
   "Returns the next Y position for the dim (necessary during a jump)"
   (let [y (:y (position dim))
         next-y (+ y (:velocity dim))]
-    (min (:floor-y constants) next-y)))
+    (min (floor-y dim) next-y)))
 
 (defn next-x-position [dim]
   "Returns next X position for dim"
@@ -145,12 +149,10 @@
         trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
                                           points)]
     (doseq [[{x :x y :y rotation :rotation} opacity] trail-with-opacities]
-      (let [distance-from-pi (Math/abs (- Math/PI rotation))]
-        (q/push-matrix)
-        (q/tint 255 opacity)
-        (q/translate (- x 0)
-                     (- y (* (:h dim) (/ distance-from-pi Math/PI))))
-        (q/rotate rotation)
-        (q/image sprite 0 0)
-        (q/no-tint)
-        (q/pop-matrix)))))
+      (q/push-matrix)
+      (q/image-mode :center)
+      (q/tint 255 opacity)
+      (q/translate x y)
+      (q/rotate rotation)
+      (q/image sprite 0 0)
+      (q/pop-matrix))))
