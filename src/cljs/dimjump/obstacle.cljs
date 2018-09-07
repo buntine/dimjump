@@ -12,8 +12,9 @@
       (q/end-shape))))
 
 (defn collision? [{px :x py :y pw :w ph :h} {ox :x ow :w oh :h offset :offset}]
-  "Returns true if any obstacle in the level has collided
-   with the given entity (the player)"
+  "Returns true if any obstacle in the level has collided with the
+   given entity (the player). Currently operates on very basic 2D rectangles
+   and does not support bounding boxes on rotated shapes."
   (let [floor-y (:floor-y constants)
         oy (- floor-y offset oh)
         py-top (- py (/ ph 2))

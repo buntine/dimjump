@@ -71,7 +71,7 @@
 
 (defn jump [state]
   (if (:sound state)
-    (sound/play-sound (str "jump" (rand-int 7))))
+    (sound/play-sound (str "jump" (rand-int 7)) 0.5))
   (update state :dim dim/jump))
 
 (defn key-pressed [state event]
@@ -96,7 +96,10 @@
     (corpse/draw c))
   
   (if (not (:started state))
-    (draw-start-game state)))
+    (do
+      (sound/pause-sound "invaded_city")
+      (draw-start-game state))
+    (sound/play-sound "invaded_city" 0.25)))
 
 (defn kill-dim [state]
   (if (:sound state)
