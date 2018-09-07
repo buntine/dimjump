@@ -16,8 +16,11 @@
    with the given entity (the player)"
   (let [floor-y (:floor-y constants)
         oy (- floor-y offset oh)
-        py-top (- py ph)]
-    (and (< px (+ ox ow))
-         (< ox (+ px pw))
+        py-top (- py (/ ph 2))
+        py-bottom (+ py (/ ph 2))
+        px-left (- px (/ pw 2))
+        px-right (+ px (/ pw 2))]
+    (and (< px-left (+ ox ow))
+         (< ox px-right)
          (< py-top (+ oy oh))
-         (< oy (+ py-top ph)))))
+         (< oy py-bottom))))
