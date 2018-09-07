@@ -96,10 +96,11 @@
     (corpse/draw c))
   
   (if (not (:started state))
-    (do
-      (sound/pause-sound "invaded_city")
-      (draw-start-game state))
-    (sound/play-sound "invaded_city" 0.25)))
+    (draw-start-game state))
+
+  (if (and (:sound state) (:started state))
+    (sound/play-sound "invaded_city" 0.25)
+    (sound/pause-sound "invaded_city")))
 
 (defn kill-dim [state]
   (if (:sound state)
