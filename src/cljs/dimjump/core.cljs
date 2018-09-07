@@ -70,7 +70,7 @@
               (/ h 2)))))
 
 (defn jump [state]
-  (if (:sound state)
+  (if (and (:sound state) (not (get-in state [:dim :jumping])))
     (sound/play-sound (str "jump" (rand-int 7)) 0.5))
   (update state :dim dim/jump))
 
@@ -78,7 +78,7 @@
   (let [game (start-game state)]
     (case (:key-code event)
       40 (update game :dim dim/duck)
-      38 (jump state)
+      38 (jump game)
       37 (update game :dim dim/speed-down)
       39 (update game :dim dim/speed-up)
       80 (update game :started not)
