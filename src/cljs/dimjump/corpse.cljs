@@ -17,6 +17,7 @@
   (q/translate x y)
   (q/rotate rotation)
   (q/image sprite 0 0)
+  (q/no-tint)
   (q/pop-matrix))
 
 (defn progress [corpse]

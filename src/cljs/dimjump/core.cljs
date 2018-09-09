@@ -11,11 +11,14 @@
   (q/no-stroke)
   (q/frame-rate 60)
 
+  (.focus (.getElementById js/document "game"))
+
   {:frame 0
    :started false
    :level 0
    :corpses []
    :sound true
+   :pause-image (q/load-image "/images/pause.png")
    :levels data/levels
    :dim (dim/spawn)})
 
@@ -35,17 +38,12 @@
               (- h floor-y)))))
 
 (defn draw-hud [{level :level dim :dim}]
-  (let [{floor-y :floor-y w :w h :h} constants]
-    (q/text-font (data/text 14))
-    (q/text-align :left :bottom)
-    (q/with-fill
-      [116 154 195]
-        (q/text (str "Level " (inc level) " with " (:deaths dim) " deaths") 10 5))
-    (q/text-font (data/text 32))
-    (q/text-align :right :baseline)
-    (q/with-fill
-      [130 159 108]
-      (q/text "Dim Jump" (- w 10) (- h 20)))))
+  (q/text-font (data/text 14))
+  (q/text-align :left :bottom)
+  (q/with-fill
+    [116 154 195]
+      (q/text (str "Level " (inc level) " with " (:deaths dim) " deaths")
+              10 5)))
 
 (defn draw-level [state]
   (let [level (:level state)
@@ -58,16 +56,11 @@
 
 (defn draw-start-game [state]
   (let [{w :w h :h} constants]
-    (q/text-font (data/text 46))
     (q/with-fill
-      [170 170 170 170]
+      [170 170 170 200]
       (q/rect 0 0 w h))
-    (q/text-align :center :baseline)
-    (q/with-fill
-      [100 100 100]
-      (q/text "Press any key to start"
-              (/ w 2)
-              (/ h 2)))))
+    (q/image-mode :corner)
+    (q/image (:pause-image state) 0 0)))
 
 (defn jump [state]
   (if (and (:sound state) (not (get-in state [:dim :jumping])))
@@ -151,6 +144,7 @@
 (defn init []
   (q/defsketch dim-jump
     :host "game"
+    :rendered "p2d"
     :settings #(q/smooth 2)
     :size (vals data/dimensions)
     :setup setup
