@@ -100,10 +100,11 @@
     (sound/play-sound "invaded_city" 0.25)
     (sound/pause-sound "invaded_city")))
 
-(defn create-blood-splatter [position]
-  (map
-    #(blood/spawn position %)
-    (range -9 -2)))
+(defn create-blood-splatter [{:keys [speed] :as dim}]
+  (let [position (dim/position dim)]
+    (map
+      #(blood/spawn position % speed)
+      (range -9 -2))))
 
 (defn kill-dim [state]
   (if (:sound state)
@@ -113,7 +114,7 @@
         position (dim/position dim)]
     (-> state
         (update :corpses conj (corpse/spawn position sprite))
-        (update :blood concat (create-blood-splatter position))
+        (update :blood concat (create-blood-splatter dim))
         (update :dim dim/kill))))
 
 (defn detect-collision [state]

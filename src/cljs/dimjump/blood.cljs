@@ -2,16 +2,16 @@
   (:require [quil.core :as q :include-macros true]
             [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [{x :x y :y} velocity]
+(defn spawn [{x :x y :y} velocity speed]
   {:x x
    :y y
    :w 4
    :h 4
    :velocity velocity
    :stay false
-   :speed (+ 2 (rand-int 3))
+   :speed (+ (- speed 2) (rand-int 3))
    :rotation 0
-   :degradation 2
+   :degradation 0.7
    :alpha 255})
 
 (defn stay [blood]
@@ -36,7 +36,7 @@
       (assoc blood :y next-y)))
 
 (defn update-opacity [blood]
-  (update blood :opacity - (:degradation blood)))
+  (update blood :alpha - (:degradation blood)))
 
 (defn update-velocity [blood]
   (update blood :velocity + (:gravity constants)))
