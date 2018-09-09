@@ -95,7 +95,7 @@
       (update :deaths inc)
       reset))
 
-(defn progress-velocity [dim]
+(defn update-velocity [dim]
   "Updates velocity during a jump"
   (if (:jumping dim)
     (update dim :velocity + (:gravity constants))
@@ -126,7 +126,7 @@
         next-r (next-rotation dim)]
     (-> dim
         (add-point next-x next-y next-r)
-        progress-velocity
+        update-velocity
         finalize-jump)))
 
 (defn sprite-for [frame dim]

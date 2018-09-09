@@ -4,6 +4,7 @@
             [dimjump.dim :as dim]
             [dimjump.obstacle :as obstacle]
             [dimjump.corpse :as corpse]
+            [dimjump.blood :as blood]
             [dimjump.sound :as sound]
             [dimjump.data :as data :refer [constants]]))
 
@@ -17,6 +18,7 @@
    :started false
    :level 0
    :corpses []
+   :blood []
    :sound true
    :pause-image (q/load-image "/images/pause.png")
    :levels data/levels
@@ -88,6 +90,9 @@
   (doseq [c (:corpses state)]
     (corpse/draw c))
   
+  (doseq [b (:blood state)]
+    (blood/draw b))
+
   (if (not (:started state))
     (draw-start-game state))
 
@@ -95,13 +100,20 @@
     (sound/play-sound "invaded_city" 0.25)
     (sound/pause-sound "invaded_city")))
 
+(defn create-blood-splatter [position]
+  (map
+    #(blood/spawn position %)
+    (range -9 -2)))
+
 (defn kill-dim [state]
   (if (:sound state)
     (sound/play-sound :splat))
   (let [dim (:dim state)
-        sprite (dim/sprite-for (:frame state) dim)]
+        sprite (dim/sprite-for (:frame state) dim)
+        position (dim/position dim)]
     (-> state
-        (update :corpses conj (corpse/spawn (dim/position dim) sprite))
+        (update :corpses conj (corpse/spawn position sprite))
+        (update :blood concat (create-blood-splatter position))
         (update :dim dim/kill))))
 
 (defn detect-collision [state]
@@ -116,8 +128,15 @@
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
-  (update state :corpses #(filter corpse/visible?
-                         (map corpse/progress %))))
+  (update state :corpses #(filter
+                             corpse/visible?
+                             (map corpse/progress %))))
+
+(defn progress-blood [state]
+  "Continues blood splatters and removes any that are no longer visible"
+  (update state :blood #(filter
+                           blood/visible?
+                           (map blood/progress %))))
 
 (defn go-to-next-level [state]
   "Move to the next level"
@@ -138,6 +157,7 @@
         (update :dim dim/progress)
         progress-level
         progress-corpses
+        progress-blood
         detect-collision)
     state))
 
