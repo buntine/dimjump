@@ -5,13 +5,13 @@
 (defn spawn [{x :x y :y} velocity speed]
   {:x x
    :y y
-   :w 4
-   :h 4
+   :w 3
+   :h 3
    :velocity velocity
    :stay false
    :speed (+ (- speed 2) (rand-int 3))
    :rotation 0
-   :degradation 0.7
+   :degradation 0.6
    :alpha 255})
 
 (defn stay [blood]
@@ -53,3 +53,6 @@
 
 (defn visible? [{alpha :alpha}]
   (>= alpha 0))
+
+(defn moving? [{stay :stay}]
+  (not stay))

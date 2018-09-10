@@ -104,7 +104,7 @@
   (let [position (dim/position dim)]
     (map
       #(blood/spawn position % speed)
-      (range -9 -2))))
+      (range -10 -2))))
 
 (defn kill-dim [state]
   (if (:sound state)
@@ -117,15 +117,28 @@
         (update :blood concat (create-blood-splatter dim))
         (update :dim dim/kill))))
 
-(defn detect-collision [state]
-  "Kills the dim if it hits anything"
+(defn collided? [state entity]
+  "Returns true if entity has collided with an obstacle in the
+   current level"
   (let [level (:level state)
-        obstacles (get-in state [:levels level])
-        collision (some (partial obstacle/collision?
-                                 (dim/position (:dim state))) obstacles)]
-    (if collision
-      (kill-dim state)
-      state)))
+        obstacles (get-in state [:levels level])]
+    (some (partial obstacle/collision? entity) obstacles)))
+
+(defn detect-blood-collision [state]
+  "Stops any blood particles that hit an obstacle"
+  (let [blood (:blood state)
+        stay-or-go (fn [b] (if (and (blood/moving? b) (collided? state b))
+                             (blood/stay b)
+                             b))]
+    (update state
+            :blood
+            (partial map stay-or-go))))
+
+(defn detect-dim-collision [state]
+  "Kills the dim if it hits anything"
+  (if (collided? state (dim/position (:dim state)))
+    (kill-dim state)
+    state))
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
@@ -159,7 +172,8 @@
         progress-level
         progress-corpses
         progress-blood
-        detect-collision)
+        detect-blood-collision
+        detect-dim-collision)
     state))
 
 (defn init []
