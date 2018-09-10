@@ -156,6 +156,7 @@
   "Move to the next level"
   (-> state
       (update :level inc)
+      (assoc :blood [])
       (update :dim dim/reset)))
 
 (defn progress-level [state]

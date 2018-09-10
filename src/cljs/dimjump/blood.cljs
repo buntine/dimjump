@@ -14,13 +14,23 @@
    :degradation 0.6
    :alpha 255})
 
+(defn visible? [{alpha :alpha}]
+  (>= alpha 0))
+
+(defn moving? [{stay :stay}]
+  (not stay))
+
 (defn stay [blood]
   (assoc blood :stay true))
 
 (defn draw [{x :x y :y w :w h :h rotation :rotation
              alpha :alpha}]
   (q/with-fill [138 7 7 alpha]
-    (q/rect x y w h)))
+    (q/push-matrix)
+    (q/translate x y)
+    (q/rotate rotation)
+    (q/rect 0 0 w h)
+    (q/pop-matrix)))
 
 (defn update-stay [blood]
   (if (>= (:y blood) (:floor-y constants))
@@ -38,6 +48,11 @@
 (defn update-opacity [blood]
   (update blood :alpha - (:degradation blood)))
 
+(defn update-rotation [{:keys [rotation] :as blood}]
+  (if (moving? blood)
+    (update blood :rotation + (* Math/PI 0.079753))
+    blood))
+
 (defn update-velocity [blood]
   (update blood :velocity + (:gravity constants)))
 
@@ -49,10 +64,5 @@
         update-x-position
         update-y-position
         update-velocity
+        update-rotation
         update-stay)))
-
-(defn visible? [{alpha :alpha}]
-  (>= alpha 0))
-
-(defn moving? [{stay :stay}]
-  (not stay))
