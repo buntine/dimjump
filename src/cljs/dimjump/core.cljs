@@ -43,7 +43,7 @@
   (q/text-font (data/text 14))
   (q/text-align :left :bottom)
   (q/with-fill
-    [116 154 195]
+    [40 99 116]
       (q/text (str "Level " (inc level) " with " (:deaths dim) " deaths")
               10 5)))
 
@@ -81,7 +81,7 @@
       game)))
 
 (defn draw [state]
-  (q/background (q/color 176 214 255))
+  (q/background (q/color 98 203 255))
   (draw-ground)
   (draw-hud state)
   (draw-level state)
