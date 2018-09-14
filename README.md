@@ -17,3 +17,7 @@ To start a web server for the application, run:
 ## License
 
 Copyright © 2018 FIXME
+
+## Credits
+
+Grass: Adapted from https://www.kisspng.com/png-pixel-art-game-sprite-8-bit-991965/

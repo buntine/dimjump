@@ -11,7 +11,6 @@
 (defn setup []
   (q/no-stroke)
   (q/frame-rate 60)
-
   (.focus (.getElementById js/document "game"))
 
   {:frame 0
@@ -21,6 +20,7 @@
    :blood []
    :sound true
    :pause-image (q/load-image "/images/pause.png")
+   :ground-image (q/load-image "/images/ground.png")
    :levels data/levels
    :dim (dim/spawn)})
 
@@ -30,14 +30,9 @@
 (defn start-game [state]
   (assoc state :started true))
 
-(defn draw-ground []
+(defn draw-ground [state]
   (let [{floor-y :floor-y w :w h :h} constants]
-    (q/with-fill
-      [197 226 175]
-      (q/rect 0
-              floor-y
-              w
-              (- h floor-y)))))
+    (q/image (:ground-image state) 0 floor-y)))
 
 (defn draw-hud [{level :level dim :dim}]
   (q/text-font (data/text 14))
@@ -82,7 +77,8 @@
 
 (defn draw [state]
   (q/background (q/color 98 203 255))
-  (draw-ground)
+  (q/image-mode :corner)
+  (draw-ground state)
   (draw-hud state)
   (draw-level state)
   (draw-dim state)
