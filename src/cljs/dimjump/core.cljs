@@ -43,10 +43,19 @@
               10 5)))
 
 (defn draw-level [state]
+  ; Due to a bug surrounding textures in Quil/Processing.js, I've had to resort
+  ; dropping down to vanilla JS in order to draw obstacles with textured background.
   (let [level (:level state)
-        obstacles (get-in state [:levels level])]
+        obstacles (get-in state [:levels level])
+        canvas (.getElementById js/document  "game")
+        ctx (.getContext canvas "2d")
+        img (.getElementById js/document "brick")
+        pattern (.createPattern ctx img "repeat")]
+
+    (set! (.-fillStyle ctx) pattern)
+
     (doseq [o obstacles]
-      (obstacle/draw o))))
+      (obstacle/draw o ctx))))
 
 (defn draw-dim [state]
   (dim/draw (:dim state) (:frame state)))

@@ -21,3 +21,4 @@ Copyright © 2018 FIXME
 ## Credits
 
 Grass: Adapted from https://www.kisspng.com/png-pixel-art-game-sprite-8-bit-991965/
+Brick: Adapted from http://superwalrusland.com/ohr/issue26/pa/pixelart.html

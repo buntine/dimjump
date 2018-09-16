@@ -3,6 +3,10 @@
   src: url('/fonts/addstandard.ttf');
 }
 
+img#brick {
+  display: none;
+}
+
 audio {
   display: none;
 }

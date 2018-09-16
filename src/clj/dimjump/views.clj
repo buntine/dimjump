@@ -11,6 +11,7 @@
 
 (defn game-wrapper []
   [:div {:id "game-wrapper"}
+    [:img {:id "brick" :src "/images/brick.png"}]
     [:canvas {:id "game"}]])
 
 (defn homepage []
