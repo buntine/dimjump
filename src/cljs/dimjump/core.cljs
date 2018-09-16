@@ -19,8 +19,8 @@
    :corpses []
    :blood []
    :sound true
-   :pause-image (q/load-image "/images/pause.png")
-   :ground-image (q/load-image "/images/ground.png")
+   :images {:pause (q/load-image "/images/pause.png")
+            :ground (q/load-image "/images/ground.png")}
    :levels data/levels
    :dim (dim/spawn)})
 
@@ -32,7 +32,7 @@
 
 (defn draw-ground [state]
   (let [{floor-y :floor-y w :w h :h} constants]
-    (q/image (:ground-image state) 0 floor-y)))
+    (q/image (get-in state [:images :ground]) 0 floor-y)))
 
 (defn draw-hud [{level :level dim :dim}]
   (q/text-font (data/text 14))
@@ -57,7 +57,7 @@
       [170 170 170 200]
       (q/rect 0 0 w h))
     (q/image-mode :corner)
-    (q/image (:pause-image state) 0 0)))
+    (q/image (get-in state [:images :pause]) 0 0)))
 
 (defn jump [state]
   (if (and (:sound state) (not (get-in state [:dim :jumping])))
