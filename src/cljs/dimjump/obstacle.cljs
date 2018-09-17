@@ -2,6 +2,19 @@
   (:require [quil.core :as q :include-macros true]
             [dimjump.data :as data :refer [constants]]))
 
+(defn spawn [{:keys [x offset x-variance y-variance speed]
+              :or {x-variance 0 y-variance 0 speed 0}
+              :as opts}]
+  (let [y (- (:floor-y constants) offset)]
+    (merge opts
+           {:y y
+            :min-x (- x x-variance)
+            :max-x x
+            :move-x (- speed)
+            :min-y (- y y-variance)
+            :max-y y
+            :move-y (- speed)})))
+
 (defn draw [{:keys [x w h vertices]} ctx]
   (let [floor-y (:floor-y constants)]
     (.beginPath ctx)
