@@ -21,6 +21,9 @@
     (doseq [o obstacles]
       (obstacle/draw o ctx))))
 
+(defn progress [level]
+  (update level :obstacles (partial map obstacle/progress)))
+
 (defn collided? [level entity]
   "Returns true if entity has collided with an obstacle in the
    current level"

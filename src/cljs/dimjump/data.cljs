@@ -32,7 +32,7 @@
 (def levels
   [[(block 200 20 20)
     (block 400 20 30)
-    (block 600 30 20 {:x-variance 50 :speed 3})]
+    (block 600 30 20 {:x-variance 50 :speed 0.3})]
    [(block 160 20 20)
     (block 360 20 20)
     (block 500 20 20)

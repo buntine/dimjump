@@ -13,8 +13,7 @@
   (q/frame-rate 60)
   (.focus (.getElementById js/document "game"))
 
-  {:frame 0
-   :started false
+  {:started false
    :level (level/spawn 0)
    :corpses []
    :blood []
@@ -22,9 +21,6 @@
    :images {:pause (q/load-image "/images/pause.png")
             :ground (q/load-image "/images/ground.png")}
    :dim (dim/spawn)})
-
-(defn inc-frame [state]
-  (update state :frame inc))
 
 (defn start-game [state]
   (assoc state :started true))
@@ -42,7 +38,7 @@
               10 5)))
 
 (defn draw-dim [state]
-  (dim/draw (:dim state) (:frame state)))
+  (dim/draw (:dim state)))
 
 (defn draw-start-game [state]
   (let [{w :w h :h} constants]
@@ -95,10 +91,10 @@
       #(blood/spawn position % speed)
       (range -10 -2))))
 
-(defn kill-dim [{:keys [sound dim frame] :as state}]
+(defn kill-dim [{:keys [sound dim] :as state}]
   (if sound
     (sound/play-sound :splat))
-  (let [sprite (dim/sprite-for frame dim)
+  (let [sprite (dim/sprite-for dim)
         position (dim/position dim)]
     (-> state
         (update :corpses conj (corpse/spawn position sprite))
@@ -132,7 +128,7 @@
                            blood/visible?
                            (map blood/progress %))))
 
-(defn progress-level [state]
+(defn progress-to-next-level [state]
   "Moves to the next level if it is necessary to do so"
   (if (dim/past? (:dim state) (:w constants))
       (-> state
@@ -144,9 +140,9 @@
 (defn progress [state]
   (if (:started state)
     (-> state
-        inc-frame
         (update :dim dim/progress)
-        progress-level
+        (update :level level/progress)
+        progress-to-next-level
         progress-corpses
         progress-blood
         detect-blood-collision

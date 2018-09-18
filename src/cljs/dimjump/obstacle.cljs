@@ -25,6 +25,10 @@
     (.closePath ctx)
     (.fill ctx)))
 
+(defn progress [obstacle]
+  "Updates position base on (x/y)-variance, if necessary"
+  obstacle)
+
 (defn collision? [{px :x py :y pw :w ph :h} {ox :x ow :w oh :h offset :offset}]
   "Returns true if any obstacle in the level has collided with the
    given entity (the player). Currently operates on very basic 2D rectangles

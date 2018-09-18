@@ -129,11 +129,11 @@
         update-velocity
         finalize-jump)))
 
-(defn sprite-for [frame dim]
+(defn sprite-for [dim]
   "Returns the PImage suitable for the given frame number"
   (let [all-frames (:frames dim)
         frames ((if (:ducking dim) :ducking :standing) all-frames)]
-    (frames (mod (int (/ frame (:animation-speed dim))) 2))))
+    (frames (mod (int (/ (q/frame-count) (:animation-speed dim))) 2))))
 
 (defn trail-opacities
   "A lazy sequence that produces the opacities: 255 60 50 40 ..."
@@ -142,9 +142,9 @@
          (lazy-seq 
            (cons n (trail-opacities next-n))))))
 
-(defn draw [dim frame-number]
+(defn draw [dim]
   "Renders dim with fade-off trail relative to current speed"
-  (let [sprite (sprite-for frame-number dim)
+  (let [sprite (sprite-for dim)
         points (reverse (:points dim))
         trail (take (count points) (trail-opacities))
         trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
