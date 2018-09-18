@@ -2,7 +2,7 @@
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
             [dimjump.dim :as dim]
-            [dimjump.obstacle :as obstacle]
+            [dimjump.level :as level]
             [dimjump.corpse :as corpse]
             [dimjump.blood :as blood]
             [dimjump.sound :as sound]
@@ -15,13 +15,12 @@
 
   {:frame 0
    :started false
-   :level 0
+   :level (level/spawn 0)
    :corpses []
    :blood []
    :sound true
    :images {:pause (q/load-image "/images/pause.png")
             :ground (q/load-image "/images/ground.png")}
-   :levels data/levels
    :dim (dim/spawn)})
 
 (defn inc-frame [state]
@@ -39,23 +38,8 @@
   (q/text-align :left :bottom)
   (q/with-fill
     [40 99 116]
-      (q/text (str "Level " (inc level) " with " (:deaths dim) " deaths")
+      (q/text (str "Level " (inc (:index level)) " with " (:deaths dim) " deaths")
               10 5)))
-
-(defn draw-level [state]
-  ; Due to a bug surrounding textures in Quil/Processing.js, I've had to resort
-  ; dropping down to vanilla JS in order to draw obstacles with textured background.
-  (let [level (:level state)
-        obstacles (get-in state [:levels level])
-        canvas (.getElementById js/document  "game")
-        ctx (.getContext canvas "2d")
-        img (.getElementById js/document "brick")
-        pattern (.createPattern ctx img "repeat")]
-
-    (set! (.-fillStyle ctx) pattern)
-
-    (doseq [o obstacles]
-      (obstacle/draw o ctx))))
 
 (defn draw-dim [state]
   (dim/draw (:dim state) (:frame state)))
@@ -89,7 +73,7 @@
   (q/image-mode :corner)
   (draw-ground state)
   (draw-hud state)
-  (draw-level state)
+  (level/draw (:level state))
   (draw-dim state)
 
   (doseq [c (:corpses state)]
@@ -111,37 +95,28 @@
       #(blood/spawn position % speed)
       (range -10 -2))))
 
-(defn kill-dim [state]
-  (if (:sound state)
+(defn kill-dim [{:keys [sound dim frame] :as state}]
+  (if sound
     (sound/play-sound :splat))
-  (let [dim (:dim state)
-        sprite (dim/sprite-for (:frame state) dim)
+  (let [sprite (dim/sprite-for frame dim)
         position (dim/position dim)]
     (-> state
         (update :corpses conj (corpse/spawn position sprite))
         (update :blood concat (create-blood-splatter dim))
         (update :dim dim/kill))))
 
-(defn collided? [state entity]
-  "Returns true if entity has collided with an obstacle in the
-   current level"
-  (let [level (:level state)
-        obstacles (get-in state [:levels level])]
-    (some (partial obstacle/collision? entity) obstacles)))
-
-(defn detect-blood-collision [state]
+(defn detect-blood-collision [{:keys [blood level] :as state}]
   "Stops any blood particles that hit an obstacle"
-  (let [blood (:blood state)
-        stay-or-go (fn [b] (if (and (blood/moving? b) (collided? state b))
+  (let [stay-or-go (fn [b] (if (and (blood/moving? b) (level/collided? level b))
                              (blood/stay b)
                              b))]
     (update state
             :blood
             (partial map stay-or-go))))
 
-(defn detect-dim-collision [state]
+(defn detect-dim-collision [{:keys [level dim] :as state}]
   "Kills the dim if it hits anything"
-  (if (collided? state (dim/position (:dim state)))
+  (if (level/collided? level (dim/position dim))
     (kill-dim state)
     state))
 
@@ -157,17 +132,13 @@
                            blood/visible?
                            (map blood/progress %))))
 
-(defn go-to-next-level [state]
-  "Move to the next level"
-  (-> state
-      (update :level inc)
-      (assoc :blood [])
-      (update :dim dim/reset)))
-
 (defn progress-level [state]
-  "Checks if it's necessary to go to the next level"
+  "Moves to the next level if it is necessary to do so"
   (if (dim/past? (:dim state) (:w constants))
-      (go-to-next-level state)
+      (-> state
+          (assoc :blood [])
+          (update :level level/move-next)
+          (update :dim dim/reset))
       state))
 
 (defn progress [state]
