@@ -15,13 +15,10 @@
             :max-y y
             :move-y (- speed)})))
 
-(defn draw [{:keys [x w h vertices]} ctx]
+(defn draw [{:keys [x w h y]} ctx]
   (let [floor-y (:floor-y constants)]
     (.beginPath ctx)
-
-    (doseq [[x y] vertices]
-      (.lineTo ctx x (+ floor-y y)))
-
+    (.rect ctx x (- y h) w h)
     (.closePath ctx)
     (.fill ctx)))
 

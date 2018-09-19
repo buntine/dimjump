@@ -1,18 +1,10 @@
 (ns dimjump.data
   (:require [quil.core :as q :include-macros true]))
 
-(defn rect [x w h offset]
-  "Returns set of vertices for given rectangle"
-  [[x (- (+ h offset))]
-   [(+ x w) (- (+ h offset))]
-   [(+ x w) (- offset)]
-   [x (- offset)]])
-
 (defn block
   ([x w h] (block x w h {:offset 0}))
-  ([x w h {:keys [offset] :or {offset 0} :as opts}] (block x w h (rect x w h offset) opts))
-  ([x w h vertices opts]
-    (merge opts {:x x :w w :h h :vertices vertices})))
+  ([x w h {:keys [offset] :or {offset 0} :as opts}]
+    (merge opts {:x x :w w :h h})))
 
 (def text
   (memoize (fn [size]
@@ -78,6 +70,3 @@
     (block 700 20 20)
     (block 770 20 20)]
   ])
-
-; Example:
-; (block 340  40 25 0 [[340 -18] [350 -18] [350 -25] [370 -25] [370 -18] [380 -18] [380 0] [340 0]])
