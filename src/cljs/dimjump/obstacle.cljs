@@ -2,18 +2,12 @@
   (:require [quil.core :as q :include-macros true]
             [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [{:keys [x offset x-variance y-variance speed]
-              :or {x-variance 0 y-variance 0 speed 0}
+(defn spawn [{:keys [x y min-x max-x min-y max-y speed]
+              :or {min-x x max-x x min-y y max-y y speed 0}
               :as opts}]
-  (let [y (- (:floor-y constants) offset)]
-    (merge opts
-           {:y y
-            :min-x (- x x-variance)
-            :max-x x
-            :move-x (- speed)
-            :min-y (- y y-variance)
-            :max-y y
-            :move-y (- speed)})))
+  (merge opts
+         {:move-x (- speed)
+          :move-y (- speed)}))
 
 (defn draw [{:keys [x w h y]} ctx]
   (let [floor-y (:floor-y constants)]
