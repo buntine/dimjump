@@ -23,20 +23,18 @@
     (.fill ctx)))
 
 (defn progress [obstacle]
-  "Updates position base on (x/y)-variance, if necessary"
+  "Updates position based on min-x and min-y, if necessary"
   obstacle)
 
-(defn collision? [{px :x py :y pw :w ph :h} {ox :x ow :w oh :h offset :offset}]
+(defn collision? [{px :x py :y pw :w ph :h} {ox :x oy :y ow :w oh :h}]
   "Returns true if any obstacle in the level has collided with the
    given entity (the player). Currently operates on very basic 2D rectangles
    and does not support bounding boxes on rotated shapes."
-  (let [floor-y (:floor-y constants)
-        oy (- floor-y offset oh)
-        py-top (- py (/ ph 2))
+  (let [py-top (- py (/ ph 2))
         py-bottom (+ py (/ ph 2))
         px-left (- px (/ pw 2))
         px-right (+ px (/ pw 2))]
     (and (< px-left (+ ox ow))
          (< ox px-right)
-         (< py-top (+ oy oh))
-         (< oy py-bottom))))
+         (< py-top oy)
+         (< (- oy oh) py-bottom))))
