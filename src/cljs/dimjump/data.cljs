@@ -16,15 +16,24 @@
    :velocity-small -8
    :gravity 0.8})
 
-(defn block [x w h {:keys [y] :or {y 0} :as opts}]
-    (merge opts
-           {:x x :w w
-            :h h :y (+ (:floor-y constants) y)}))
+(defn block
+  ([x w h] (block x w h {}))
+  ([x w h {:keys [y min-x max-x min-y max-y]
+           :or {y 0 min-x x max-x x min-y 0 max-y 0}
+           :as opts}]
+    (let [floor-y (:floor-y constants)]
+      (merge opts
+             {:x x :w w
+              :min-x min-x
+              :max-x max-x
+              :min-y (+ floor-y min-y)
+              :max-y (+ floor-y max-y)
+              :h h :y (+ floor-y y)}))))
 
 (def levels
   [[(block 200 20 20)
     (block 400 20 30)
-    (block 600 30 20 {:min-x 550 :max-x 600 :speed 0.3})]
+    (block 600 30 20 {:min-x 550 :max-x 600 :min-y -30 :max-y 0 :speed 1.0})]
    [(block 160 20 20)
     (block 360 20 20)
     (block 500 20 20)

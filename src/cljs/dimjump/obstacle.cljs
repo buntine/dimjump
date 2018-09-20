@@ -2,12 +2,8 @@
   (:require [quil.core :as q :include-macros true]
             [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [{:keys [speed] :or {speed 0} :as opts}]
-  (merge {:min-x 0
-          :max-x 0
-          :min-y 0
-          :max-y 0
-          :move-x (- speed)
+(defn spawn [{:keys [speed x y] :or {speed 0} :as opts}]
+  (merge {:move-x (- speed)
           :move-y (- speed)}
          opts))
 
@@ -18,9 +14,33 @@
     (.closePath ctx)
     (.fill ctx)))
 
+(defn next-x [{:keys [x min-x max-x move-x]}]
+  (max min-x (min max-x (+ x move-x))))
+
+(defn next-y [{:keys [y min-y max-y move-y]}]
+  (max min-y (min max-y (+ y move-y))))
+
+(defn next-move-x [{:keys [x min-x max-x move-x]}]
+  (if (or
+        (and (> move-x 0) (>= x max-x))
+        (and (< move-x 0) (<= x min-x)))
+    (- move-x)
+    move-x))
+
+(defn next-move-y [{:keys [y min-y max-y move-y]}]
+  (if (or
+        (and (> move-y 0) (>= y max-y))
+        (and (< move-y 0) (<= y min-y)))
+    (- move-y)
+    move-y))
+
 (defn progress [obstacle]
   "Updates position based on min-x and min-y, if necessary"
-  obstacle)
+  (assoc obstacle
+         :x (next-x obstacle)
+         :y (next-y obstacle)
+         :move-x (next-move-x obstacle)
+         :move-y (next-move-y obstacle)))
 
 (defn collision? [{px :x py :y pw :w ph :h} {ox :x oy :y ow :w oh :h}]
   "Returns true if any obstacle in the level has collided with the
