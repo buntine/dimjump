@@ -19,7 +19,7 @@
 (defn block
   ([x w h] (block x w h {}))
   ([x w h {:keys [y min-x max-x min-y max-y]
-           :or {y 0 min-x x max-x x min-y 0 max-y 0}
+           :or {y 0 min-x x max-x x min-y y max-y y}
            :as opts}]
     (let [floor-y (:floor-y constants)]
       (merge opts
@@ -28,7 +28,8 @@
               :max-x max-x
               :min-y (+ floor-y min-y)
               :max-y (+ floor-y max-y)
-              :h h :y (+ floor-y y)}))))
+              :h h
+              :y (+ floor-y y)}))))
 
 (def levels
   [[(block 200 20 20)
