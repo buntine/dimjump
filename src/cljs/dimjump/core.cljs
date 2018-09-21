@@ -3,6 +3,7 @@
             [quil.middleware :as m]
             [dimjump.dim :as dim]
             [dimjump.level :as level]
+            [dimjump.obstacle :as obstacle]
             [dimjump.corpse :as corpse]
             [dimjump.blood :as blood]
             [dimjump.sound :as sound]
@@ -102,17 +103,22 @@
         (update :dim dim/kill))))
 
 (defn detect-blood-collision [{:keys [blood level] :as state}]
-  "Stops any blood particles that hit an obstacle"
-  (let [stay-or-go (fn [b] (if (and (blood/moving? b) (level/collided? level b))
-                             (blood/stay b)
-                             b))]
+  "Stops any blood particles that hit an obstacle. Currently, if a blood
+   particule hits a *moving* obstacle then it just keeps going through it."
+  (letfn
+    [(attach-blood [b]
+       (let [obstacle (and (blood/moving? b) (level/collided-obstacle level b))
+             should-stay (and obstacle (not (obstacle/moving? obstacle)))]
+         (if should-stay
+           (blood/stay b)
+           b)))]
     (update state
             :blood
-            (partial map stay-or-go))))
+            (partial map attach-blood))))
 
 (defn detect-dim-collision [{:keys [level dim] :as state}]
   "Kills the dim if it hits anything"
-  (if (level/collided? level (dim/position dim))
+  (if (level/collided-obstacle level (dim/position dim))
     (kill-dim state)
     state))
 

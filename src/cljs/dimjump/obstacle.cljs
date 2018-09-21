@@ -20,6 +20,9 @@
 (defn next-y [{:keys [y min-y max-y move-y]}]
   (max min-y (min max-y (+ y move-y))))
 
+(defn moving? [{:keys [move-x move-y]}]
+  (not (and (= move-x 0) (= move-y 0))))
+
 (defn next-move [p min-p max-p move]
   "Inverts the movement factor when a moving obstacle hits it's min
    or max edge on the appropriate axis."

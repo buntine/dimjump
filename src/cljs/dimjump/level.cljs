@@ -24,11 +24,13 @@
 (defn progress [level]
   (update level :obstacles (partial map obstacle/progress)))
 
-(defn collided? [level entity]
-  "Returns true if entity has collided with an obstacle in the
-   current level"
-  (some (partial obstacle/collision? entity)
-        (:obstacles level)))
+(defn collided-obstacle [{:keys [obstacles]} entity]
+  "Returns the obstacle that the given entity has hit. Or nil if there is
+   no collision"
+  (first
+    (filter
+      (partial obstacle/collision? entity)
+      obstacles)))
 
 (defn move-next [{:keys [index]}]
   (spawn (+ index 1)))
