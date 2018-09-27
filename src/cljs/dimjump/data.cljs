@@ -98,14 +98,31 @@
     (block 380 20 20 {:min-y -40 :max-y 0 :speed 1.0})
     (block 600 100 10)]
 
-   [(block 90 20 20 {:min-x 90 :max-x 160 :speed 1.0}) ;10
-   (block 230 20 20 {:min-x 160 :max-x 230 :speed 1.0})
-   (block 350 20 20 {:min-x 350 :max-x 420 :speed 1.0})
-   (block 490 20 20 {:min-x 420 :max-x 490 :speed 1.0})
-   (block 610 20 20 {:min-x 610 :max-x 680 :speed 1.0})
-   (block 750 20 20 {:min-x 680 :max-x 750 :speed 1.0})]
+   [(block 110 30 30) ;10
+    (block 220 150 5 {:y -68})
+    (block 270 15 16)
+    (block 330 15 16)
+    (block 460 20 20)
+    (block 600 47 7)
+    (block 730 20 20 {:min-y -80 :max-y 0 :speed 2.4})]
 
-   [(block 120 20 20) ;11
+    [(block 100 9 44) ;11
+     (block 170 9 44)
+     (block 240 9 44)
+     (block 340 9 44)
+     (block 440 9 44)
+     (block 500 50 9 {:y -17})
+     (block 600 9 47)
+     (block 660 100 9 {:y -17})]
+
+   [(block 90 20 20 {:min-x 90 :max-x 160 :speed 1.0}) ;12
+    (block 230 20 20 {:min-x 160 :max-x 230 :speed 1.0})
+    (block 350 20 20 {:min-x 350 :max-x 420 :speed 1.0})
+    (block 490 20 20 {:min-x 420 :max-x 490 :speed 1.0})
+    (block 610 20 20 {:min-x 610 :max-x 680 :speed 1.0})
+    (block 750 20 20 {:min-x 680 :max-x 750 :speed 1.0})]
+
+   [(block 120 20 20) ;13
     (block 190 20 20)
     (block 260 20 20)
     (block 330 20 20)
@@ -115,4 +132,18 @@
     (block 630 20 20)
     (block 700 20 20)
     (block 770 20 20)]
+
+    [(block 100 10 10) ;14
+     (block 100 10 10 {:y -68})
+     (block 180 10 40)
+     (block 260 10 10)
+     (block 260 10 10 {:y -68})
+     (block 340 10 40)
+     (block 500 15 40)
+     (block 560 80 12 {:y -17})
+     (block 700 10 10)
+     (block 700 10 10 {:y -68})
+     (block 770 20 20)
+     (block 840 20 20)
+     (block 845 10 10 {:y -68})]
   ])
