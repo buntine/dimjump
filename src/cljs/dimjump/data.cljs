@@ -133,7 +133,17 @@
     (block 700 20 20)
     (block 770 20 20)]
 
-    [(block 100 10 10) ;14
+   [(block 80 40 13 {:y -70}) ;14
+    (block 80 40 13)
+    (block 125 13 50 {:min-y -100 :max-y 0 :speed 1.3})
+    (block 200 20 30)
+    (block 320 20 20 {:min-x 320 :max-x 360 :speed 7})
+    (block 420 20 20 {:min-x 420 :max-x 460 :speed 7})
+    (block 520 60 10 {:y -40})
+    (block 545 10 80 {:y -20})
+    (block 700 110 7)]
+
+    [(block 100 10 10) ;15
      (block 100 10 10 {:y -68})
      (block 180 10 40)
      (block 260 10 10)
