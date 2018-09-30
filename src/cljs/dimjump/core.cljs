@@ -14,7 +14,7 @@
   (q/frame-rate 60)
   (.focus (.getElementById js/document "game"))
 
-  {:started false
+  {:phase 0 ; 0: Intro/Pause, 1: Play, 2: Finished
    :level (level/spawn 0)
    :corpses []
    :blood []
@@ -24,7 +24,13 @@
    :dim (dim/spawn)})
 
 (defn start-game [state]
-  (assoc state :started true))
+  (assoc state :phase 0))
+
+(defn pause-game [state]
+  (assoc state :phase 1))
+
+(defn finish-game [state]
+  (assoc state :phase 2))
 
 (defn draw-ground [state]
   (let [{floor-y :floor-y w :w h :h} constants]
@@ -55,15 +61,16 @@
   (update state :dim dim/jump))
 
 (defn key-pressed [state event]
-  (let [game (start-game state)]
-    (case (:key-code event)
-      40 (update game :dim dim/duck)
-      38 (jump game)
-      37 (update game :dim dim/speed-down)
-      39 (update game :dim dim/speed-up)
-      80 (update game :started not)
-      83 (update game :sound not)
-      game)))
+  (case (:phase state)
+    (0 2) (start-game state)
+    1 (case (:key-code event)
+        40 (update state :dim dim/duck)
+        38 (jump state)
+        37 (update state :dim dim/speed-down)
+        39 (update state :dim dim/speed-up)
+        80 (pause-game state)
+        83 (update state :sound not)
+        state)))
 
 (defn draw [state]
   (q/background (q/color 98 203 255))
@@ -79,10 +86,10 @@
   (doseq [b (:blood state)]
     (blood/draw b))
 
-  (if (not (:started state))
+  (if (= (:phase state) 0)
     (draw-start-game state))
 
-  (if (and (:sound state) (:started state))
+  (if (and (:sound state) (= (:phase state) 1))
     (sound/play-sound "invaded_city" 0.25)
     (sound/pause-sound "invaded_city")))
 
@@ -144,7 +151,7 @@
       state))
 
 (defn progress [state]
-  (if (:started state)
+  (if (= (:phase state) 1)
     (-> state
         (update :dim dim/progress)
         (update :level level/progress)
