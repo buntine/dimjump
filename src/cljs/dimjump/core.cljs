@@ -20,6 +20,7 @@
    :blood []
    :sound true
    :images {:pause (q/load-image "/images/pause.png")
+            :end (q/load-image "/images/end.png")
             :ground (q/load-image "/images/ground.png")}
    :dim (dim/spawn)})
 
@@ -41,23 +42,29 @@
   (q/text-font (data/text 14))
   (q/text-align :left :bottom)
   (q/with-fill
-    [40 99 116]
+    (:hud-color constants)
       (q/text (str "Level " (inc (:index level)) " with " (:deaths dim) " deaths")
               10 5)))
 
 (defn draw-dim [state]
   (dim/draw (:dim state)))
 
-(defn draw-start-game [state]
+(defn draw-with-cover [f]
   (let [{w :w h :h} constants]
     (q/with-fill
-      [170 170 170 200]
-      (q/rect 0 0 w h))
+      (:cover-color constants)
+      (q/rect 0 0 w h)
+      (f))))
+
+(defn draw-start-game [state]
+  (draw-with-cover (fn []
     (q/image-mode :corner)
-    (q/image (get-in state [:images :pause]) 0 0)))
+    (q/image (get-in state [:images :pause]) 0 0))))
 
 (defn draw-end-game [state]
-  )
+  (draw-with-cover (fn []
+    (q/image-mode :corner)
+    (q/image (get-in state [:images :end]) 0 0))))
 
 (defn jump [state]
   (if (and (:sound state) (not (get-in state [:dim :jumping])))
@@ -166,8 +173,8 @@
     (-> state
         (update :dim dim/progress)
         (update :level level/progress)
-        progress-to-next-level
         progress-to-finish-game
+        progress-to-next-level
         progress-corpses
         progress-blood
         detect-blood-collision

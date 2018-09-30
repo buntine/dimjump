@@ -14,7 +14,9 @@
    :speed-range (set (range 2 7))
    :velocity-big -10
    :velocity-small -8
-   :gravity 0.8})
+   :gravity 0.8
+   :hud-color [40 99 116]
+   :cover-color [170 170 170 200]})
 
 (defn block
   ([x w h] (block x w h {}))
@@ -92,13 +94,21 @@
     (block 600 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
     (block 760 20 20 {:min-y -50 :max-y 0 :speed 1.0})]
 
-   [(block 100 40 15) ;9
+   [(block 120 660 5 {:y -65}) ;9
+    (block 120 20 20 {:min-y -50 :max-y 0 :speed 1.0})
+    (block 280 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
+    (block 440 20 20 {:min-y -50 :max-y 0 :speed 1.0})
+    (block 430 10 10)
+    (block 600 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
+    (block 760 20 20 {:min-y -50 :max-y 0 :speed 1.0})]
+
+   [(block 100 40 15) ;10
     (block 170 40 15)
     (block 240 80 15 {:y -20})
     (block 380 20 20 {:min-y -40 :max-y 0 :speed 1.0})
     (block 600 100 10)]
 
-   [(block 110 30 30) ;10
+   [(block 110 30 30) ;11
     (block 220 150 5 {:y -68})
     (block 270 15 16)
     (block 330 15 16)
@@ -106,7 +116,7 @@
     (block 600 47 7)
     (block 730 20 20 {:min-y -80 :max-y 0 :speed 2.4})]
 
-    [(block 100 9 44) ;11
+    [(block 100 9 44) ;12
      (block 170 9 44)
      (block 240 9 44)
      (block 340 9 44)
@@ -115,14 +125,14 @@
      (block 600 9 47)
      (block 660 100 9 {:y -17})]
 
-   [(block 90 20 20 {:min-x 90 :max-x 160 :speed 1.0}) ;12
+   [(block 90 20 20 {:min-x 90 :max-x 160 :speed 1.0}) ;13
     (block 230 20 20 {:min-x 160 :max-x 230 :speed 1.0})
     (block 350 20 20 {:min-x 350 :max-x 420 :speed 1.0})
     (block 490 20 20 {:min-x 420 :max-x 490 :speed 1.0})
     (block 610 20 20 {:min-x 610 :max-x 680 :speed 1.0})
     (block 750 20 20 {:min-x 680 :max-x 750 :speed 1.0})]
 
-   [(block 120 20 20) ;13
+   [(block 120 20 20) ;14
     (block 190 20 20)
     (block 260 20 20)
     (block 330 20 20)
@@ -133,7 +143,7 @@
     (block 700 20 20)
     (block 770 20 20)]
 
-   [(block 80 40 13 {:y -70}) ;14
+   [(block 80 40 13 {:y -70}) ;15
     (block 80 40 13)
     (block 125 13 50 {:min-y -100 :max-y 0 :speed 1.3})
     (block 200 20 30)
@@ -143,7 +153,7 @@
     (block 545 10 80 {:y -20})
     (block 700 110 7)]
 
-    [(block 100 10 10) ;15
+    [(block 100 10 10) ;16
      (block 100 10 10 {:y -68})
      (block 180 10 40)
      (block 260 10 10)
