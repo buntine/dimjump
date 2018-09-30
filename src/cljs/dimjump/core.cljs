@@ -27,6 +27,7 @@
   (assoc state :phase 1))
 
 (defn pause-game [state]
+  (sound/pause-sound "invaded_city")
   (assoc state :phase 0))
 
 (defn finish-game [state]
@@ -144,14 +145,21 @@
                            blood/visible?
                            (map blood/progress %))))
 
-(defn progress-to-next-level [state]
+(defn progress-to-finish-game [{:keys [dim level] :as state}]
+  "Updates game phase if player has finished last level"
+  (if (and (dim/past? dim (:w constants))
+           (level/last? level))
+    (finish-game state)
+    state))
+
+(defn progress-to-next-level [{:keys [dim] :as state}]
   "Moves to the next level if it is necessary to do so"
-  (if (dim/past? (:dim state) (:w constants))
-      (-> state
-          (assoc :blood [])
-          (update :level level/move-next)
-          (update :dim dim/reset))
-      state))
+  (if (dim/past? dim (:w constants))
+    (-> state
+      (assoc :blood [])
+      (update :level level/move-next)
+      (update :dim dim/reset))
+    state))
 
 (defn progress [state]
   (if (= (:phase state) 1)
@@ -159,6 +167,7 @@
         (update :dim dim/progress)
         (update :level level/progress)
         progress-to-next-level
+        progress-to-finish-game
         progress-corpses
         progress-blood
         detect-blood-collision

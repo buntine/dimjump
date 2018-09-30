@@ -32,5 +32,9 @@
       (partial obstacle/collision? entity)
       obstacles)))
 
-(defn move-next [{:keys [index]}]
-  (spawn (+ index 1)))
+(defn last? [{:keys [index]}]
+  (= (inc index) (count data/levels)))
+
+(defn move-next [{:keys [index] :as level}]
+  (let [next-level (if (last? level) 0 (inc index))]
+    (spawn next-level)))
