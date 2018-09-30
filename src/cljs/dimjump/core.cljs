@@ -24,10 +24,10 @@
    :dim (dim/spawn)})
 
 (defn start-game [state]
-  (assoc state :phase 0))
+  (assoc state :phase 1))
 
 (defn pause-game [state]
-  (assoc state :phase 1))
+  (assoc state :phase 0))
 
 (defn finish-game [state]
   (assoc state :phase 2))
@@ -54,6 +54,9 @@
       (q/rect 0 0 w h))
     (q/image-mode :corner)
     (q/image (get-in state [:images :pause]) 0 0)))
+
+(defn draw-end-game [state]
+  )
 
 (defn jump [state]
   (if (and (:sound state) (not (get-in state [:dim :jumping])))
@@ -86,12 +89,12 @@
   (doseq [b (:blood state)]
     (blood/draw b))
 
-  (if (= (:phase state) 0)
-    (draw-start-game state))
-
-  (if (and (:sound state) (= (:phase state) 1))
-    (sound/play-sound "invaded_city" 0.25)
-    (sound/pause-sound "invaded_city")))
+  (case (:phase state)
+    0 (draw-start-game state)
+    2 (draw-end-game state)
+    1 (if (:sound state)
+        (sound/play-sound "invaded_city" 0.25)
+        (sound/pause-sound "invaded_city"))))
 
 (defn create-blood-splatter [{:keys [speed] :as dim}]
   (let [position (dim/position dim)]
