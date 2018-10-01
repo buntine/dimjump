@@ -40,11 +40,10 @@
 
 (defn draw-hud [{level :level dim :dim}]
   (q/text-font (data/text 14))
-  (q/text-align :left :bottom)
   (q/with-fill
     (:hud-color constants)
       (q/text (str "Level " (inc (:index level)) " with " (:deaths dim) " deaths")
-              10 5)))
+              10 18)))
 
 (defn draw-dim [state]
   (dim/draw (:dim state)))
