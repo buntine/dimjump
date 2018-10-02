@@ -11,6 +11,11 @@
 
 (defn game-wrapper []
   [:div {:id "game-wrapper"}
+    [:span {:id "loading"}
+      "Loading"
+      [:span {:class "one"} "."]
+      [:span {:class "two"} "."]
+      [:span {:class "three"} "."]]
     [:img {:id "brick" :src "/images/brick.png"}]
     [:canvas {:id "game"}]])
 

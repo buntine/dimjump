@@ -25,6 +25,7 @@ canvas {
 
 div#game-wrapper {
   width: 80%;
+  background-color: lightblue;
   min-width: 900px;
   height: 360px;
   border: 2px solid #333;
@@ -43,4 +44,51 @@ canvas#game {
   width: 100%;
   min-width: 900px;
   height: 100%;
+}
+
+span#loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'AddStandard', 'Sans-Serif';
+  font-size: 56px;
+  color: #104b5c;
+}
+
+/* Animated ellipsis. Source: https://codepen.io/davidangel/pen/NqPYdW */
+.one {
+  opacity: 0;
+  -webkit-animation: dot 1.3s infinite;
+  -webkit-animation-delay: 0.0s;
+  animation: dot 1.3s infinite;
+  animation-delay: 0.0s;
+}
+
+.two {
+  opacity: 0;
+  -webkit-animation: dot 1.3s infinite;
+  -webkit-animation-delay: 0.2s;
+  animation: dot 1.3s infinite;
+  animation-delay: 0.2s;
+}
+
+.three {
+  opacity: 0;
+  -webkit-animation: dot 1.3s infinite;
+  -webkit-animation-delay: 0.3s;
+  animation: dot 1.3s infinite;
+  animation-delay: 0.3s;
+}
+
+@-webkit-keyframes dot {
+    0% { opacity: 0; }
+   50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes dot {
+    0% { opacity: 0; }
+   50% { opacity: 0; }
+  100% { opacity: 1; }
 }
