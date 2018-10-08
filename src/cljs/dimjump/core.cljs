@@ -72,7 +72,10 @@
 
 (defn key-pressed [state event]
   (case (:phase state)
-    (0 2) (start-game state)
+    2 (start-game state)
+    0 (case (:key-code event)
+        (13 32 80 38) (start-game state)
+        state)
     1 (case (:key-code event)
         40 (update state :dim dim/duck)
         38 (jump state)
