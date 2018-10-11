@@ -21,6 +21,7 @@
    :sound true
    :images {:pause (q/load-image "/images/pause.png")
             :end (q/load-image "/images/end.png")
+            :sky (q/load-image "/images/sky.png")
             :ground (q/load-image "/images/ground.png")}
    :dim (dim/spawn)})
 
@@ -34,8 +35,9 @@
 (defn finish-game [state]
   (assoc state :phase 2))
 
-(defn draw-ground [state]
+(defn draw-backdrop [state]
   (let [{floor-y :floor-y w :w h :h} constants]
+    (q/image (get-in state [:images :sky]) 0 0)
     (q/image (get-in state [:images :ground]) 0 floor-y)))
 
 (defn draw-hud [{level :level dim :dim}]
@@ -88,7 +90,7 @@
 (defn draw [state]
   (q/background (q/color 98 203 255))
   (q/image-mode :corner)
-  (draw-ground state)
+  (draw-backdrop state)
   (draw-hud state)
   (level/draw (:level state))
   (draw-dim state)
