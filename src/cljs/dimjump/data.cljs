@@ -36,7 +36,7 @@
 (def levels
   [[(block 200 20 20) ;0
     (block 400 20 30)
-    (block 600 30 20 {:min-x 550 :max-x 600 :min-y -30 :max-y 0 :speed 1.0})]
+    (block 600 30 20)]
 
    [(block 160 20 20) ;1
     (block 360 20 20)
