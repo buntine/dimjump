@@ -15,8 +15,8 @@
    :velocity-big -10
    :velocity-small -8
    :gravity 0.8
-   :hud-color [40 99 116]
-   :cover-color [170 170 170 200]})
+   :hud-color [10 49 56]
+   :cover-color [156 215 249 200]})
 
 (defn block
   ([x w h] (block x w h {}))

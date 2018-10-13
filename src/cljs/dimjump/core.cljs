@@ -40,12 +40,12 @@
     (q/image (get-in state [:images :sky]) 0 0)
     (q/image (get-in state [:images :ground]) 0 floor-y)))
 
-(defn draw-hud [{level :level dim :dim}]
-  (q/text-font (data/text 14))
-  (q/with-fill
-    (:hud-color constants)
+(defn draw-hud [{:keys [level dim]}]
+  (let [{w :w h :h} constants]
+    (q/with-fill
+      (:hud-color constants)
       (q/text (str "Level " (inc (:index level)) " with " (:deaths dim) " deaths")
-              10 18)))
+              (- w 5) (- h 5)))))
 
 (defn draw-dim [state]
   (dim/draw (:dim state)))
@@ -88,7 +88,9 @@
         state)))
 
 (defn draw [state]
-  (q/background (q/color 98 203 255))
+  (q/background (q/color 176 222 249))
+  (q/text-font (data/text 14))
+  (q/text-align :right :bottom)
   (q/image-mode :corner)
   (draw-backdrop state)
   (draw-hud state)
