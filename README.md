@@ -19,5 +19,10 @@ Copyright © 2018 Andrew Buntine
 
 ## Credits
 
-Grass: Adapted from https://www.kisspng.com/png-pixel-art-game-sprite-8-bit-991965/
-Brick: Adapted from http://superwalrusland.com/ohr/issue26/pa/pixelart.html
+### Muic
+  - Background music from [Imperium](https://en.wikipedia.org/wiki/Imperium_(1992_video_game)) (Vic Tokai, 1992).
+
+### Sprites
+  - Dim Sim donated by my beautiful girlfriend, [Melanie Huang](http://melaniehuang.com/).
+  - Grass: Adapted from https://www.kisspng.com/png-pixel-art-game-sprite-8-bit-991965/
+  - Brick: Adapted from http://superwalrusland.com/ohr/issue26/pa/pixelart.html
