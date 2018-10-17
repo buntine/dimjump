@@ -4,8 +4,8 @@ A fried Dim Sim on the run with nothing to lose...
 
 http://dimjump.wtf
 
-![Title screen](/resources/screenshots/dimjump-1.png?raw=true "Dim Jump Title Screen")
-![Gameplay](/resources/screenshots/dimjump-2.png?raw=true "Dim Jump Gameplay")
+![Title screen](/resources/screenshots/dimjump-1.jpg?raw=true "Dim Jump Title Screen")
+![Gameplay](/resources/screenshots/dimjump-2.jpg?raw=true "Dim Jump Gameplay")
 
 ## Warning
 
