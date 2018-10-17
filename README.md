@@ -4,7 +4,23 @@ A fried Dim Sim on the run with nothing to lose...
 
 http://dimjump.wtf
 
-[leiningen]: https://github.com/technomancy/leiningen
+![Title screen](/resources/screenshots/dimjump-1.png?raw=true "Dim Jump Title Screen")
+![Gameplay](/resources/screenshots/dimjump-2.png?raw=true "Dim Jump Gameplay")
+
+## Warning
+
+This game may cause extreme frustration and/or feelings of inescapable anxiety.
+
+You've been warned.
+
+## Instructions
+
+ - *UP*: Jump
+ - *DOWN*: Duck
+ - *LEFT*: Go slower
+ - *RIGHT*: Go faster
+ - *P*: Pause
+ - *S*: Toggle sound
 
 ## Running
 
@@ -19,7 +35,7 @@ Copyright © 2018 Andrew Buntine
 
 ## Credits
 
-### Muic
+### Music
   - Background music from [Imperium](https://en.wikipedia.org/wiki/Imperium_(1992_video_game)) (Vic Tokai, 1992).
 
 ### Sprites
