@@ -1,22 +1,21 @@
-# dimjump
+# Dim Jump
 
-FIXME
+A fried Dim Sim on the run with nothing to lose...
 
-## Prerequisites
-
-You will need [Leiningen][] 2.0.0 or above installed.
+http://dimjump.wtf
 
 [leiningen]: https://github.com/technomancy/leiningen
 
 ## Running
 
-To start a web server for the application, run:
+To start a web server for the application, run each of these commands in a separate tab:
 
-    lein ring server
+    lein ring server-headless
+    lein figwheel
 
 ## License
 
-Copyright © 2018 FIXME
+Copyright © 2018 Andrew Buntine
 
 ## Credits
 
