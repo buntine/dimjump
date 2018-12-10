@@ -170,9 +170,9 @@
   "Moves to the next level if it is necessary to do so"
   (if (dim/past? dim (:w constants))
     (-> state
-      (assoc :blood [])
-      (update :level level/move-next)
-      (update :dim dim/reset))
+        (assoc :blood [])
+        (update :level level/move-next)
+        (update :dim dim/reset))
     state))
 
 (defn progress [state]
