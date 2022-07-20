@@ -16,7 +16,7 @@
                       (q/load-image "/images/dim4.png")]}
    :ducking false
    :jumping false
-   :speed 3
+   :speed 4
    :animation-speed 12})
 
 (defn toggle-flag [flag]

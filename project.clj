@@ -10,8 +10,8 @@
                  [org.clojure/java.jdbc "0.6.0"]
                  [quil "2.7.1"]
                  [com.h2database/h2 "1.4.193"]]
-  :plugins [[lein-ring "0.9.7"]
-            [lein-figwheel "0.5.16"]]
+  :plugins [[lein-ring "0.12.5"]
+            [lein-figwheel "0.5.20"]]
   :cljsbuild {:builds [{:source-paths ["src/cljs"]
                         :figwheel {:websocket-host "0.0.0.0"
                                    :on-jsload "dimjump.core/init"}
