@@ -137,7 +137,7 @@
   (let [position (dim/position dim)]
     (map
       #(blood/spawn position % speed)
-      (range -10 -2))))
+      (range -20 -2))))
 
 (defn kill-dim [{:keys [sound dim] :as state}]
   (if sound
