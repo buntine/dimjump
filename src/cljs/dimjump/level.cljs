@@ -1,11 +1,20 @@
 (ns dimjump.level
   (:require [dimjump.obstacle :as obstacle]
+            [dimjump.platform :as platform]
             [dimjump.data :as data :refer [constants]]))
 
 (defn spawn [n]
   {:index n
    :obstacles (map obstacle/spawn
-                   (data/levels n))})
+                   (obstacles n))
+   :platforms (map platform/spawn
+                   (platforms n))})
+
+(defn obstacles [n]
+  (:obstacles (data/levels n)))
+
+(defn platforms [n]
+  (:platforms (data/levels n)))
 
 (defn draw [level]
   ; Due to a bug surrounding textures in Quil/Processing.js, I've had to resort

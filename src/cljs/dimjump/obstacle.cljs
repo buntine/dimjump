@@ -1,18 +1,16 @@
 (ns dimjump.obstacle
-  (:require [quil.core :as q :include-macros true]
-            [dimjump.data :as data :refer [constants]]))
+  (:require [quil.core :as q :include-macros true]))
 
-(defn spawn [{:keys [speed x y] :or {speed 0} :as opts}]
+(defn spawn [{:keys [speed] :or {speed 0} :as opts}]
   (merge {:move-x (- speed)
           :move-y (- speed)}
          opts))
 
 (defn draw [{:keys [x w h y]} ctx]
-  (let [floor-y (:floor-y constants)]
-    (.beginPath ctx)
-    (.rect ctx x (- y h) w h)
-    (.closePath ctx)
-    (.fill ctx)))
+  (.beginPath ctx)
+  (.rect ctx x (- y h) w h)
+  (.closePath ctx)
+  (.fill ctx))
 
 (defn next-x [{:keys [x min-x max-x move-x]}]
   (max min-x (min max-x (+ x move-x))))
@@ -47,8 +45,8 @@
          :move-y (next-move-y obstacle)))
 
 (defn collision? [{px :x py :y pw :w ph :h} {ox :x oy :y ow :w oh :h}]
-  "Returns true if any obstacle in the level has collided with the
-   given entity (the player). Currently operates on very basic 2D rectangles
+  "Returns true if the given obstacle (o) has collided with the
+   given entity (the player - p). Currently operates on very basic 2D rectangles
    and does not support bounding boxes on rotated shapes."
   (let [py-top (- py (/ ph 2))
         py-bottom (+ py (/ ph 2))
