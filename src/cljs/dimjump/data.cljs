@@ -27,7 +27,8 @@
            :as opts}]
     (let [floor-y (:floor-y constants)]
       (merge opts
-             {:x x :w w
+             {:x x
+              :w w
               :min-x min-x
               :max-x max-x
               :min-y (+ floor-y min-y)
@@ -35,137 +36,161 @@
               :h h
               :y (+ floor-y y)}))))
 
+(defn platform
+  ([x y w] (platform x w h 6))
+  ([x y w h]
+    {:x x
+     :y y
+     :w w
+     :h h}))
+
 (def levels
-  [[(block 200 20 20) ;0
-    (block 400 20 30)
-    (block 600 30 20)]
+  [{:obstacles [(block 200 20 20) ;0
+                (block 400 20 30)
+                (block 600 30 20)]
+    :platforms [(platform 250 50 100 10)]}
 
-   [(block 160 20 20) ;1
-    (block 360 20 20)
-    (block 500 20 20)
-    (block 660 100 10 {:y -27})]
+   {:obstacles [(block 160 20 20) ;1
+                (block 360 20 20)
+                (block 500 20 20)
+                (block 660 100 10 {:y -27})]
+    :platforms []}
 
-   [(block 120 20 20) ;2
-    (block 300 20 20)
-    (block 400 20 20)
-    (block 520 20 30)
-    (block 700 35 15)]
+   {:obstacles [(block 120 20 20) ;2
+                (block 300 20 20)
+                (block 400 20 20)
+                (block 520 20 30)
+                (block 700 35 15)]
+    :platforms []}
 
-   [(block 115 8 8)   ;3
-    (block 123 8 8 {:y -8})
-    (block 131 8 8 {:y -16})
-    (block 139 8 8 {:y -8})
-    (block 147 8 8)
-    (block 220 37 9)
-    (block 350 25 25)
-    (block 420 90 7 {:y -27})
-    (block 510 100 7 {:y -17})
-    (block 610 90 7 {:y -27})
-    (block 740 20 20)]
+   {:obstacles [(block 115 8 8)   ;3
+                (block 123 8 8 {:y -8})
+                (block 131 8 8 {:y -16})
+                (block 139 8 8 {:y -8})
+                (block 147 8 8)
+                (block 220 37 9)
+                (block 350 25 25)
+                (block 420 90 7 {:y -27})
+                (block 510 100 7 {:y -17})
+                (block 610 90 7 {:y -27})
+                (block 740 20 20)]
+    :platforms []}
 
-   [(block 110 20 20) ;4
-    (block 200 20 20)
-    (block 290 20 20)
-    (block 350 100 5 {:y -27})
-    (block 490 35 12)
-    (block 600 20 40)
-    (block 740 20 30)]
+   {:obstacles [(block 110 20 20) ;4
+                (block 200 20 20)
+                (block 290 20 20)
+                (block 350 100 5 {:y -27})
+                (block 490 35 12)
+                (block 600 20 40)
+                (block 740 20 30)]
+    :platforms []}
 
-   [(block 120 140 8 {:y -17}) ;5
-    (block 325 32 31)
-    (block 420 200 12 {:y -27})
-    (block 646 20 20)]
+   {:obstacles [(block 120 140 8 {:y -17}) ;5
+                (block 325 32 31)
+                (block 420 200 12 {:y -27})
+                (block 646 20 20)]
+    :platforms []}
 
-   [(block 120 500 5 {:y -27}) ;6
-    (block 660 30 20)
-    (block 760 30 20)]
+   {:obstacles [(block 120 500 5 {:y -27}) ;6
+                (block 660 30 20)
+                (block 760 30 20)]
+    :platforms []}
 
-   [(block 100 32 32) ;7
-    (block 250 32 32)
-    (block 360 10 10)
-    (block 420 10 10)
-    (block 510 100 10 {:min-y -50 :max-y 0 :speed 0.8})
-    (block 670 10 10)
-    (block 730 10 10)
-    (block 790 10 10)]
+   {:obstacles [(block 100 32 32) ;7
+                (block 250 32 32)
+                (block 360 10 10)
+                (block 420 10 10)
+                (block 510 100 10 {:min-y -50 :max-y 0 :speed 0.8})
+                (block 670 10 10)
+                (block 730 10 10)
+                (block 790 10 10)]
+    :platforms []}
 
-   [(block 120 20 20 {:min-y -50 :max-y 0 :speed 1.0}) ;8
-    (block 280 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
-    (block 440 20 20 {:min-y -50 :max-y 0 :speed 1.0})
-    (block 430 10 10)
-    (block 600 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
-    (block 760 20 20 {:min-y -50 :max-y 0 :speed 1.0})]
+   {:obstacles [(block 120 20 20 {:min-y -50 :max-y 0 :speed 1.0}) ;8
+                (block 280 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
+                (block 440 20 20 {:min-y -50 :max-y 0 :speed 1.0})
+                (block 430 10 10)
+                (block 600 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
+                (block 760 20 20 {:min-y -50 :max-y 0 :speed 1.0})]
+    :platforms []}
 
-   [(block 120 660 5 {:y -65}) ;9
-    (block 120 20 20 {:min-y -50 :max-y 0 :speed 1.0})
-    (block 280 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
-    (block 440 20 20 {:min-y -50 :max-y 0 :speed 1.0})
-    (block 430 10 10)
-    (block 600 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
-    (block 760 20 20 {:min-y -50 :max-y 0 :speed 1.0})]
+   {:obstacles [(block 120 660 5 {:y -65}) ;9
+                (block 120 20 20 {:min-y -50 :max-y 0 :speed 1.0})
+                (block 280 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
+                (block 440 20 20 {:min-y -50 :max-y 0 :speed 1.0})
+                (block 430 10 10)
+                (block 600 20 20 {:y -50 :min-y -50 :max-y 0 :speed 1.0})
+                (block 760 20 20 {:min-y -50 :max-y 0 :speed 1.0})]
+    :platforms []}
 
-   [(block 100 40 15) ;10
-    (block 170 40 15)
-    (block 240 80 15 {:y -20})
-    (block 380 20 20 {:min-y -40 :max-y 0 :speed 1.0})
-    (block 600 100 10)]
+   {:obstacles [(block 100 40 15) ;10
+                (block 170 40 15)
+                (block 240 80 15 {:y -20})
+                (block 380 20 20 {:min-y -40 :max-y 0 :speed 1.0})
+                (block 600 100 10)]
+    :platforms []}
 
-   [(block 110 30 30) ;11
-    (block 220 150 5 {:y -68})
-    (block 270 15 16)
-    (block 330 15 16)
-    (block 460 20 20)
-    (block 600 47 7)
-    (block 730 20 20 {:min-y -80 :max-y 0 :speed 2.4})]
+   {:obstacles [(block 110 30 30) ;11
+                (block 220 150 5 {:y -68})
+                (block 270 15 16)
+                (block 330 15 16)
+                (block 460 20 20)
+                (block 600 47 7)
+                (block 730 20 20 {:min-y -80 :max-y 0 :speed 2.4})]
+    :platforms []}
 
-    [(block 100 9 44) ;12
-     (block 170 9 44)
-     (block 240 9 44)
-     (block 340 9 44)
-     (block 440 9 44)
-     (block 500 50 9 {:y -17})
-     (block 600 9 47)
-     (block 660 100 9 {:y -17})]
+    {:obstacles [(block 100 9 44) ;12
+                 (block 170 9 44)
+                 (block 240 9 44)
+                 (block 340 9 44)
+                 (block 440 9 44)
+                 (block 500 50 9 {:y -17})
+                 (block 600 9 47)
+                 (block 660 100 9 {:y -17})]
+     :platforms []}
 
-   [(block 90 20 20 {:min-x 90 :max-x 160 :speed 1.0}) ;13
-    (block 230 20 20 {:min-x 160 :max-x 230 :speed 1.0})
-    (block 350 20 20 {:min-x 350 :max-x 420 :speed 1.0})
-    (block 490 20 20 {:min-x 420 :max-x 490 :speed 1.0})
-    (block 610 20 20 {:min-x 610 :max-x 680 :speed 1.0})
-    (block 750 20 20 {:min-x 680 :max-x 750 :speed 1.0})]
+   {:obstacles [(block 90 20 20 {:min-x 90 :max-x 160 :speed 1.0}) ;13
+                (block 230 20 20 {:min-x 160 :max-x 230 :speed 1.0})
+                (block 350 20 20 {:min-x 350 :max-x 420 :speed 1.0})
+                (block 490 20 20 {:min-x 420 :max-x 490 :speed 1.0})
+                (block 610 20 20 {:min-x 610 :max-x 680 :speed 1.0})
+                (block 750 20 20 {:min-x 680 :max-x 750 :speed 1.0})]
+    :platforms []}
 
-   [(block 120 20 20) ;14
-    (block 190 20 20)
-    (block 260 20 20)
-    (block 330 20 20)
-    (block 400 20 20)
-    (block 490 20 20)
-    (block 560 20 20)
-    (block 630 20 20)
-    (block 700 20 20)
-    (block 770 20 20)]
+   {:obstacles [(block 120 20 20) ;14
+                (block 190 20 20)
+                (block 260 20 20)
+                (block 330 20 20)
+                (block 400 20 20)
+                (block 490 20 20)
+                (block 560 20 20)
+                (block 630 20 20)
+                (block 700 20 20)
+                (block 770 20 20)]
+    :platforms []}
 
-   [(block 80 40 13 {:y -70}) ;15
-    (block 80 40 13)
-    (block 125 13 50 {:min-y -100 :max-y 0 :speed 1.3})
-    (block 200 20 30)
-    (block 320 20 20 {:min-x 320 :max-x 360 :speed 7})
-    (block 420 20 20 {:min-x 420 :max-x 460 :speed 7})
-    (block 520 60 10 {:y -40})
-    (block 545 10 80 {:y -20})
-    (block 700 110 7)]
+   {:obstacles [(block 80 40 13 {:y -70}) ;15
+                (block 80 40 13)
+                (block 125 13 50 {:min-y -100 :max-y 0 :speed 1.3})
+                (block 200 20 30)
+                (block 320 20 20 {:min-x 320 :max-x 360 :speed 7})
+                (block 420 20 20 {:min-x 420 :max-x 460 :speed 7})
+                (block 520 60 10 {:y -40})
+                (block 545 10 80 {:y -20})
+                (block 700 110 7)]
+    :platforms []}
 
-    [(block 100 10 10) ;16
-     (block 100 10 10 {:y -68})
-     (block 180 10 40)
-     (block 260 10 10)
-     (block 260 10 10 {:y -68})
-     (block 340 10 40)
-     (block 500 15 40)
-     (block 560 80 12 {:y -17})
-     (block 700 10 10)
-     (block 700 10 10 {:y -68})
-     (block 770 20 20)
-     (block 840 20 20)
-     (block 845 10 10 {:y -68})]
-  ])
+    {:obstacles [(block 100 10 10) ;16
+                 (block 100 10 10 {:y -68})
+                 (block 180 10 40)
+                 (block 260 10 10)
+                 (block 260 10 10 {:y -68})
+                 (block 340 10 40)
+                 (block 500 15 40)
+                 (block 560 80 12 {:y -17})
+                 (block 700 10 10)
+                 (block 700 10 10 {:y -68})
+                 (block 770 20 20)
+                 (block 840 20 20)
+                 (block 845 10 10 {:y -68})]
+     :platforms []}])
