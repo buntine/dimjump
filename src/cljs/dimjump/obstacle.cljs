@@ -2,7 +2,8 @@
   (:require [quil.core :as q :include-macros true]))
 
 (defn spawn [{:keys [speed] :or {speed 0} :as opts}]
-  (merge {:move-x (- speed)
+  (merge {:kind :obstacle
+          :move-x (- speed)
           :move-y (- speed)}
          opts))
 
@@ -36,13 +37,18 @@
 (defn next-move-y [{:keys [y min-y max-y move-y]}]
   (next-move y min-y max-y move-y))
 
+(defn obstacle? [{:keys [kind]}]
+  (= kind :obstacle))
+
 (defn progress [obstacle]
   "Updates position based on min-x and min-y, if necessary"
-  (assoc obstacle
-         :x (next-x obstacle)
-         :y (next-y obstacle)
-         :move-x (next-move-x obstacle)
-         :move-y (next-move-y obstacle)))
+  (if (obstacle? obstacle)
+    (assoc obstacle
+           :x (next-x obstacle)
+           :y (next-y obstacle)
+           :move-x (next-move-x obstacle)
+           :move-y (next-move-y obstacle))
+    obstacle))
 
 (defn collision? [{px :x py :y pw :w ph :h} {ox :x oy :y ow :w oh :h}]
   "Returns true if the given obstacle (o) has collided with the

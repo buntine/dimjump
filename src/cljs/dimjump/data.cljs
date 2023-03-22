@@ -48,7 +48,7 @@
   [{:obstacles [(block 200 20 20) ;0
                 (block 400 20 30)
                 (block 600 30 20)]
-    :platforms [(platform 250 50 100 10)]}
+    :platforms [(platform 240 105 100 10)]}
 
    {:obstacles [(block 160 20 20) ;1
                 (block 360 20 20)

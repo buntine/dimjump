@@ -2,7 +2,8 @@
   (:require [quil.core :as q :include-macros true]))
 
 (defn spawn [opts]
-  opts)
+  (merge {:kind :platform}
+         opts))
 
 (defn draw [{:keys [x w h y]} ctx]
   (.beginPath ctx)

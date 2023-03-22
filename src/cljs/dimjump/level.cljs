@@ -3,23 +3,31 @@
             [dimjump.platform :as platform]
             [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [n]
-  {:index n
-   :obstacles (map obstacle/spawn
-                   (obstacles n))
-   :platforms (map platform/spawn
-                   (platforms n))})
-
-(defn obstacles [n]
+(defn obstacle-data [n]
   (:obstacles (data/levels n)))
 
-(defn platforms [n]
+(defn platform-data [n]
   (:platforms (data/levels n)))
+
+(defn spawn [n]
+  {:index n
+   :objects (concat
+              (map obstacle/spawn
+                   (obstacle-data n))
+              (map platform/spawn
+                   (platform-data n)))})
+
+(defn obstacles [{:keys [objects]}]
+  (filter #(= (:kind %) :obstacle) objects))
+
+(defn platforms [{:keys [objects]}]
+  (filter #(= (:kind %) :platform) objects))
 
 (defn draw [level]
   ; Due to a bug surrounding textures in Quil/Processing.js, I've had to resort
   ; dropping down to vanilla JS in order to draw obstacles with textured background.
-  (let [obstacles (:obstacles level)
+  (let [os (obstacles level)
+        ps (platforms level)
         canvas (.getElementById js/document  "game")
         ctx (.getContext canvas "2d")
         img (.getElementById js/document "brick")
@@ -27,19 +35,22 @@
 
     (set! (.-fillStyle ctx) pattern)
 
-    (doseq [o obstacles]
+    (doseq [p ps]
+      (platform/draw p ctx))
+
+    (doseq [o os]
       (obstacle/draw o ctx))))
 
 (defn progress [level]
-  (update level :obstacles (partial map obstacle/progress)))
+  (update level :objects (partial map obstacle/progress)))
 
-(defn collided-obstacle [{:keys [obstacles]} entity]
+(defn collided-obstacle [{:keys [objects]} entity]
   "Returns the obstacle that the given entity has hit. Or nil if there is
    no collision"
   (first
     (filter
       (partial obstacle/collision? entity)
-      obstacles)))
+      objects)))
 
 (defn last? [{:keys [index]}]
   (>= (inc index) (count data/levels)))
