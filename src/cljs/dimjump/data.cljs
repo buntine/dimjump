@@ -18,7 +18,9 @@
    :velocity-small -8
    :gravity 0.8
    :hud-color [10 49 56]
-   :cover-color [156 215 249 200]})
+   :cover-color [156 215 249 200]
+   :grass-height 3
+   :grass-color [3 192 74]})
 
 (defn block
   ([x w h] (block x w h {}))

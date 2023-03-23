@@ -1,7 +1,7 @@
 (ns dimjump.level
   (:require [dimjump.obstacle :as obstacle]
             [dimjump.platform :as platform]
-            [dimjump.data :as data :refer [constants]]))
+            [dimjump.data :as data]))
 
 (defn obstacle-data [n]
   (:obstacles (data/levels n)))
@@ -36,7 +36,9 @@
     (set! (.-fillStyle ctx) pattern)
 
     (doseq [p ps]
-      (platform/draw p ctx))
+      (platform/draw p ctx)
+      (set! (.-fillStyle ctx) pattern)) ; with-fill isn't working so let's just force it back to the pattern fill
+                                        ; after each platform is painted.
 
     (doseq [o os]
       (obstacle/draw o ctx))))
