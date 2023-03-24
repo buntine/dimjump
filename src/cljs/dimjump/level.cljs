@@ -30,8 +30,8 @@
         ps (platforms level)
         canvas (.getElementById js/document  "game")
         ctx (.getContext canvas "2d")
-        img (.getElementById js/document "brick")
-        pattern (.createPattern ctx img "repeat")]
+        brick-img (.getElementById js/document "brick")
+        pattern (.createPattern ctx brick-img "repeat")]
 
     (set! (.-fillStyle ctx) pattern)
 
@@ -46,13 +46,18 @@
 (defn progress [level]
   (update level :objects (partial map obstacle/progress)))
 
-(defn collided-obstacle [{:keys [objects]} entity]
-  "Returns the obstacle that the given entity has hit. Or nil if there is
-   no collision"
+(defn collided-object [collision-fn objects-fn level entity]
+  "Returns the object that the given entity has hit. Or nil if there is
+   no collision.
+     - objects-fn must return the set of objects that can be collided with.
+     - collision-fn is the collision detection function used."
   (first
     (filter
-      (partial obstacle/collision? entity)
-      objects)))
+      (partial collision-fn entity)
+      (objects-fn level))))
+
+(def collided-platform (partial collided-object platform/collision? platforms))
+(def collided-obstacle (partial collided-object obstacle/collision? #(:objects %)))
 
 (defn last? [{:keys [index]}]
   (>= (inc index) (count data/levels)))

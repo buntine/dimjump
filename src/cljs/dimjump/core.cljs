@@ -163,7 +163,14 @@
             :blood
             (partial map attach-blood))))
 
-(defn detect-dim-collision [{:keys [level dim] :as state}]
+(defn detect-platform-collision [{:keys [level dim] :as state}]
+  "Handles the dim landing on a valid platform"
+  (let [platform (level/collided-platform level (dim/position dim))]
+    (if platform
+      (pr "PLATFORM!"))
+    state))
+
+(defn detect-object-collision [{:keys [level dim] :as state}]
   "Kills the dim if it hits anything"
   (if (level/collided-obstacle level (dim/position dim))
     (kill-dim state)
@@ -207,7 +214,8 @@
         progress-corpses
         progress-blood
         detect-blood-collision
-        detect-dim-collision)
+        detect-platform-collision
+        detect-object-collision)
     state))
 
 (defn init []

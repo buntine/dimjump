@@ -54,11 +54,11 @@
   "Returns true if the given obstacle (o) has collided with the
    given entity (the player - p). Currently operates on very basic 2D rectangles
    and does not support bounding boxes on rotated shapes."
-  (let [py-top (- py (/ ph 2))
-        py-bottom (+ py (/ ph 2))
-        px-left (- px (/ pw 2))
-        px-right (+ px (/ pw 2))]
-    (and (< px-left (+ ox ow))
-         (< ox px-right)
-         (< py-top oy)
-         (< (- oy oh) py-bottom))))
+  (let [p-top (- py (/ ph 2))
+        p-bottom (+ py (/ ph 2))
+        p-left (- px (/ pw 2))
+        p-right (+ px (/ pw 2))]
+    (and (< p-left (+ ox ow))
+         (< ox p-right)
+         (< p-top oy)
+         (< (- oy oh) p-bottom))))

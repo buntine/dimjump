@@ -18,22 +18,30 @@
 (defn collision? [{px :x py :y pw :w ph :h} {ox :x oy :y ow :w oh :h}]
   "Returns true if the given platform (o) has collided with the
    given entity (the player - p). Currently operates on very basic 2D rectangles
-   and does not support bounding boxes on rotated shapes."
-  (let [py-top (- py (/ ph 2))
-        py-bottom (+ py (/ ph 2))
-        px-left (- px (/ pw 2))
-        px-right (+ px (/ pw 2))]
-    (and (< px-left (+ ox ow))
-         (< ox px-right)
-         (< py-top oy)
-         (< (- oy oh) py-bottom))))
+   and does not support bounding boxes on rotated shapes.
+
+   Note that a collision in this context means that the player landed on TOP of
+   the platform. Other types of collisions with a platform are handled by the
+   collision detection in the obstacles namespace."
+  (let [p-top (- py (/ ph 2))
+        p-bottom (+ py (/ ph 2))
+        p-left (- px (/ pw 2))
+        p-right (+ px (/ pw 2))
+        o-right (+ ox ow)
+        o-top (- oy oh)]
+    (and (< p-left o-right)
+         (< ox p-right)
+         (< p-top o-top)
+         (< o-top p-bottom))))
 
 ; Colliding with platform in valid way should:
 ;   - set new Y (floor-y?) for dim
 ;   - store a reference to the 'active' platform.
 ;   - complete jump (might happen automatically?)
 ;
-; When player jumps, active platform is cleared out
+; When player jumps:
+;   - active platform is cleared out
+;
 ; When player X goes past end of platform
 ;   - Active platform is cleared out
 ;   - Y is set back to the floor
