@@ -1,6 +1,7 @@
 (ns dimjump.dim
   (:require [quil.core :as q :include-macros true]
-            [dimjump.data :as data :refer [constants]]))
+            [dimjump.data :as data :refer [constants]]
+            [dimjump.platform :as platform]))
 
 (defn spawn []
   {:points (take 5 (repeat {:x -20
@@ -16,6 +17,7 @@
                       (q/load-image "/images/dim4.png")]}
    :ducking false
    :jumping false
+   :active-platform nil
    :speed 4
    :animation-speed 12})
 
@@ -37,8 +39,11 @@
   (let [pos (position dim)]
     (>= (:x pos) x)))
 
-(defn floor-y [dim]
- (- (:floor-y constants) (/ (:h dim) 2)))
+(defn floor-y [{:keys [active-platform] :as dim}]
+  (let [floor (if active-platform
+                (platform/y-top active-platform)
+                (:floor-y constants))]
+    (- floor (/ (:h dim) 2))))
 
 (defn add-point 
   ([dim x y r]
@@ -128,6 +133,12 @@
         (add-point next-x next-y next-r)
         update-velocity
         finalize-jump)))
+
+(defn collide-with-platform [dim platform]
+  "Handles dim colliding with a platform."
+  (-> dim
+      (assoc :active-platform platform)
+      progress))
 
 (defn sprite-for [dim]
   "Returns the PImage suitable for the given frame number"

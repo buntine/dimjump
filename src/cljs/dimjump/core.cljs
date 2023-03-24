@@ -167,8 +167,9 @@
   "Handles the dim landing on a valid platform"
   (let [platform (level/collided-platform level (dim/position dim))]
     (if platform
-      (pr "PLATFORM!"))
-    state))
+      (-> state
+          (update :dim dim/collide-with-platform platform))
+      state)))
 
 (defn detect-object-collision [{:keys [level dim] :as state}]
   "Kills the dim if it hits anything"

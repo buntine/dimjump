@@ -15,6 +15,10 @@
   (q/with-fill (constants :grass-color)
     (q/rect x (- y h) w (constants :grass-height))))
 
+(defn y-top [{:keys [y h]}]
+  "Returns Y of the top of the platform."
+  (- y h))
+
 (defn collision? [{px :x py :y pw :w ph :h} {ox :x oy :y ow :w oh :h}]
   "Returns true if the given platform (o) has collided with the
    given entity (the player - p). Currently operates on very basic 2D rectangles
@@ -35,9 +39,9 @@
          (< o-top p-bottom))))
 
 ; Colliding with platform in valid way should:
-;   - set new Y (floor-y?) for dim
-;   - store a reference to the 'active' platform.
-;   - complete jump (might happen automatically?)
+;   *- set new Y (floor-y?) for dim
+;   *- store a reference to the 'active' platform.
+;   *- complete jump (might happen automatically?)
 ;
 ; When player jumps:
 ;   - active platform is cleared out
@@ -50,3 +54,11 @@
 ;   - player is not jumping
 ;   - player Y is higher than expected floor Y
 ;   - (this will happen when player comes off end of a platform)
+
+
+; - fall through floor and roof and right to left
+; - to win, have to get into "door"
+; - doors could be anywhere on the screen X and Y
+; - could have "buttons" or "keys" that need to open the door
+; - moving platforms, falling platforms, fading platforms
+; - game should be whole page / fullscreen
