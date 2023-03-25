@@ -98,6 +98,7 @@
 (defn kill [dim]
   (-> dim
       (update :deaths inc)
+      (assoc :active-platform nil)
       reset))
 
 (defn update-velocity [dim]
@@ -139,6 +140,13 @@
   (-> dim
       (assoc :active-platform platform)
       progress))
+
+(defn progress-platform [dim platform]
+  "Handles dim moving past the end of the active platform."
+  (let [finished? (>= (:x (position dim )) (platform/x-right platform))]
+    (if finished?
+      (assoc dim :active-platform nil)
+      dim)))
 
 (defn sprite-for [dim]
   "Returns the PImage suitable for the given frame number"

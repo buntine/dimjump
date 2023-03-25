@@ -19,6 +19,10 @@
   "Returns Y of the top of the platform."
   (- y h))
 
+(defn x-right [{:keys [x w]}]
+  "Returns X of the right of the platform."
+  (+ x w))
+
 (defn collision? [{px :x py :y pw :w ph :h} {ox :x oy :y ow :w oh :h}]
   "Returns true if the given platform (o) has collided with the
    given entity (the player - p). Currently operates on very basic 2D rectangles

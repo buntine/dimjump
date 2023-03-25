@@ -39,7 +39,7 @@
               :y (+ floor-y y)}))))
 
 (defn platform
-  ([x y w] (platform x w h 6))
+  ([x y w] (platform x y w 6))
   ([x y w h]
     {:x x
      :y y
@@ -50,7 +50,8 @@
   [{:obstacles [(block 200 20 20) ;0
                 (block 400 20 30)
                 (block 600 30 20)]
-    :platforms [(platform 240 105 100 10)]}
+    :platforms [(platform 240 105 100 10)
+                (platform 320 75 110 10)]}
 
    {:obstacles [(block 160 20 20) ;1
                 (block 360 20 20)

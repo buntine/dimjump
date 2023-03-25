@@ -177,6 +177,14 @@
     (kill-dim state)
     state))
 
+(defn detect-end-platform [{:keys [level dim] :as state}]
+  "Handles the dim coming to the end of a platform"
+  (let [platform (:active-platform dim)]
+    (if platform
+      (-> state
+          (update :dim dim/progress-platform platform))
+      state)))
+
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
   (update state :corpses #(filter
@@ -214,6 +222,7 @@
         progress-to-next-level
         progress-corpses
         progress-blood
+        detect-end-platform
         detect-blood-collision
         detect-platform-collision
         detect-object-collision)
