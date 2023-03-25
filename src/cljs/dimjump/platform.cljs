@@ -48,11 +48,11 @@
 ;   *- complete jump (might happen automatically?)
 ;
 ; When player jumps:
-;   - active platform is cleared out
+;   *- active platform is cleared out
 ;
 ; When player X goes past end of platform
-;   - Active platform is cleared out
-;   - Y is set back to the floor
+;   *- Active platform is cleared out
+;   *- Y is set back to the floor
 ;
 ; Need to implement a way to converge towards floor Y when
 ;   - player is not jumping

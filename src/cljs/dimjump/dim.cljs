@@ -39,6 +39,11 @@
   (let [pos (position dim)]
     (>= (:x pos) x)))
 
+(defn fully-past? [dim x]
+  "Returns true if dim has travelled completely past given X point"
+  (let [pos (position dim)]
+    (>= (- (:x pos) (/ (:w dim) 2)) x)))
+
 (defn floor-y [{:keys [active-platform] :as dim}]
   (let [floor (if active-platform
                 (platform/y-top active-platform)
@@ -143,7 +148,7 @@
 
 (defn progress-platform [dim platform]
   "Handles dim moving past the end of the active platform."
-  (let [finished? (>= (:x (position dim )) (platform/x-right platform))]
+  (let [finished? (fully-past? dim (platform/x-right platform))]
     (if finished?
       (assoc dim :active-platform nil)
       dim)))
