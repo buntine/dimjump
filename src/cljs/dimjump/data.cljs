@@ -16,6 +16,7 @@
    :speed-block-size 10
    :velocity-big -10
    :velocity-small -8
+   :fall-velocity 8
    :gravity 0.8
    :hud-color [10 49 56]
    :cover-color [156 215 249 200]

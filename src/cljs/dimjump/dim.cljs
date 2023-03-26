@@ -106,17 +106,19 @@
       (assoc :active-platform nil)
       reset))
 
-(defn update-velocity [dim]
+(defn next-velocity [dim]
   "Updates velocity during a jump"
   (if (:jumping dim)
     (update dim :velocity + (:gravity constants))
     dim))
 
 (defn next-y-position [dim]
-  "Returns the next Y position for the dim (necessary during a jump)"
+  "Returns the next Y position for the dim (necessary during a jump or when falling)"
   (let [floor (floor-y dim)
-        y (if (:jumping dim) (:y (position dim)) floor)
-        next-y (+ y (:velocity dim))]
+        y (:y (position dim))
+        next-y (+ y (if (:jumping dim)
+                      (:velocity dim)
+                      (:fall-velocity constants)))]
     (min floor next-y)))
 
 (defn next-x-position [dim]
@@ -137,7 +139,7 @@
         next-r (next-rotation dim)]
     (-> dim
         (add-point next-x next-y next-r)
-        update-velocity
+        next-velocity
         finalize-jump)))
 
 (defn collide-with-platform [dim platform]
