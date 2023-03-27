@@ -32,12 +32,13 @@
     (q/rect 0 0 w h)
     (q/pop-matrix)))
 
-(defn update-x-position [blood]
+(defn next-x-position [blood]
   (update blood :x + (:speed blood)))
 
-(defn update-y-position [blood]
-    (let [next-y (min (:floor-y constants)
-                      (+ (:y blood) (:velocity blood)))]
+(defn next-y-position [blood]
+    (let [current-y (:y blood)
+          y (if (> current-y (:h constants)) 0 current-y)
+          next-y (+ y (:velocity blood))]
       (assoc blood :y next-y)))
 
 (defn update-opacity [blood]
@@ -49,14 +50,16 @@
     blood))
 
 (defn update-velocity [blood]
-  (update blood :velocity + (:gravity constants)))
+  (update blood :velocity (fn [v]
+                            (min (:fall-velocity constants)
+                                 (+ v (:gravity constants))))))
 
 (defn progress [blood]
   "Receives blood state and returns next state."
   (if (:stay blood)
     (update-opacity blood)
     (-> blood
-        update-x-position
-        update-y-position
+        next-x-position
+        next-y-position
         update-velocity
         update-rotation)))

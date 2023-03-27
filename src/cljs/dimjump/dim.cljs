@@ -109,7 +109,9 @@
 (defn next-velocity [dim]
   "Updates velocity during a jump"
   (if (:jumping dim)
-    (update dim :velocity + (:gravity constants))
+    (update dim :velocity (fn [v]
+                            (min (:fall-velocity constants)
+                                 (+ v (:gravity constants)))))
     dim))
 
 (defn next-y-position [dim]
