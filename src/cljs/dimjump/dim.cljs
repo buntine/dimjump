@@ -5,7 +5,7 @@
 
 (defn spawn []
   {:points (take 5 (repeat {:x -20
-                            :y (:floor-y constants)
+                            :y 0
                             :rotaion 0}))
    :w 16
    :h 24
@@ -45,10 +45,10 @@
     (>= (- (:x pos) (/ (:w dim) 2)) x)))
 
 (defn floor-y [{:keys [active-platform] :as dim}]
-  (let [floor (if active-platform
-                (platform/y-top active-platform)
-                (:floor-y constants))]
-    (- floor (/ (:h dim) 2))))
+  (if active-platform
+    (- (platform/y-top active-platform)
+       (/ (:h dim) 2))
+    ##Inf))
 
 (defn add-point 
   ([dim x y r]
@@ -115,7 +115,8 @@
 (defn next-y-position [dim]
   "Returns the next Y position for the dim (necessary during a jump or when falling)"
   (let [floor (floor-y dim)
-        y (:y (position dim))
+        current-y (:y (position dim))
+        y (if (> current-y (:h constants)) 0 current-y)
         next-y (+ y (if (:jumping dim)
                       (:velocity dim)
                       (:fall-velocity constants)))]

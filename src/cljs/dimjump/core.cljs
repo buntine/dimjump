@@ -36,9 +36,7 @@
   (assoc state :phase 2))
 
 (defn draw-backdrop [state]
-  (let [{floor-y :floor-y w :w h :h} constants]
-    (q/image (get-in state [:images :sky]) 0 0)
-    (q/image (get-in state [:images :ground]) 0 floor-y)))
+  (q/image (get-in state [:images :sky]) 0 0))
 
 (defn draw-speed-blocks [{:keys [speed]}]
   (let [{block-size :speed-block-size

@@ -55,9 +55,9 @@
 ;   *- Y is set back to the floor
 ;
 ; Need to implement a way to converge towards floor Y when
-;   - player is not jumping
-;   - player Y is higher than expected floor Y
-;   - (this will happen when player comes off end of a platform)
+;   *- player is not jumping
+;   *- player Y is higher than expected floor Y
+;   *- (this will happen when player comes off end of a platform)
 
 
 ; - fall through floor and roof and right to left

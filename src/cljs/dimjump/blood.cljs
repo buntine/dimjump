@@ -32,11 +32,6 @@
     (q/rect 0 0 w h)
     (q/pop-matrix)))
 
-(defn update-stay [blood]
-  (if (>= (:y blood) (:floor-y constants))
-    (stay blood)
-    blood))
-
 (defn update-x-position [blood]
   (update blood :x + (:speed blood)))
 
@@ -64,5 +59,4 @@
         update-x-position
         update-y-position
         update-velocity
-        update-rotation
-        update-stay)))
+        update-rotation)))

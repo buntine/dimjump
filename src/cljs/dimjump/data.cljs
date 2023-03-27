@@ -8,8 +8,7 @@
 (def dimensions {:w 900 :h 200})
 
 (def constants
-  {:floor-y (* 0.70 (:h dimensions))
-   :w (:w dimensions)
+  {:w (:w dimensions)
    :h (:h dimensions)
    :speed-range (set (range 0 8))
    :speed-bar-color [158 159 160]
@@ -34,10 +33,10 @@
               :w w
               :min-x min-x
               :max-x max-x
-              :min-y (+ floor-y min-y)
-              :max-y (+ floor-y max-y)
+              :min-y (+ (:h constants) min-y)
+              :max-y (+ (:h constants) max-y)
               :h h
-              :y (+ floor-y y)}))))
+              :y (+ (:h constants) y)}))))
 
 (defn platform
   ([x y w] (platform x y w 6))
