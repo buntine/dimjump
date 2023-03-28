@@ -27,31 +27,22 @@
   ([x w h {:keys [y min-x max-x min-y max-y]
            :or {y 0 min-x x max-x x min-y y max-y y}
            :as opts}]
-    (let [floor-y (:floor-y constants)]
-      (merge opts
-             {:x x
-              :w w
-              :min-x min-x
-              :max-x max-x
-              :min-y (+ (:h constants) min-y)
-              :max-y (+ (:h constants) max-y)
-              :h h
-              :y (+ (:h constants) y)}))))
-
-(defn platform
-  ([x y w] (platform x y w 6))
-  ([x y w h]
-    {:x x
-     :y y
-     :w w
-     :h h}))
+    (merge opts
+           {:x x
+            :w w
+            :min-x min-x
+            :max-x max-x
+            :min-y (+ (:h constants) min-y)
+            :max-y (+ (:h constants) max-y)
+            :h h
+            :y (+ (:h constants) y)})))
 
 (def levels
-  [{:obstacles [(block 200 20 20) ;0
-                (block 400 20 30)
-                (block 600 30 20)]
-    :platforms [(platform 240 105 100 10)
-                (platform 320 75 110 10)]}
+  [{:obstacles [(block 200 20 20 {:y -10}) ;0
+                (block 400 20 30 {:y -10})
+                (block 600 30 20 {:y -10})]
+    :platforms [(block 0 (:w constants) 10)
+                (block 320 110 10 {:y -50})]}
 
    {:obstacles [(block 160 20 20) ;1
                 (block 360 20 20)

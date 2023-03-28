@@ -2,8 +2,10 @@
   (:require [quil.core :as q :include-macros true]
             [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [opts]
-  (merge {:kind :platform}
+(defn spawn [{:keys [speed] :or {speed 0} :as opts}]
+  (merge {:kind :platform
+          :move-x (- speed)
+          :move-y (- speed)}
          opts))
 
 (defn draw [{:keys [x w h y]} ctx]

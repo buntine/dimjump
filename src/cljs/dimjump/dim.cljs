@@ -79,9 +79,9 @@
         toggle-duck
         (update :h operator 2))))
 
-(defn jump [{:keys [jumping ducking] :as dim}]
+(defn jump [{:keys [jumping ducking active-platform] :as dim}]
   "Initiates a small or big jump, depending on ducking status"
-  (if jumping
+  (if (or jumping (not active-platform))
     dim
     (let [velocity (if ducking
                      (:velocity-small constants)
