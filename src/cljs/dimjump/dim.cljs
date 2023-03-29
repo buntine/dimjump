@@ -70,7 +70,9 @@
 (defn reset [dim]
   "Moves dim back to start of the screen"
   (let [{y :y rotation :rotation} (position dim)]
-    (add-point dim -20 y rotation)))
+    (-> dim
+        (assoc :active-platform nil)
+        (add-point -20 y rotation))))
 
 (defn duck [dim]
   "Toggles ducking and doubles/halves height of player accordingly"
