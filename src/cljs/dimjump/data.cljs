@@ -5,7 +5,7 @@
   (memoize (fn [size]
              (q/create-font "AddStandard" size))))
 
-(def dimensions {:w 900 :h 200})
+(def dimensions {:w 900 :h 700})
 
 (def constants
   {:w (:w dimensions)
@@ -15,7 +15,7 @@
    :speed-block-size 10
    :velocity-big -10
    :velocity-small -8
-   :fall-velocity 8
+   :fall-velocity 5
    :gravity 0.8
    :hud-color [10 49 56]
    :exit-color [40 40 40]
@@ -45,7 +45,7 @@
     :platforms [(block 0 500 10)
                 (block 530 500 10)
                 (block 320 110 10 {:y -50})]
-    :exits [(block (- (:w constants) 100) 40 40 {:y -50})]}
+    :exits [(block (- (:w constants) 100) 26 38 {:y -50})]}
 
    {:obstacles [(block 160 20 20) ;1
                 (block 360 20 20)

@@ -18,7 +18,7 @@
    :ducking false
    :jumping false
    :active-platform nil
-   :speed 4
+   :speed 1
    :animation-speed 12})
 
 (defn toggle-flag [flag]

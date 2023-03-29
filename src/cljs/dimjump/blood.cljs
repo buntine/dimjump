@@ -8,6 +8,7 @@
    :w 3
    :h 3
    :velocity velocity
+   :max-velocity (- velocity)
    :stay false
    :speed (+ (- speed 2) (rand-int 3))
    :rotation 0
@@ -49,9 +50,9 @@
     (update blood :rotation + (* Math/PI 0.079753))
     blood))
 
-(defn update-velocity [blood]
+(defn update-velocity [{:keys [max-velocity] :as blood}]
   (update blood :velocity (fn [v]
-                            (min (:fall-velocity constants)
+                            (min max-velocity
                                  (+ v (:gravity constants))))))
 
 (defn progress [blood]
