@@ -64,7 +64,7 @@
     (q/with-fill
       (:hud-color constants)
       (q/text (str "Level " (inc (:index level)) " with " (:deaths dim) " deaths")
-              (- w 5) (- h 5)))))
+              (- w 5) 17))))
 
 (defn draw-dim [state]
   (dim/draw (:dim state)))
@@ -109,7 +109,7 @@
 
 (defn draw [state]
   (q/background (q/color 176 222 249))
-  (q/text-font (data/text 14))
+  (q/text-font (data/text 12))
   (q/text-align :right :bottom)
   (q/image-mode :corner)
   (draw-backdrop state)

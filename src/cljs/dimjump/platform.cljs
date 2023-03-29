@@ -43,28 +43,3 @@
          (< ox p-right)
          (< p-top o-top)
          (< o-top p-bottom))))
-
-; Colliding with platform in valid way should:
-;   *- set new Y (floor-y?) for dim
-;   *- store a reference to the 'active' platform.
-;   *- complete jump (might happen automatically?)
-;
-; When player jumps:
-;   *- active platform is cleared out
-;
-; When player X goes past end of platform
-;   *- Active platform is cleared out
-;   *- Y is set back to the floor
-;
-; Need to implement a way to converge towards floor Y when
-;   *- player is not jumping
-;   *- player Y is higher than expected floor Y
-;   *- (this will happen when player comes off end of a platform)
-
-
-; - fall through floor and roof and right to left
-; - to win, have to get into "door"
-; - doors could be anywhere on the screen X and Y
-; - could have "buttons" or "keys" that need to open the door
-; - moving platforms, falling platforms, fading platforms
-; - game should be whole page / fullscreen

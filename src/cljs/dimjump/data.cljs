@@ -18,6 +18,7 @@
    :fall-velocity 8
    :gravity 0.8
    :hud-color [10 49 56]
+   :exit-color [40 40 40]
    :cover-color [156 215 249 200]
    :grass-height 3
    :grass-color [3 192 74]})
@@ -41,8 +42,10 @@
   [{:obstacles [(block 200 20 20 {:y -10}) ;0
                 (block 400 20 30 {:y -10})
                 (block 600 30 20 {:y -10})]
-    :platforms [(block 0 (:w constants) 10)
-                (block 320 110 10 {:y -50})]}
+    :platforms [(block 0 500 10)
+                (block 530 500 10)
+                (block 320 110 10 {:y -50})]
+    :exits [(block (- (:w constants) 100) 40 40 {:y -50})]}
 
    {:obstacles [(block 160 20 20) ;1
                 (block 360 20 20)
