@@ -128,7 +128,9 @@
 
 (defn next-x-position [dim]
   "Returns next X position for dim"
-  (+ (:x (position dim)) (:speed dim)))
+  (let [current-x (:x (position dim))
+        x (if (> current-x (:w constants)) 0 current-x)]
+    (+ x (:speed dim))))
 
 (defn next-rotation [dim]
   "Returns next rotation value for dim (during a jump)"

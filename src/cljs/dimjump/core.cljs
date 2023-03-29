@@ -216,8 +216,8 @@
     (-> state
         (update :dim dim/progress)
         (update :level level/progress)
-        progress-to-finish-game
-        progress-to-next-level
+;        progress-to-finish-game
+;        progress-to-next-level
         progress-corpses
         progress-blood
         detect-end-platform
