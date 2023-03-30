@@ -3,9 +3,9 @@
             [dimjump.data :as data :refer [constants]]
             [dimjump.platform :as platform]))
 
-(defn spawn []
+(defn spawn [y]
   {:points (take 5 (repeat {:x -20
-                            :y 0
+                            :y y
                             :rotaion 0}))
    :w 16
    :h 24
@@ -67,9 +67,9 @@
 (def speed-up (set-speed inc))
 (def speed-down (set-speed dec))
 
-(defn reset [dim]
-  "Moves dim back to start of the screen"
-  (let [{y :y rotation :rotation} (position dim)]
+(defn reset [dim y]
+  "Moves dim back to start of the screen, at the given Y position"
+  (let [{rotation :rotation} (position dim)]
     (-> dim
         (assoc :active-platform nil)
         (add-point -20 y rotation))))
@@ -102,11 +102,11 @@
         (assoc :velocity 0))
     dim))
 
-(defn kill [dim]
+(defn kill [dim y]
   (-> dim
       (update :deaths inc)
       (assoc :active-platform nil)
-      reset))
+      (reset y)))
 
 (defn next-velocity [dim]
   "Updates velocity during a jump"

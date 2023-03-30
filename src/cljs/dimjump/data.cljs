@@ -16,6 +16,7 @@
    :velocity-big -10
    :velocity-small -8
    :fall-velocity 5
+   :max-velocity 12
    :gravity 0.8
    :hud-color [10 49 56]
    :exit-color [40 40 40]
@@ -39,7 +40,8 @@
             :y (+ (:h constants) y)})))
 
 (def levels
-  [{:obstacles [(block 200 20 20 {:y -10}) ;0
+  [{:starting-y 200
+    :obstacles [(block 200 20 20 {:y -10}) ;0
                 (block 400 20 30 {:y -10})
                 (block 600 30 20 {:y -10})]
     :platforms [(block 0 500 10)

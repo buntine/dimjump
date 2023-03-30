@@ -8,7 +8,7 @@
    :w 3
    :h 3
    :velocity velocity
-   :max-velocity (- velocity)
+   :max-velocity (min (- velocity) (:max-velocity constants))
    :stay false
    :speed (+ (- speed 2) (rand-int 3))
    :rotation 0

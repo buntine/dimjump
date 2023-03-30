@@ -4,18 +4,19 @@
             [dimjump.exit :as exit]
             [dimjump.data :as data]))
 
-(defn block-data [kind n]
+(defn level-data [kind n]
   (kind (data/levels n)))
 
 (defn spawn [n]
   {:index n
+   :starting-y (level-data :starting-y n)
    :objects (concat
               (map obstacle/spawn
-                   (block-data :obstacles n))
+                   (level-data :obstacles n))
               (map platform/spawn
-                   (block-data :platforms n))
+                   (level-data :platforms n))
               (map exit/spawn
-                   (block-data :exits n)))})
+                   (level-data :exits n)))})
 
 (defn obstacles [{:keys [objects]}]
   (filter #(= (:kind %) :obstacle) objects))

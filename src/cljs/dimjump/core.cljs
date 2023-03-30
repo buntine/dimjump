@@ -14,16 +14,17 @@
   (q/frame-rate 60)
   (.focus (.getElementById js/document "game"))
 
-  {:phase 0 ; 0: Intro/Pause, 1: Play, 2: Finished
-   :level (level/spawn 0)
-   :corpses []
-   :blood []
-   :sound true
-   :images {:pause (q/load-image "/images/pause.png")
-            :end (q/load-image "/images/end.png")
-            :sky (q/load-image "/images/sky.png")
-            :ground (q/load-image "/images/ground.png")}
-   :dim (dim/spawn)})
+  (let [l (level/spawn 0)]
+    {:phase 0 ; 0: Intro/Pause, 1: Play, 2: Finished
+     :level l
+     :corpses []
+     :blood []
+     :sound true
+     :images {:pause (q/load-image "/images/pause.png")
+              :end (q/load-image "/images/end.png")
+              :sky (q/load-image "/images/sky.png")
+              :ground (q/load-image "/images/ground.png")}
+     :dim (dim/spawn (:starting-y l))}))
 
 (defn start-game [state]
   (assoc state :phase 1))
@@ -137,7 +138,7 @@
       #(blood/spawn position % speed)
       (range -20 -2))))
 
-(defn kill-dim [{:keys [sound dim] :as state}]
+(defn kill-dim [{:keys [sound dim level] :as state}]
   (if sound
     (sound/play-sound :splat))
   (let [sprite (dim/sprite-for dim)
@@ -145,7 +146,7 @@
     (-> state
         (update :corpses conj (corpse/spawn position sprite))
         (update :blood concat (create-blood-splatter dim))
-        (update :dim dim/kill))))
+        (update :dim dim/kill (:starting-y level)))))
 
 (defn detect-blood-collision [{:keys [blood level] :as state}]
   "Stops any blood particles that hit an obstacle. Currently, if a blood
