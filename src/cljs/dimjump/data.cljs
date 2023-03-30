@@ -40,7 +40,7 @@
             :y (+ (:h constants) y)})))
 
 (def levels
-  [{:starting-y 200
+  [{:initial-y 200
     :obstacles [(block 200 20 20 {:y -10}) ;0
                 (block 400 20 30 {:y -10})
                 (block 600 30 20 {:y -10})]
