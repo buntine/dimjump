@@ -9,7 +9,7 @@
 
 (defn spawn [n]
   {:index n
-   :initial-y (level-data :initial-y n)
+   :initial (level-data :initial n)
    :objects (concat
               (map obstacle/spawn
                    (level-data :obstacles n))

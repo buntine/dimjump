@@ -10,7 +10,7 @@
 (def constants
   {:w (:w dimensions)
    :h (:h dimensions)
-   :speed-range (set (range 0 8))
+   :speed-range (set (range -4 4))
    :speed-bar-color [158 159 160]
    :speed-block-size 10
    :velocity-big -10
@@ -40,7 +40,8 @@
             :y (+ (:h constants) y)})))
 
 (def levels
-  [{:initial-y 200
+  [{:initial {:y 200
+              :speed 2}
     :obstacles [(block 200 20 20 {:y -10}) ;0
                 (block 400 20 30 {:y -10})
                 (block 600 30 20 {:y -10})]

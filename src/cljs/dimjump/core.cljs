@@ -24,7 +24,7 @@
               :end (q/load-image "/images/end.png")
               :sky (q/load-image "/images/sky.png")
               :ground (q/load-image "/images/ground.png")}
-     :dim (dim/spawn (:initial-y l))}))
+     :dim (dim/spawn (:initial l))}))
 
 (defn start-game [state]
   (assoc state :phase 1))
@@ -146,7 +146,7 @@
     (-> state
         (update :corpses conj (corpse/spawn position sprite))
         (update :blood concat (create-blood-splatter dim))
-        (update :dim dim/kill (:initial-y level)))))
+        (update :dim dim/kill (:initial level)))))
 
 (defn detect-blood-collision [{:keys [blood level] :as state}]
   "Stops any blood particles that hit an obstacle. Currently, if a blood

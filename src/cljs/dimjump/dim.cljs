@@ -3,7 +3,7 @@
             [dimjump.data :as data :refer [constants]]
             [dimjump.platform :as platform]))
 
-(defn spawn [y]
+(defn spawn [{y :y speed :speed}]
   {:points (take 5 (repeat {:x -20
                             :y y
                             :rotaion 0}))
@@ -18,7 +18,7 @@
    :ducking false
    :jumping false
    :active-platform nil
-   :speed 1
+   :speed speed
    :animation-speed 12})
 
 (defn toggle-flag [flag]
@@ -67,11 +67,12 @@
 (def speed-up (set-speed inc))
 (def speed-down (set-speed dec))
 
-(defn reset [dim y]
+(defn reset [dim {y :y speed :speed}]
   "Moves dim back to start of the screen, at the given Y position"
   (let [{rotation :rotation} (position dim)]
     (-> dim
         (assoc :active-platform nil)
+        (assoc :speed speed)
         (add-point -20 y rotation))))
 
 (defn duck [dim]
@@ -102,11 +103,11 @@
         (assoc :velocity 0))
     dim))
 
-(defn kill [dim y]
+(defn kill [dim initial]
   (-> dim
       (update :deaths inc)
       (assoc :active-platform nil)
-      (reset y)))
+      (reset initial)))
 
 (defn next-velocity [dim]
   "Updates velocity during a jump"
