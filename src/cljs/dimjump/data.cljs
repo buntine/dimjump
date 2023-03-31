@@ -11,8 +11,6 @@
   {:w (:w dimensions)
    :h (:h dimensions)
    :speed-range (set (range -4 4))
-   :speed-bar-color [158 159 160]
-   :speed-block-size 10
    :velocity-big -10
    :velocity-small -8
    :fall-velocity 5

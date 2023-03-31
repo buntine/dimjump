@@ -39,27 +39,6 @@
 (defn draw-backdrop [state]
   (q/image (get-in state [:images :sky]) 0 0))
 
-(defn draw-speed-blocks [{:keys [speed]}]
-  (let [{block-size :speed-block-size
-         speed-range :speed-range} constants
-        top-speed (last speed-range)]
-    (loop [n 0]
-      (q/with-fill
-        [(* n (/ 255 top-speed)) 0 0]
-        (q/rect (+ 4 (* n block-size)) 4 block-size block-size))
-      (if (< n (- speed 1))
-        (recur (+ n 1))))))
-
-(defn draw-speed [{:keys [dim]}]
-  (let [{block-size :speed-block-size
-         speed-range :speed-range} constants
-        speedbar-width (* (last speed-range) block-size)]
-    (q/with-fill
-      (:speed-bar-color constants)
-      (q/rect 4 4 speedbar-width block-size))
-    (if (> (:speed dim) 0)
-      (draw-speed-blocks dim))))
-
 (defn draw-hud [{:keys [level dim]}]
   (let [{w :w h :h} constants]
     (q/with-fill
@@ -115,7 +94,6 @@
   (q/image-mode :corner)
   (draw-backdrop state)
   (draw-hud state)
-  (draw-speed state)
   (level/draw (:level state))
   (draw-dim state)
 
