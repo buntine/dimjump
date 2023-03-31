@@ -181,7 +181,8 @@
 
 (defn progress-platform [dim platform]
   "Handles dim moving past the end of the active platform."
-  (let [finished? (fully-past? dim (platform/x-right platform))]
+  (let [finished? (or (fully-past? dim (platform/x-right platform))
+                      (fully-before? dim (:x platform)))]
     (if finished?
       (assoc dim :active-platform nil)
       dim)))
