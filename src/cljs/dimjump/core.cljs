@@ -66,8 +66,8 @@
     (q/image-mode :corner)
     (q/image (get-in state [:images :end]) 0 0))))
 
-(defn jump [state]
-  (if (and (:sound state) (not (get-in state [:dim :jumping])))
+(defn jump [{:keys [dim] :as state}]
+  (if (and (dim/jumpable? dim) (:sound state))
     (sound/play-sound (str "jump" (rand-int 7)) 0.5))
   (update state :dim dim/jump))
 
