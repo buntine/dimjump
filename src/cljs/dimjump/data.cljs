@@ -10,7 +10,7 @@
 (def constants
   {:w (:w dimensions)
    :h (:h dimensions)
-   :speed-range (set (range -4 4))
+   :speed-range (set (range -4 5))
    :velocity-big -10
    :velocity-small -8
    :fall-velocity 5
