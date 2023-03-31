@@ -3,8 +3,8 @@
             [dimjump.data :as data :refer [constants]]
             [dimjump.platform :as platform]))
 
-(defn spawn [{y :y speed :speed}]
-  {:points (take 5 (repeat {:x -20
+(defn spawn [{x :x y :y speed :speed}]
+  {:points (take 5 (repeat {:x x
                             :y y
                             :rotaion 0}))
    :w 16
@@ -44,6 +44,25 @@
   (let [pos (position dim)]
     (>= (- (:x pos) (/ (:w dim) 2)) x)))
 
+(defn fully-before? [dim x]
+  "Returns true if dim is fully before given X point"
+  (let [pos (position dim)]
+    (<= (+ (:x pos) (/ (:w dim) 2)) x)))
+
+(defn offscreen-right? [dim]
+  (fully-past? dim (:w constants)))
+
+(defn offscreen-left? [dim]
+  (fully-before? dim 0))
+
+(defn offscreen-top? [dim]
+  (let [{y :y} (position dim)]
+    (<= (+ y (/ (:h dim) 2)) 0)))
+
+(defn offscreen-bottom? [dim]
+  (let [{y :y} (position dim)]
+    (>= (- y (/ (:h dim) 2)) (:h constants))))
+
 (defn floor-y [{:keys [active-platform] :as dim}]
   (if active-platform
     (- (platform/y-top active-platform)
@@ -67,13 +86,13 @@
 (def speed-up (set-speed inc))
 (def speed-down (set-speed dec))
 
-(defn reset [dim {y :y speed :speed}]
+(defn reset [dim {x :x y :y speed :speed}]
   "Moves dim back to start of the screen, at the given Y position"
   (let [{rotation :rotation} (position dim)]
     (-> dim
         (assoc :active-platform nil)
         (assoc :speed speed)
-        (add-point -20 y rotation))))
+        (add-point x y rotation))))
 
 (defn duck [dim]
   "Toggles ducking and doubles/halves height of player accordingly"
@@ -121,7 +140,9 @@
   "Returns the next Y position for the dim (necessary during a jump or when falling)"
   (let [floor (floor-y dim)
         current-y (:y (position dim))
-        y (if (> current-y (:h constants)) 0 current-y)
+        y (cond (offscreen-top? dim) (:h constants)
+                (offscreen-bottom? dim) 0
+                :else current-y)
         next-y (+ y (if (:jumping dim)
                       (:velocity dim)
                       (:fall-velocity constants)))]
@@ -130,7 +151,9 @@
 (defn next-x-position [dim]
   "Returns next X position for dim"
   (let [current-x (:x (position dim))
-        x (if (> current-x (:w constants)) 0 current-x)]
+        x (cond (offscreen-right? dim) 0
+                (offscreen-left? dim) (:w constants)
+                :else current-x)]
     (+ x (:speed dim))))
 
 (defn next-rotation [dim]

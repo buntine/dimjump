@@ -37,10 +37,10 @@
   (update blood :x + (:speed blood)))
 
 (defn next-y-position [blood]
-    (let [current-y (:y blood)
-          y (if (> current-y (:h constants)) 0 current-y)
-          next-y (+ y (:velocity blood))]
-      (assoc blood :y next-y)))
+  (let [current-y (:y blood)
+        y (if (> current-y (:h constants)) 0 current-y)
+        next-y (+ y (:velocity blood))]
+    (assoc blood :y next-y)))
 
 (defn update-opacity [blood]
   (update blood :alpha - (:degradation blood)))
