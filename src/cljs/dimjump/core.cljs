@@ -196,20 +196,24 @@
                            blood/visible?
                            (map blood/progress %))))
 
-(defn progress-to-finish-game [{:keys [dim level] :as state}]
-  "Updates game phase if player has finished last level"
-  (if (and (dim/past? dim (:w constants))
-           (level/last? level))
-    (finish-game state)
-    state))
+(defn place-dim [{:keys [dim level] :as state}]
+  "Places the dim correctly for the current level"
+  (-> state
+      (update :dim dim/reset (:initial level))))
 
-(defn progress-to-next-level [{:keys [dim] :as state}]
-  "Moves to the next level if it is necessary to do so"
-  (if (dim/past? dim (:w constants))
+(defn go-to-next-level [{:keys [dim level] :as state}]
+  "Moves to the next level"
+  (if (level/last? level)
+    (finish-game state)
     (-> state
         (assoc :blood [])
         (update :level level/move-next)
-        (update :dim dim/reset))
+        place-dim)))
+
+(defn detect-exit-collision [{:keys [level dim] :as state}]
+  "Handles the dim landing on an exit"
+  (if-let [exit (level/collided-exit level (dim/position dim))]
+    (go-to-next-level state)
     state))
 
 (defn progress [state]
@@ -217,11 +221,10 @@
     (-> state
         (update :dim dim/progress)
         (update :level level/progress)
-;        progress-to-finish-game
-;        progress-to-next-level
         progress-corpses
         progress-blood
         detect-end-platform
+        detect-exit-collision
         detect-blood-collision
         detect-platform-collision
         detect-object-collision)

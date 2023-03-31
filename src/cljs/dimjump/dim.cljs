@@ -86,13 +86,13 @@
 (def speed-up (set-speed inc))
 (def speed-down (set-speed dec))
 
-(defn reset [dim {x :x y :y speed :speed}]
+(defn reset [dim {:keys [x y speed]}]
   "Moves dim back to start of the screen, at the given Y position"
-  (let [{rotation :rotation} (position dim)]
-    (-> dim
-        (assoc :active-platform nil)
-        (assoc :speed speed)
-        (add-point x y rotation))))
+  (-> dim
+      (assoc :active-platform nil)
+      (assoc :speed speed)
+      (assoc :jumping false)
+      (add-point x y 0)))
 
 (defn duck [dim]
   "Toggles ducking and doubles/halves height of player accordingly"
@@ -205,6 +205,7 @@
   (let [sprite (sprite-for dim)
         points (reverse (:points dim))
         trail (take (count points) (trail-opacities))
+        x-scale (if (>= (:speed dim) 0) 1.0 -1.0) ; Determine which way Dim is facing / rotating
         trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
                                           points)]
     (doseq [[{x :x y :y rotation :rotation} opacity] trail-with-opacities]
@@ -212,6 +213,7 @@
       (q/image-mode :center)
       (q/tint 255 opacity)
       (q/translate x y)
+      (q/scale x-scale 1.0)
       (q/rotate rotation)
       (q/image sprite 0 0)
       (q/no-tint)
