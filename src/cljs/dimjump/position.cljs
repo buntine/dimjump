@@ -1,6 +1,13 @@
 (ns dimjump.position
   (:require [dimjump.data :as data :refer [constants]]))
 
+(defn spawn [{:keys [x y speed velocity] :or [velocity 0]}]
+  {:points (take 5 (repeat {:x x
+                            :y y
+                            :rotation 0}))
+   :velocity velocity
+   :speed speed})
+
 (defn pos [object]
   "Returns a map of current position and dimensions (x, y, w, h, rotation)"
   (let [last-point (last (:points object))]

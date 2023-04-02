@@ -4,23 +4,20 @@
             [dimjump.position :as position]
             [dimjump.platform :as platform]))
 
-(defn spawn [{x :x y :y speed :speed}]
-  {:points (take 5 (repeat {:x x
-                            :y y
-                            :rotation 0}))
-   :w 16
-   :h 24
-   :velocity 0
-   :deaths 0
-   :frames {:standing [(q/load-image "/images/dim1.png")
-                       (q/load-image "/images/dim2.png")]
-            :ducking [(q/load-image "/images/dim3.png")
-                      (q/load-image "/images/dim4.png")]}
-   :ducking false
-   :jumping false
-   :active-platform nil
-   :speed speed
-   :animation-speed 12})
+(defn spawn [opts]
+  (merge
+    (position/spawn opts)
+    {:w 16
+     :h 24
+     :deaths 0
+     :frames {:standing [(q/load-image "/images/dim1.png")
+                         (q/load-image "/images/dim2.png")]
+              :ducking [(q/load-image "/images/dim3.png")
+                        (q/load-image "/images/dim4.png")]}
+     :ducking false
+     :jumping false
+     :active-platform nil
+     :animation-speed 12}))
 
 (defn toggle-flag [flag]
   (fn [dim]

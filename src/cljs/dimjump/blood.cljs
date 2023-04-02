@@ -3,19 +3,15 @@
             [dimjump.position :as position]
             [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [{x :x y :y} velocity speed]
-  {
-   :points (take 5 (repeat {:x x
-                            :y y
-                            :rotation 0}))
-   :w 3
-   :h 3
-   :velocity velocity
-   :max-velocity (min (- velocity) (:max-velocity constants))
-   :stay false
-   :speed (+ (- speed 2) (rand-int 3))
-   :degradation 0.6
-   :alpha 255})
+(defn spawn [{:keys [velocity] :as opts}]
+  (merge
+    (position/spawn (update opts :speed #(+ (- % 2) (rand-int 3))))
+    {:w 3
+     :h 3
+     :max-velocity (min (- velocity) (:max-velocity constants))
+     :stay false
+     :degradation 0.6
+     :alpha 255}))
 
 (defn visible? [{alpha :alpha}]
   (>= alpha 0))

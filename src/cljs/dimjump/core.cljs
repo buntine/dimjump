@@ -114,7 +114,7 @@
 (defn create-blood-splatter [{:keys [speed] :as dim}]
   (let [position (position/pos dim)]
     (map
-      #(blood/spawn position % speed)
+      #(blood/spawn (merge position {:velocity % :speed speed}))
       (range -20 -2))))
 
 (defn kill-dim [{:keys [sound dim level] :as state}]
