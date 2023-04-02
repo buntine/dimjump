@@ -7,6 +7,7 @@
             [dimjump.corpse :as corpse]
             [dimjump.blood :as blood]
             [dimjump.sound :as sound]
+            [dimjump.position :as position]
             [dimjump.data :as data :refer [constants]]))
 
 (defn setup []
@@ -111,7 +112,7 @@
         (sound/pause-sound "invaded_city"))))
 
 (defn create-blood-splatter [{:keys [speed] :as dim}]
-  (let [position (dim/position dim)]
+  (let [position (position/pos dim)]
     (map
       #(blood/spawn position % speed)
       (range -20 -2))))
@@ -120,7 +121,7 @@
   (if sound
     (sound/play-sound :splat))
   (let [sprite (dim/sprite-for dim)
-        position (dim/position dim)]
+        position (position/pos dim)]
     (-> state
         (update :corpses conj (corpse/spawn position sprite))
         (update :blood concat (create-blood-splatter dim))
@@ -142,7 +143,7 @@
 
 (defn detect-platform-collision [{:keys [level dim] :as state}]
   "Handles the dim landing on a valid platform"
-  (let [platform (level/collided-platform level (dim/position dim))]
+  (let [platform (level/collided-platform level (position/pos dim))]
     (if platform
       (-> state
           (update :dim dim/collide-with-platform platform))
@@ -150,7 +151,7 @@
 
 (defn detect-object-collision [{:keys [level dim] :as state}]
   "Kills the dim if it hits anything"
-  (if (level/collided-obstacle level (dim/position dim))
+  (if (level/collided-obstacle level (position/pos dim))
     (kill-dim state)
     state))
 
@@ -190,7 +191,7 @@
 
 (defn detect-exit-collision [{:keys [level dim] :as state}]
   "Handles the dim landing on an exit"
-  (if-let [exit (level/collided-exit level (dim/position dim))]
+  (if-let [exit (level/collided-exit level (position/pos dim))]
     (go-to-next-level state)
     state))
 

@@ -5,7 +5,7 @@
   (memoize (fn [size]
              (q/create-font "AddStandard" size))))
 
-(def dimensions {:w 900 :h 700})
+(def dimensions {:w 1280 :h 720})
 
 (def constants
   {:w (:w dimensions)
