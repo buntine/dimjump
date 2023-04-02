@@ -20,7 +20,10 @@
   (not stay))
 
 (defn stay [blood]
-  (assoc blood :stay true))
+  (-> blood
+      (assoc :stay true
+             :speed 0
+             :velocity 0)))
 
 (defn draw [{:keys [alpha w h] :as blood}]
   "Renders blood with fade-off trail relative to current speed"
@@ -29,7 +32,7 @@
         trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
                                           points)]
     (doseq [[{x :x y :y rotation :rotation} opacity] trail-with-opacities]
-      (q/with-fill [138 7 7 alpha]
+      (q/with-fill [138 7 7 (* alpha (/ opacity 255))]
         (q/push-matrix)
         (q/translate x y)
         (q/rotate rotation)
@@ -47,11 +50,13 @@
 
 (defn progress [{:keys [max-velocity] :as blood}]
   "Receives blood state and returns next state."
-  (if (:stay blood)
-    (next-opacity blood)
-    (let [next-x (position/next-x-position blood)
-          next-y (position/next-y-position blood)
-          next-r (next-rotation blood)]
+  (let [next-x (position/next-x-position blood)
+        next-y (position/next-y-position blood)
+        next-r (next-rotation blood)]
+    (if (:stay blood)
+      (-> blood
+          next-opacity
+          (position/add-point next-x next-y next-r))
       (-> blood
           (position/add-point next-x next-y next-r)
           (position/next-velocity max-velocity)))))
