@@ -132,7 +132,7 @@
    particule hits a *moving* obstacle then it just keeps going through it."
   (letfn
     [(attach-blood [b]
-       (let [obstacle (and (blood/moving? b) (level/collided-obstacle level b))
+       (let [obstacle (and (blood/moving? b) (level/collided-obstacle level (position/pos b)))
              should-stay (and obstacle (not (obstacle/moving? obstacle)))]
          (if should-stay
            (blood/stay b)

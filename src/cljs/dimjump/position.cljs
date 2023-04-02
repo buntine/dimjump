@@ -2,7 +2,7 @@
   (:require [dimjump.data :as data :refer [constants]]))
 
 (defn pos [object]
-  "Returns a map of current position and dimensions (x, y, w, h)"
+  "Returns a map of current position and dimensions (x, y, w, h, rotation)"
   (let [last-point (last (:points object))]
     (merge last-point
            (select-keys object [:w :h]))))
@@ -42,10 +42,13 @@
   ([object point]
     (update object :points (comp vec rest conj) point)))
 
-(defn next-velocity [object]
+(defn next-velocity
   "Produces the next velocity (for a jumping/falling object)"
-  (update object :velocity #(min (:fall-velocity constants)
-                                 (+ % (:gravity constants)))))
+  ([object]
+   (next-velocity object (:fall-velocity constants)))
+  ([object max-velocity]
+   (update object :velocity #(min max-velocity
+                                  (+ % (:gravity constants))))))
 
 (defn next-y-position
   "Returns the next Y position for the object.
