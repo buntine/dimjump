@@ -120,19 +120,22 @@
         next-velocity
         finalize-jump)))
 
+(defn correct-for-active-platform [dim]
+  "Receives player state and returns next state."
+  (if (:active-platform dim)
+    (let [pos (position/pos dim)
+          x (:x pos)
+          y (floor-y dim)
+          r (:rotation pos)]
+      (-> dim
+          (position/add-point x y r)))
+    dim))
+
 (defn collide-with-platform [dim platform]
   "Handles dim colliding with a platform."
   (-> dim
       (assoc :active-platform platform)
       progress))
-
-(defn progress-platform [dim platform]
-  "Handles dim moving past the end of the active platform."
-  (let [finished? (or (position/fully-past? dim (platform/x-right platform))
-                      (position/fully-before? dim (:x platform)))]
-    (if finished?
-      (assoc dim :active-platform nil)
-      dim)))
 
 (defn sprite-for [dim]
   "Returns the PImage suitable for the given frame number"

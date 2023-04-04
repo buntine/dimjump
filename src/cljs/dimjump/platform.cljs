@@ -40,4 +40,4 @@
     (and (< p-left o-right)
          (< ox p-right)
          (< p-top o-top)
-         (< o-top p-bottom))))
+         (<= o-top p-bottom))))

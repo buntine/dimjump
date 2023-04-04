@@ -62,7 +62,7 @@
    floor represents the largest Y (e.g the position of an active platform).
    Calls the velocity-fn, which should return the current objects velocity (or 0)."
   ([object]
-    (next-y-position object 100000 #(:velocity %)))
+    (next-y-position object ##Inf #(:velocity %)))
   ([object floor velocity-fn]
     (let [current-y (:y (pos object))
           y (cond (offscreen-top? object) (:h constants)

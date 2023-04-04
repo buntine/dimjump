@@ -46,7 +46,7 @@
                 (block 600 30 20 {:y -10})]
     :platforms [(block 0 500 10)
                 (block 530 500 10)
-                (block 320 110 10 {:y -50})]
+                (block 320 110 10 {:min-y -70 :max-y -10 :speed 0.5})]
     :exits [(block (- (:w constants) 100) 26 38 {:y -50})]}
 
    {:initial {:y 300
