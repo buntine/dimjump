@@ -3,7 +3,7 @@
             [quil.middleware :as m]
             [dimjump.dim :as dim]
             [dimjump.level :as level]
-            [dimjump.obstacle :as obstacle]
+            [dimjump.object :as object]
             [dimjump.corpse :as corpse]
             [dimjump.blood :as blood]
             [dimjump.sound :as sound]
@@ -133,7 +133,7 @@
   (letfn
     [(attach-blood [b]
        (let [obstacle (and (blood/moving? b) (level/collided-obstacle level (position/pos b)))
-             should-stay (and obstacle (not (obstacle/moving? obstacle)))]
+             should-stay (and obstacle (not (object/moving? obstacle)))]
          (if should-stay
            (blood/stay b)
            b)))]

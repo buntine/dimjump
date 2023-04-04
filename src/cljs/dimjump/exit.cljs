@@ -1,12 +1,10 @@
 (ns dimjump.exit
   (:require [quil.core :as q :include-macros true]
+            [dimjump.object :as object]
             [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [{:keys [speed] :or {speed 0} :as opts}]
-  (merge {:kind :exit
-          :move-x (- speed)
-          :move-y (- speed)}
-         opts))
+(defn spawn [opts]
+  (object/spawn :exit opts))
 
 (defn draw [{:keys [x y w h]} ctx]
   (q/with-fill (constants :exit-color)

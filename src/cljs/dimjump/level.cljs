@@ -2,6 +2,7 @@
   (:require [dimjump.obstacle :as obstacle]
             [dimjump.platform :as platform]
             [dimjump.exit :as exit]
+            [dimjump.object :as object]
             [dimjump.data :as data]))
 
 (defn level-data [kind n]
@@ -52,7 +53,7 @@
       (exit/draw e ctx))))
 
 (defn progress [level]
-  (update level :objects (partial map obstacle/progress)))
+  (update level :objects (partial map object/progress)))
 
 (defn collided-object [collision-fn objects-fn level entity]
   "Returns the object that the given entity has hit. Or nil if there is

@@ -1,12 +1,10 @@
 (ns dimjump.platform
   (:require [quil.core :as q :include-macros true]
+            [dimjump.object :as object]
             [dimjump.data :as data :refer [constants]]))
 
-(defn spawn [{:keys [speed] :or {speed 0} :as opts}]
-  (merge {:kind :platform
-          :move-x (- speed)
-          :move-y (- speed)}
-         opts))
+(defn spawn [opts]
+  (object/spawn :platform opts))
 
 (defn draw [{:keys [x w h y]} ctx]
   (.beginPath ctx)
