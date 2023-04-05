@@ -46,7 +46,6 @@
 (defn reset [dim {:keys [x y speed]}]
   "Moves dim back to start of the screen, at the given Y position"
   (-> dim
-      (assoc :active-platform nil)
       (assoc :speed speed)
       (assoc :jumping false)
       (position/add-point x y 0)))
@@ -95,14 +94,17 @@
     (position/next-velocity dim)
     dim))
 
-(defn next-y-position [dim]
+(defn next-y-position
   "Returns the next Y position for the dim (necessary during a jump or when falling)"
-  (position/next-y-position
-    dim
-    (floor-y dim)
-    #(if (:jumping %)
-       (:velocity %)
-       (:fall-velocity constants))))
+  ([dim]
+   (next-y-position dim true))
+  ([dim consider-active-platform]
+   (position/next-y-position
+     dim
+     (if consider-active-platform (floor-y dim) ##Inf)
+     #(if (:jumping %)
+        (:velocity %)
+        (:fall-velocity constants)))))
 
 (defn next-rotation [dim]
   "Returns next rotation value for dim (during a jump)"
@@ -113,7 +115,7 @@
 (defn progress [dim]
   "Receives player state and returns next state."
   (let [next-x (position/next-x-position dim)
-        next-y (next-y-position dim)
+        next-y (next-y-position dim false)
         next-r (next-rotation dim)]
     (-> dim
         (position/add-point next-x next-y next-r)
@@ -121,21 +123,20 @@
         finalize-jump)))
 
 (defn correct-for-active-platform [dim]
-  "Receives player state and returns next state."
-  (if (:active-platform dim)
-    (let [pos (position/pos dim)
-          x (:x pos)
-          y (floor-y dim)
-          r (:rotation pos)]
-      (-> dim
-          (position/add-point x y r)))
-    dim))
+  "Ensures the dim is positioned correctly on the Y axis after landing on a platform"
+  (let [pos (position/pos dim)
+        x (:x pos)
+        y (floor-y dim)
+        r (:rotation pos)]
+    (-> dim
+        (position/rectify-point x y r)
+        finalize-jump)))
 
 (defn collide-with-platform [dim platform]
   "Handles dim colliding with a platform."
   (-> dim
       (assoc :active-platform platform)
-      progress))
+      correct-for-active-platform))
 
 (defn sprite-for [dim]
   "Returns the PImage suitable for the given frame number"

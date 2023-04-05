@@ -147,7 +147,8 @@
     (if platform
       (-> state
           (update :dim dim/collide-with-platform platform))
-      state)))
+      (-> state
+          (assoc-in [:dim :active-platform] nil)))))
 
 (defn detect-object-collision [{:keys [level dim] :as state}]
   "Kills the dim if it hits anything"
@@ -190,7 +191,6 @@
 (defn progress [state]
   (if (= (:phase state) 1)
     (-> state
-        (assoc-in [:dim :active-platform] nil)
         (update :level level/progress)
         (update :dim dim/progress)
         progress-corpses
@@ -198,8 +198,7 @@
         detect-exit-collision
         detect-blood-collision
         detect-platform-collision
-        detect-object-collision
-        (update :dim dim/correct-for-active-platform))
+        detect-object-collision)
     state))
 
 (defn init []

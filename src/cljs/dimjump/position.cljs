@@ -44,10 +44,22 @@
     (>= (- y (/ (:h object) 2)) (:h constants))))
 
 (defn add-point 
+  "Adds a new positional point for the object. Each object has a set of 'points', each
+   of which is rendered on each draw. This allows for speed trails."
   ([object x y r]
     (add-point object {:x x :y y :rotation r}))
   ([object point]
     (update object :points (comp vec rest conj) point)))
+
+(defn rectify-point
+  "Updates the most recently added point rather than popping the first one and adding a
+   new one."
+  ([object x y r]
+    (rectify-point object {:x x :y y :rotation r}))
+  ([object point]
+    (-> object
+        (update :points (comp vec butlast))
+        (update :points (comp vec conj) point))))
 
 (defn next-velocity
   "Produces the next velocity (for a jumping/falling object)"
