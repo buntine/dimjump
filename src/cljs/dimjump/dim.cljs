@@ -36,12 +36,13 @@
   "Returns a function that applies the given op on the speed and updates
   it if the result is within the bounds"
   (fn [{:keys [speed] :as dim}]
-    (if-let [next-speed ((:speed-range constants) (op speed))]
-      (assoc dim :speed next-speed)
-      dim)))
+    (let [next-speed (op speed)]
+      (if (<= (:speed-min constants) next-speed (:speed-max constants))
+        (assoc dim :speed next-speed)
+        dim))))
 
-(def speed-up (set-speed inc))
-(def speed-down (set-speed dec))
+(def speed-up (set-speed #(+ % (:speed-jump constants))))
+(def speed-down (set-speed #(- % (:speed-jump constants))))
 
 (defn reset [dim {:keys [x y speed]}]
   "Moves dim back to start of the screen, at the given Y position"

@@ -82,8 +82,6 @@
     1 (case (:key-code event)
         (40 67) (update state :dim dim/duck)
         (38 66) (jump state)
-        (37 65) (update state :dim dim/speed-down)
-        (39 68) (update state :dim dim/speed-up)
         80 (pause-game state)
         83 (update state :sound not)
         state)))
@@ -188,6 +186,16 @@
     (go-to-next-level state)
     state))
 
+(defn set-speed [state]
+  "Updates the speed if the user is holding/pressing the appropriate key"
+  (let [k (q/key-as-keyword)]
+    (if (q/key-pressed?)
+      (case k
+        :left (update state :dim dim/speed-down)
+        :right (update state :dim dim/speed-up)
+        state)
+      state)))
+
 (defn progress [state]
   (if (= (:phase state) 1)
     (-> state
@@ -198,7 +206,8 @@
         detect-exit-collision
         detect-blood-collision
         detect-platform-collision
-        detect-object-collision)
+        detect-object-collision
+        set-speed)
     state))
 
 (defn init []

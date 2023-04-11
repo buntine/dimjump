@@ -10,7 +10,9 @@
 (def constants
   {:w (:w dimensions)
    :h (:h dimensions)
-   :speed-range (set (range -4 5))
+   :speed-min -4.0
+   :speed-max 4.0
+   :speed-jump 0.2
    :velocity-big -10
    :velocity-small -8
    :fall-velocity 5
@@ -40,7 +42,7 @@
 (def levels
   [{:initial {:y 200
               :x -20
-              :speed 2}
+              :speed 2.0}
     :obstacles [(block 200 20 20 {:y -10})
                 (block 400 20 30 {:y -10})
                 (block 600 30 20 {:y -10})]
