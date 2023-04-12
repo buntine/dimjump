@@ -7,6 +7,12 @@
             [dimjump.blood :as blood]
             [dimjump.object :as object]))
 
+(defn create-blood-splatter [{:keys [speed] :as dim}]
+  (let [position (position/pos dim)]
+    (map
+      #(blood/spawn (merge position {:velocity % :speed speed}))
+      (range -20 -2))))
+
 (defrecord Obstacle
   [x y w h min-x max-y min-y speed move-x move-y]
   object/Entity
@@ -39,9 +45,3 @@
           (update :corpses conj (corpse/spawn position sprite))
           (update :blood concat (create-blood-splatter dim))
           (update :dim dim/kill (:initial level))))))
-
-(defn create-blood-splatter [{:keys [speed] :as dim}]
-  (let [position (position/pos dim)]
-    (map
-      #(blood/spawn (merge position {:velocity % :speed speed}))
-      (range -20 -2))))

@@ -1,7 +1,6 @@
 (ns dimjump.exit
   (:require [quil.core :as q :include-macros true]
             [dimjump.object :as object]
-    ;        [dimjump.dim :as dim]
             [dimjump.data :as data :refer [constants]]))
 
 (defrecord Exit

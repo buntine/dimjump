@@ -1,5 +1,4 @@
-(ns dimjump.sound
-  (:require [dimjump.data :as data :refer [constants]]))
+(ns dimjump.sound)
 
 (def load-sound
   (memoize

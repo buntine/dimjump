@@ -28,7 +28,7 @@
      :dim (dim/spawn (:initial l))}))
 
 (defn start-game [state]
-  (assoc state :phase 1))
+  (assoc state :phase 2))
 
 (defn pause-game [state]
   (sound/pause-sound "invaded_city")
@@ -106,22 +106,6 @@
     3 (draw-end-game state)
     2 (draw-dim state)))
 
-;(defn create-blood-splatter [{:keys [speed] :as dim}]
-;  (let [position (position/pos dim)]
-;    (map
-;      #(blood/spawn (merge position {:velocity % :speed speed}))
-;      (range -20 -2))))
-
-;(defn kill-dim [{:keys [sound dim level] :as state}]
-;  (if sound
-;    (sound/play-sound :splat))
-;  (let [sprite (dim/sprite-for dim)
-;        position (position/pos dim)]
-;    (-> state
-;        (update :corpses conj (corpse/spawn position sprite))
-;        (update :blood concat (create-blood-splatter dim))
-;        (update :dim dim/kill (:initial level)))))
-
 (defn detect-blood-collision [{:keys [blood level] :as state}]
   "Stops any blood particles that hit an obstacle. Currently, if a blood
    particule hits a *moving* obstacle then it just keeps going through it."
@@ -146,21 +130,6 @@
     (if (empty? es)
       state
       (reduce #(object/on-collision %2 %1) state es))))
-
-;(defn detect-platform-collision [{:keys [level dim] :as state}]
-;  "Handles the dim landing on a valid platform"
-;  (let [platform (level/collided-platform level (position/pos dim))]
-;    (if platform
-;      (-> state
-;          (update :dim dim/collide-with-platform platform))
-;      (-> state
-;          (assoc-in [:dim :active-platform] nil)))))
-
-;(defn detect-object-collision [{:keys [level dim] :as state}]
-;  "Kills the dim if it hits anything"
-;  (if (level/collided-obstacle level (position/pos dim))
-;    (kill-dim state)
-;    state))
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
@@ -189,12 +158,6 @@
         (update :level level/move-next)
         place-dim)))
 
-;(defn detect-exit-collision [{:keys [level dim] :as state}]
-;  "Handles the dim landing on an exit"
-;  (if-let [exit (level/collided-exit level (position/pos dim))]
-;    (go-to-next-level state)
-;    state))
-
 (defn set-speed [state]
   "Updates the speed if the user is holding/pressing the appropriate key"
   (let [k (q/key-as-keyword)]
@@ -212,10 +175,7 @@
                 (update :dim dim/progress)
                 progress-corpses
                 progress-blood
-                ;detect-exit-collision
                 detect-blood-collision
-                ;detect-platform-collision
-                ;detect-object-collision
                 clear-platform
                 detect-entity-collision
                 set-speed)

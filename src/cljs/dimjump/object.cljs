@@ -7,12 +7,6 @@
   (collision? [entity dim] "Returns true if the player has collided with the given entity")
   (on-collision [entity state] "Should handle when player hits an entity. Return the updated game state."))
 
-;(defn spawn [kind {:keys [speed] :or {speed 0} :as opts}]
-;  (merge {:kind kind
-;          :move-x (- speed)
-;          :move-y (- speed)}
-;         opts))
-
 (defn y-top [{:keys [y h]}]
   "Returns Y of the top of the entity"
   (- y h))
