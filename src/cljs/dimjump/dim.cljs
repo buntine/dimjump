@@ -1,8 +1,8 @@
 (ns dimjump.dim
   (:require [quil.core :as q :include-macros true]
             [dimjump.data :as data :refer [constants]]
-            [dimjump.position :as position]
-            [dimjump.platform :as platform]))
+            [dimjump.object :as object]
+            [dimjump.position :as position]))
 
 (defn spawn [opts]
   (merge
@@ -28,7 +28,7 @@
 
 (defn floor-y [{:keys [active-platform] :as dim}]
   (if active-platform
-    (- (platform/y-top active-platform)
+    (- (object/y-top active-platform)
        (/ (:h dim) 2))
     ##Inf))
 
@@ -49,6 +49,7 @@
   (-> dim
       (assoc :speed speed)
       (assoc :jumping false)
+      (assoc :active-platform nil)
       (position/add-point x y 0)))
 
 (defn duck [dim]
@@ -86,7 +87,6 @@
 (defn kill [dim initial]
   (-> dim
       (update :deaths inc)
-      (assoc :active-platform nil)
       (reset initial)))
 
 (defn next-velocity [dim]

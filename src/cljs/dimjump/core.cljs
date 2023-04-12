@@ -16,7 +16,7 @@
   (.focus (.getElementById js/document "game"))
 
   (let [l (level/spawn 0)]
-    {:phase 0 ; 0: Intro/Pause, 1: Play, 2: Finished
+    {:phase 0 ; 0: Intro/Pause, 1: Cue next level, 2: Play, 3: Finished
      :level l
      :corpses []
      :blood []
@@ -35,7 +35,7 @@
   (assoc state :phase 0))
 
 (defn finish-game [state]
-  (assoc state :phase 2))
+  (assoc state :phase 3))
 
 (defn draw-backdrop [state]
   (q/image (get-in state [:images :sky]) 0 0))
@@ -74,12 +74,12 @@
 
 (defn key-pressed [state event]
   (case (:phase state)
-    2 (start-game state)
+    3 (start-game state)
     0 (case (:key-code event)
         (13 32 80 40 37 38 39
          65 66 67 68) (start-game state)
         state)
-    1 (case (:key-code event)
+    2 (case (:key-code event)
         (40 67) (update state :dim dim/duck)
         (38 66) (jump state)
         80 (pause-game state)
@@ -94,7 +94,6 @@
   (draw-backdrop state)
   (draw-hud state)
   (level/draw (:level state))
-  (draw-dim state)
 
   (doseq [c (:corpses state)]
     (corpse/draw c))
@@ -104,33 +103,31 @@
 
   (case (:phase state)
     0 (draw-start-game state)
-    2 (draw-end-game state)
-    1 (if (:sound state)
-        (sound/play-sound "invaded_city" 0.25)
-        (sound/pause-sound "invaded_city"))))
+    3 (draw-end-game state)
+    2 (draw-dim state)))
 
-(defn create-blood-splatter [{:keys [speed] :as dim}]
-  (let [position (position/pos dim)]
-    (map
-      #(blood/spawn (merge position {:velocity % :speed speed}))
-      (range -20 -2))))
+;(defn create-blood-splatter [{:keys [speed] :as dim}]
+;  (let [position (position/pos dim)]
+;    (map
+;      #(blood/spawn (merge position {:velocity % :speed speed}))
+;      (range -20 -2))))
 
-(defn kill-dim [{:keys [sound dim level] :as state}]
-  (if sound
-    (sound/play-sound :splat))
-  (let [sprite (dim/sprite-for dim)
-        position (position/pos dim)]
-    (-> state
-        (update :corpses conj (corpse/spawn position sprite))
-        (update :blood concat (create-blood-splatter dim))
-        (update :dim dim/kill (:initial level)))))
+;(defn kill-dim [{:keys [sound dim level] :as state}]
+;  (if sound
+;    (sound/play-sound :splat))
+;  (let [sprite (dim/sprite-for dim)
+;        position (position/pos dim)]
+;    (-> state
+;        (update :corpses conj (corpse/spawn position sprite))
+;        (update :blood concat (create-blood-splatter dim))
+;        (update :dim dim/kill (:initial level)))))
 
 (defn detect-blood-collision [{:keys [blood level] :as state}]
   "Stops any blood particles that hit an obstacle. Currently, if a blood
    particule hits a *moving* obstacle then it just keeps going through it."
   (letfn
     [(attach-blood [b]
-       (let [obstacle (and (blood/moving? b) (level/collided-obstacle level (position/pos b)))
+       (let [obstacle (and (blood/moving? b) (first (level/collided-entities level (position/pos b))))
              should-stay (and obstacle (not (object/moving? obstacle)))]
          (if should-stay
            (blood/stay b)
@@ -139,20 +136,31 @@
             :blood
             (partial map attach-blood))))
 
-(defn detect-platform-collision [{:keys [level dim] :as state}]
-  "Handles the dim landing on a valid platform"
-  (let [platform (level/collided-platform level (position/pos dim))]
-    (if platform
-      (-> state
-          (update :dim dim/collide-with-platform platform))
-      (-> state
-          (assoc-in [:dim :active-platform] nil)))))
+(defn clear-platform [state]
+  (-> state
+      (assoc-in [:dim :active-platform] nil)))
 
-(defn detect-object-collision [{:keys [level dim] :as state}]
-  "Kills the dim if it hits anything"
-  (if (level/collided-obstacle level (position/pos dim))
-    (kill-dim state)
-    state))
+(defn detect-entity-collision [{:keys [level dim] :as state}]
+  "Handles the dim colliding with an entity on the current level."
+  (let [es (level/collided-entities level (position/pos dim))]
+    (if (empty? es)
+      state
+      (reduce #(object/on-collision %2 %1) state es))))
+
+;(defn detect-platform-collision [{:keys [level dim] :as state}]
+;  "Handles the dim landing on a valid platform"
+;  (let [platform (level/collided-platform level (position/pos dim))]
+;    (if platform
+;      (-> state
+;          (update :dim dim/collide-with-platform platform))
+;      (-> state
+;          (assoc-in [:dim :active-platform] nil)))))
+
+;(defn detect-object-collision [{:keys [level dim] :as state}]
+;  "Kills the dim if it hits anything"
+;  (if (level/collided-obstacle level (position/pos dim))
+;    (kill-dim state)
+;    state))
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
@@ -176,15 +184,16 @@
   (if (level/last? level)
     (finish-game state)
     (-> state
+        (assoc :phase 2)
         (assoc :blood [])
         (update :level level/move-next)
         place-dim)))
 
-(defn detect-exit-collision [{:keys [level dim] :as state}]
-  "Handles the dim landing on an exit"
-  (if-let [exit (level/collided-exit level (position/pos dim))]
-    (go-to-next-level state)
-    state))
+;(defn detect-exit-collision [{:keys [level dim] :as state}]
+;  "Handles the dim landing on an exit"
+;  (if-let [exit (level/collided-exit level (position/pos dim))]
+;    (go-to-next-level state)
+;    state))
 
 (defn set-speed [state]
   "Updates the speed if the user is holding/pressing the appropriate key"
@@ -197,18 +206,23 @@
       state)))
 
 (defn progress [state]
-  (if (= (:phase state) 1)
-    (-> state
-        (update :level level/progress)
-        (update :dim dim/progress)
-        progress-corpses
-        progress-blood
-        detect-exit-collision
-        detect-blood-collision
-        detect-platform-collision
-        detect-object-collision
-        set-speed)
-    state))
+  (let [s (if (= (:phase state) 2)
+            (-> state
+                (update :level level/progress)
+                (update :dim dim/progress)
+                progress-corpses
+                progress-blood
+                ;detect-exit-collision
+                detect-blood-collision
+                ;detect-platform-collision
+                ;detect-object-collision
+                clear-platform
+                detect-entity-collision
+                set-speed)
+            state)]
+    (if (= (:phase s) 1)
+      (go-to-next-level s)
+      s)))
 
 (defn init []
   (q/defsketch dim-jump

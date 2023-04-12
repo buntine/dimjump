@@ -12,62 +12,60 @@
   {:index n
    :initial (level-data :initial n)
    :objects (concat
-              (map obstacle/spawn
-                   (level-data :obstacles n))
-              (map platform/spawn
+              (map platform/map->Platform
                    (level-data :platforms n))
-              (map exit/spawn
+              (map obstacle/map->Obstacle
+                   (level-data :obstacles n))
+              (map exit/map->Exit
                    (level-data :exits n)))})
 
-(defn obstacles [{:keys [objects]}]
-  (filter #(= (:kind %) :obstacle) objects))
+;(defn obstacles [{:keys [objects]}]
+;  (filter #(= (:kind %) :obstacle) objects))
 
-(defn platforms [{:keys [objects]}]
-  (filter #(= (:kind %) :platform) objects))
+;(defn platforms [{:keys [objects]}]
+;  (filter #(= (:kind %) :platform) objects))
 
-(defn exits [{:keys [objects]}]
-  (filter #(= (:kind %) :exit) objects))
+;(defn exits [{:keys [objects]}]
+;  (filter #(= (:kind %) :exit) objects))
 
-(defn draw [level]
+(defn draw [{:keys [objects]}]
   ; Due to a bug surrounding textures in Quil/Processing.js, I've had to resort
   ; dropping down to vanilla JS in order to draw obstacles with textured background.
-  (let [os (obstacles level)
-        ps (platforms level)
-        es (exits level)
-        canvas (.getElementById js/document  "game")
+  (let [canvas (.getElementById js/document  "game")
         ctx (.getContext canvas "2d")
         brick-img (.getElementById js/document "brick")
         pattern (.createPattern ctx brick-img "repeat")]
 
     (set! (.-fillStyle ctx) pattern)
 
-    (doseq [p ps]
-      (platform/draw p ctx)
-      (set! (.-fillStyle ctx) pattern)) ; with-fill isn't working so let's just force it back to the pattern fill
-                                        ; after each platform is painted.
-
-    (doseq [o os]
-      (obstacle/draw o ctx))
-
-    (doseq [e es]
-      (exit/draw e ctx))))
+    (doseq [e objects]
+      (object/draw e ctx)
+      (set! (.-fillStyle ctx) pattern)))) ; with-fill isn't working so let's just force it back to the pattern fill
+                                          ; after each platform is painted.
 
 (defn progress [level]
   (update level :objects (partial map object/progress)))
 
-(defn collided-object [collision-fn objects-fn level entity]
+(defn collided-entities [{:keys [objects]} position]
   "Returns the object that the given entity has hit. Or nil if there is
-   no collision.
-     - objects-fn must return the set of objects that can be collided with.
-     - collision-fn is the collision detection function used."
-  (first
+   no collision."
     (filter
-      (partial collision-fn entity)
-      (objects-fn level))))
+      #(object/collision? % position)
+      objects))
 
-(def collided-platform (partial collided-object platform/collision? platforms))
-(def collided-exit (partial collided-object exit/collision? exits))
-(def collided-obstacle (partial collided-object obstacle/collision? #(:objects %)))
+;(def collided-platform (partial collided-object platform/collision? platforms))
+;(def collided-exit (partial collided-object exit/collision? exits))
+;(def collided-obstacle (partial collided-object obstacle/collision? #(:objects %)))
+
+;(defn collided-object [collision-fn objects-fn level entity]
+;  "Returns the object that the given entity has hit. Or nil if there is
+;   no collision.
+;     - objects-fn must return the set of objects that can be collided with.
+;     - collision-fn is the collision detection function used."
+;  (first
+;    (filter
+;      (partial collision-fn entity)
+;      (objects-fn level))))
 
 (defn last? [{:keys [index]}]
   (>= (inc index) (count data/levels)))

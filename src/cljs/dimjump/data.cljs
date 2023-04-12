@@ -26,8 +26,8 @@
 
 (defn block
   ([x w h] (block x w h {}))
-  ([x w h {:keys [y min-x max-x min-y max-y]
-           :or {y 0 min-x x max-x x min-y y max-y y}
+  ([x w h {:keys [y min-x max-x min-y max-y speed]
+           :or {y 0 min-x x max-x x min-y y max-y y speed 0}
            :as opts}]
     (merge opts
            {:x x
@@ -36,6 +36,8 @@
             :max-x max-x
             :min-y (+ (:h constants) min-y)
             :max-y (+ (:h constants) max-y)
+            :move-x (- speed)
+            :move-y (- speed)
             :h h
             :y (+ (:h constants) y)})))
 
