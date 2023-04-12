@@ -38,11 +38,15 @@
   (update level :objects (partial map object/progress)))
 
 (defn collided-entities [{:keys [objects]} position]
-  "Returns the object that the given entity has hit. Or nil if there is
-   no collision."
-    (filter
-      #(object/collision? % position)
-      objects))
+  "Returns a collection representing the objects that the given positional has hit.
+   The structure is: [[entity, direction], ...]"
+  (remove
+    nil?
+    (map
+      (fn [o]
+        (when-let [c (object/collision o position)]
+          [o c]))
+      objects)))
 
 (defn last? [{:keys [index]}]
   (>= (inc index) (count data/levels)))

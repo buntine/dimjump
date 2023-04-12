@@ -111,9 +111,9 @@
    particule hits a *moving* obstacle then it just keeps going through it."
   (letfn
     [(attach-blood [b]
-       (let [obstacle (and (blood/moving? b) (first (level/collided-entities level (position/pos b))))
-             should-stay (and obstacle (not (object/moving? obstacle)))]
-         (if should-stay
+       (let [collisions (if (blood/moving? b) (level/collided-entities level (position/pos b)) [])
+             [object _] (first collisions)]
+         (if object
            (blood/stay b)
            b)))]
     (update state
@@ -129,7 +129,7 @@
   (let [es (level/collided-entities level (position/pos dim))]
     (if (empty? es)
       state
-      (reduce #(object/on-collision %2 %1) state es))))
+      (reduce (fn [s [e dir]] (object/on-collision e dir s)) state es))))
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
