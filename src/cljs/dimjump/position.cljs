@@ -130,15 +130,15 @@
         (set-speed [op]
           "Returns a function that applies the given op on the speed and updates
           it if the result is within the bounds"
-          (fn [{:keys [speed] :as dim}]
+          (fn [{:keys [speed] :as object}]
             (let [next-speed (op speed)
-                  low (speed-threshold dim :right :speed-min)
-                  high (speed-threshold dim :left :speed-max)]
+                  low (speed-threshold object :right :speed-min)
+                  high (speed-threshold object :left :speed-max)]
               (cond
-                (<= low next-speed high) (assoc dim :speed next-speed)
-                (< speed low) (assoc dim :speed low)
-                (> speed high) (assoc dim :speed high)
-                :else dim))))]
+                (<= low next-speed high) (assoc object :speed next-speed)
+                (< speed low) (assoc object :speed low)
+                (> speed high) (assoc object :speed high)
+                :else object))))]
   (def speed-up (set-speed #(+ % (:speed-jump constants))))
   (def speed-down (set-speed #(- % (:speed-jump constants)))))
 
