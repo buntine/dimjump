@@ -6,6 +6,7 @@
                             :y y
                             :rotation 0}))
    :velocity velocity
+   :x-block nil
    :speed speed})
 
 (defn pos [object]
@@ -83,13 +84,30 @@
           next-y (+ y (velocity-fn object))]
       (min floor next-y))))
 
-(defn next-x-position [object]
+(defn apply-x-block [object x dir]
+  "Applies a block to the X-axis."
+  (assoc object :x-block {:x x :dir dir}))
+
+(defn block [{:keys [x-block speed] :as object}]
+  "Ensures a 'block' is adhered to, which will prevent the object from
+   passing through an object that has blocked the X axis."
+  (when x-block
+    (let [half-width (/ (:w (pos object)) 2)
+          {:keys [x dir]} x-block]
+      (case dir
+        :left (when (> speed 0)
+                (- x half-width))
+        :right (when (< speed 0)
+                (+ x half-width))))))
+
+(defn next-x-position [{:keys [speed] :as object}]
   "Returns next X position for object"
   (let [current-x (:x (pos object))
         x (cond (offscreen-right? object) 0
                 (offscreen-left? object) (:w constants)
                 :else current-x)]
-    (+ x (:speed object))))
+    (or (block object)
+        (+ x speed))))
 
 (defn current-rotation [object]
   "Returns current rotation value for object"
@@ -99,6 +117,30 @@
   "Returns next rotation value for object"
   (let [{rotation :rotation} (pos object)]
     (+ (current-rotation object) (* Math/PI 0.079753))))
+
+(letfn [(speed-threshold [{:keys [x-block]} blocking-dir speed-const]
+          "Returns a min/max speed considering the current block on the X
+           axis. Basically, if the player is blocked moving forward/backwards
+           on the X axis, their speed is capped at 0."
+          (if-let [{:keys [dir]} x-block]
+            (if (= dir blocking-dir)
+              0
+              (speed-const constants))
+            (speed-const constants)))
+        (set-speed [op]
+          "Returns a function that applies the given op on the speed and updates
+          it if the result is within the bounds"
+          (fn [{:keys [speed] :as dim}]
+            (let [next-speed (op speed)
+                  low (speed-threshold dim :right :speed-min)
+                  high (speed-threshold dim :left :speed-max)]
+              (cond
+                (<= low next-speed high) (assoc dim :speed next-speed)
+                (< speed low) (assoc dim :speed low)
+                (> speed high) (assoc dim :speed high)
+                :else dim))))]
+  (def speed-up (set-speed #(+ % (:speed-jump constants))))
+  (def speed-down (set-speed #(- % (:speed-jump constants)))))
 
 (defn trail-opacities
   "A lazy sequence that produces the opacities: 255 60 50 40 ..."

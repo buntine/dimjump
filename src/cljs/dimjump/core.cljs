@@ -122,6 +122,7 @@
 
 (defn clear-platform [state]
   (-> state
+      (assoc-in [:dim :x-block] nil)
       (assoc-in [:dim :active-platform] nil)))
 
 (defn detect-entity-collision [{:keys [level dim] :as state}]
@@ -163,8 +164,8 @@
   (let [k (q/key-as-keyword)]
     (if (q/key-pressed?)
       (case k
-        :left (update state :dim dim/speed-down)
-        :right (update state :dim dim/speed-up)
+        :left (update state :dim position/speed-down)
+        :right (update state :dim position/speed-up)
         state)
       state)))
 

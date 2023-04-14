@@ -32,18 +32,6 @@
        (/ (:h dim) 2))
     ##Inf))
 
-(defn set-speed [op]
-  "Returns a function that applies the given op on the speed and updates
-  it if the result is within the bounds"
-  (fn [{:keys [speed] :as dim}]
-    (let [next-speed (op speed)]
-      (if (<= (:speed-min constants) next-speed (:speed-max constants))
-        (assoc dim :speed next-speed)
-        dim))))
-
-(def speed-up (set-speed #(+ % (:speed-jump constants))))
-(def speed-down (set-speed #(- % (:speed-jump constants))))
-
 (defn reset [dim {:keys [x y speed]}]
   "Moves dim back to start of the screen, at the given Y position"
   (-> dim
@@ -83,6 +71,10 @@
         (position/add-point (assoc (last (:points dim)) :rotation 0))
         (assoc :velocity 0))
     dim))
+
+(defn halt-jump [dim]
+  "Stops a jump in place. This will occur when dim hits the bottom of a platform mid-jump"
+  (update dim :velocity #(max % (- %))))
 
 (defn kill [dim initial]
   (-> dim

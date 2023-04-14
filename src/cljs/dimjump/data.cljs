@@ -42,7 +42,19 @@
             :y (+ (:h constants) y)})))
 
 (def levels
-  [{:initial {:y 200
+  [{:initial {:y 300
+              :x -20
+              :speed 2}
+    :obstacles [(block 200 20 20 {:y -10})
+                (block 400 20 30 {:y -10})
+                (block 600 30 20 {:y -10})]
+    :platforms [(block 0 500 10)
+                (block 550 500 10)
+                (block (- (:w constants) 50) 10 500 {:y -300})
+                (block 320 110 30 {:y -40})]
+    :exits [(block (- (:w constants) 60) 26 38 {:y -80})]}
+
+   {:initial {:y 200
               :x -20
               :speed 2.0}
     :obstacles [(block 200 20 20 {:y -10})
@@ -52,17 +64,6 @@
                 (block 530 500 10)
                 (block 320 110 10 {:min-y -70 :max-y -10 :speed 0.5})]
     :exits [(block (- (:w constants) 100) 26 38 {:y -50})]}
-
-   {:initial {:y 300
-              :x -20
-              :speed 2}
-    :obstacles [(block 200 20 20 {:y -10})
-                (block 400 20 30 {:y -10})
-                (block 600 30 20 {:y -10})]
-    :platforms [(block 0 500 10)
-                (block 550 500 10)
-                (block 320 110 10 {:y -50})]
-    :exits [(block (- (:w constants) 60) 26 38 {:y -80})]}
 
    {:obstacles [(block 160 20 20) ;1
                 (block 360 20 20)

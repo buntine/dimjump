@@ -22,13 +22,34 @@
   (let [p-top (- py (/ ph 2))
         p-bottom (+ py (/ ph 2))
         p-left (- px (/ pw 2))
-        p-right (+ px (/ pw 2))]
-    (when
-      (and (< p-left (+ x w))
-           (< x p-right)
-           (< p-top y)
-           (< (- y h) p-bottom))
-      :top)))
+        p-right (+ px (/ pw 2))
+        o-top (- y h)
+        o-bottom y
+        o-left x
+        o-right (+ x w)
+        top? (and (< p-left o-right)
+                  (< o-left p-right)
+                  (< p-top o-top)
+                  (<= o-top p-bottom))
+        left? (and (>= p-right o-left)
+                   (< p-left o-left)
+                   (< py o-bottom)
+                   (> py o-top))
+        right? (and (> p-left o-left)
+                    (<= p-left o-right)
+                    (< py o-bottom)
+                    (> py o-top))
+        bottom? (and (< p-left o-right)
+                     (< o-left p-right)
+                     (< p-top o-bottom)
+                     (> p-bottom o-top))
+        inside? false]
+    (cond
+      left? :left
+      right? :right
+      top? :top
+      bottom? :bottom
+      inside? :inside)))
 
 (letfn [(next-move [p min-p max-p move]
           "Inverts the movement factor when a moving entity hits it's min
