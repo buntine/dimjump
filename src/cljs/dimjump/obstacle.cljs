@@ -5,7 +5,8 @@
             [dimjump.position :as position]
             [dimjump.corpse :as corpse]
             [dimjump.blood :as blood]
-            [dimjump.object :as object]))
+            [dimjump.object :as object]
+            [dimjump.data :as data :refer [constants]]))
 
 (defn create-blood-splatter [{:keys [speed] :as dim}]
   (let [position (position/pos dim)]
@@ -14,14 +15,14 @@
       (range -20 -2))))
 
 (defrecord Obstacle
-  [x y w h min-x max-y min-y speed move-x move-y]
+  [x y w h min-x max-y min-y speed move-x move-y fade-cycle]
   object/Entity
 
-  (draw [_ ctx]
-    (.beginPath ctx)
-    (.rect ctx x (- y h) w h)
-    (.closePath ctx)
-    (.fill ctx))
+  (draw [{:keys [fade-cycle]}]
+    (let [{:keys [alpha]
+           :or {alpha 255}} fade-cycle]
+      (q/with-fill (conj (constants :obstacle-color) alpha)
+        (q/rect x (- y h) w h))))
 
   (on-collision [_ _ {:keys [sound dim level] :as state}]
     (if sound

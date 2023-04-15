@@ -3,7 +3,7 @@
 
 (defprotocol Entity
   "Represents a spawnable entity on screen. Entities have dimensions, can be collided with, etc."
-  (draw [entity ctx] "Draws the entity to the canvas")
+  (draw [entity] "Draws the entity to the canvas")
   (on-collision [entity direction state] "Should handle when player hits an entity. Return the updated game state."))
 
 (defn y-top [{:keys [y h]}]
@@ -13,43 +13,49 @@
 (defn moving? [{:keys [move-x move-y]}]
   (not (and (= move-x 0) (= move-y 0))))
 
-(defn collision [{:keys [x y w h]} {px :x py :y pw :w ph :h}]
+(defn visible? [{:keys [fade-cycle]}]
+  (if-let [{:keys [alpha]} fade-cycle]
+    (> alpha 1)
+    true))
+
+(defn collision [{:keys [x y w h] :as object} {px :x py :y pw :w ph :h}]
   "Determines if the given positional object has collided with the entity.
    If a collision is detected, a keyword indicating the direction of the
    collision is returned: :top, :left, :bottom, :right, :inside.
 
    nil indicates no collision."
-  (let [p-top (- py (/ ph 2))
-        p-bottom (+ py (/ ph 2))
-        p-left (- px (/ pw 2))
-        p-right (+ px (/ pw 2))
-        o-top (- y h)
-        o-bottom y
-        o-left x
-        o-right (+ x w)
-        top? (and (< p-left o-right)
-                  (< o-left p-right)
-                  (< p-top o-top)
-                  (<= o-top p-bottom))
-        left? (and (>= p-right o-left)
-                   (< p-left o-left)
-                   (< py o-bottom)
-                   (> py o-top))
-        right? (and (> p-left o-left)
-                    (<= p-left o-right)
-                    (< py o-bottom)
-                    (> py o-top))
-        bottom? (and (< p-left o-right)
-                     (< o-left p-right)
-                     (< p-top o-bottom)
-                     (> p-bottom o-top))
-        inside? false]
-    (cond
-      left? :left
-      right? :right
-      top? :top
-      bottom? :bottom
-      inside? :inside)))
+  (when (visible? object)
+    (let [p-top (- py (/ ph 2))
+          p-bottom (+ py (/ ph 2))
+          p-left (- px (/ pw 2))
+          p-right (+ px (/ pw 2))
+          o-top (- y h)
+          o-bottom y
+          o-left x
+          o-right (+ x w)
+          top? (and (< p-left o-right)
+                    (< o-left p-right)
+                    (< p-top o-top)
+                    (<= o-top p-bottom))
+          left? (and (>= p-right o-left)
+                     (< p-left o-left)
+                     (< py o-bottom)
+                     (> py o-top))
+          right? (and (> p-left o-left)
+                      (<= p-left o-right)
+                      (< py o-bottom)
+                      (> py o-top))
+          bottom? (and (< p-left o-right)
+                       (< o-left p-right)
+                       (< p-top o-bottom)
+                       (> p-bottom o-top))
+          inside? false]
+      (cond
+        left? :left
+        right? :right
+        top? :top
+        bottom? :bottom
+        inside? :inside))))
 
 (letfn [(next-move [p min-p max-p move]
           "Inverts the movement factor when a moving entity hits it's min

@@ -20,19 +20,8 @@
                    (level-data :exits n)))})
 
 (defn draw [{:keys [objects]}]
-  ; Due to a bug surrounding textures in Quil/Processing.js, I've had to resort
-  ; dropping down to vanilla JS in order to draw obstacles with textured background.
-  (let [canvas (.getElementById js/document  "game")
-        ctx (.getContext canvas "2d")
-        brick-img (.getElementById js/document "brick")
-        pattern (.createPattern ctx brick-img "repeat")]
-
-    (set! (.-fillStyle ctx) pattern)
-
-    (doseq [e objects]
-      (object/draw e ctx)
-      (set! (.-fillStyle ctx) pattern)))) ; with-fill isn't working so let's just force it back to the pattern fill
-                                          ; after each platform is painted.
+  (doseq [e objects]
+    (object/draw e)))
 
 (defn progress [level]
   (update level :objects (partial map object/progress)))

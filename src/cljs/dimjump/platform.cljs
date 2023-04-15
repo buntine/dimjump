@@ -6,20 +6,19 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defrecord Platform
-  [x y w h min-x max-y min-y speed move-x move-y]
+  [x y w h min-x max-y min-y speed move-x move-y fade-cycle]
   object/Entity
 
-  (draw [_ ctx]
-    (.beginPath ctx)
-    (.rect ctx x (- y h) w h)
-    (.closePath ctx)
-    (.fill ctx)
+  (draw [{:keys [fade-cycle]}]
+    (let [{:keys [alpha]
+           :or {alpha 255}} fade-cycle]
+      (q/with-fill (conj (constants :platform-color) alpha)
+        (q/rect x (- y h) w h))
 
-    (q/with-fill (constants :grass-color)
-      (q/rect x (- y h) w (constants :grass-height))))
+      (q/with-fill (conj (constants :grass-color) alpha)
+        (q/rect x (- y h) w (constants :grass-height)))))
 
   (on-collision [entity direction state]
-    (println direction)
     (case direction
       :top (update state :dim dim/collide-with-platform entity)
       :left (update state :dim position/apply-x-block x :left)

@@ -4,10 +4,10 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defrecord Exit
-  [x y w h min-x max-y min-y speed move-x move-y]
+  [x y w h min-x max-y min-y speed move-x move-y fade-cycle]
   object/Entity
 
-  (draw [_ ctx]
+  (draw [_]
     (q/with-fill (constants :exit-color)
       (q/rect x (- y h) w h)))
 
