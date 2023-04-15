@@ -57,7 +57,15 @@
     :obstacles []
     :platforms [(block 0 -1 500 10)
                 (block 550 -1 500 10)
-                (block -50 -300 10 500)
-                (block 320 -40 110 30)]
+                (block 200 -40 70 10)
+                (block 250 -80 70 10)
+                (block 320 -70 10 10)
+                (block 330 -60 10 10)
+                (block 340 -50 10 10)
+                (block 350 -40 10 10)
+                (block 360 -30 10 10)
+                (block 370 -20 10 10)
+                (block 380 -10 10 10)
+                (block -50 -300 10 500)]
     :exits [(block (- (:w constants) 60) -80 26 38)]}
   ])
