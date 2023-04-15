@@ -23,7 +23,7 @@
    :cover-color [156 215 249 200]
    :grass-height 3
    :obstacle-color [80 80 80]
-   :platform-color [60 200 80]
+   :platform-color [150 121 105]
    :grass-color [3 192 74]})
 
 (letfn [(rel [dimension c]
