@@ -19,6 +19,9 @@
 (defn moving? [{stay :stay}]
   (not stay))
 
+(defn unstay [blood]
+  (assoc blood :stay false))
+
 (defn stay [blood]
   (-> blood
       (assoc :stay true
@@ -48,15 +51,15 @@
     (position/next-rotation blood)
     (position/current-rotation blood)))
 
-(defn progress [{:keys [max-velocity] :as blood}]
+(defn progress [{:keys [max-velocity stay rotation] :as blood}]
   "Receives blood state and returns next state."
   (let [next-x (position/next-x-position blood)
         next-y (position/next-y-position blood)
         next-r (next-rotation blood)]
-    (if (:stay blood)
+    (if stay
       (-> blood
           next-opacity
-          (position/add-point next-x next-y next-r))
+          (position/add-point next-x next-y rotation))
       (-> blood
           (position/add-point next-x next-y next-r)
           (position/next-velocity max-velocity)))))

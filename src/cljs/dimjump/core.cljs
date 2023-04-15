@@ -111,11 +111,10 @@
    particule hits a *moving* obstacle then it just keeps going through it."
   (letfn
     [(attach-blood [b]
-       (let [collisions (if (blood/moving? b) (level/collided-entities level (position/pos b)) [])
-             [object _] (first collisions)]
-         (if object
-           (blood/stay b)
-           b)))]
+       (let [collisions (level/collided-entities level (position/pos b))]
+         (if (empty? collisions)
+           (blood/unstay b)
+           (blood/stay b))))]
     (update state
             :blood
             (partial map attach-blood))))
@@ -175,8 +174,8 @@
                 (update :level level/progress)
                 (update :dim dim/progress)
                 progress-corpses
-                progress-blood
                 detect-blood-collision
+                progress-blood
                 clear-platform
                 detect-entity-collision
                 set-speed)
