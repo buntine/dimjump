@@ -73,7 +73,8 @@
 (def levels
   [{:initial {:y 300
               :x -20
-              :speed 2}
+              :speed 2
+              :time 30}
     :obstacles [(block 700 -10 20 10)]
     :platforms [(block 0 -1 500 10)
                 (block 550 -1 500 10)

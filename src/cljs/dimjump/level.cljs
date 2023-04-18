@@ -1,30 +1,36 @@
 (ns dimjump.level
-  (:require [dimjump.obstacle :as obstacle]
-            [dimjump.platform :as platform]
-            [dimjump.exit :as exit]
-            [dimjump.object :as object]
-            [dimjump.data :as data]))
+  (:require [dimjump.object :as object]
+            [dimjump.data :as data]
+            [quil.core :as q]))
 
 (defn level-data [kind n]
   (kind (data/levels n)))
 
-(defn spawn [n]
-  {:index n
-   :initial (level-data :initial n)
-   :objects (concat
-              (map platform/map->Platform
-                   (level-data :platforms n))
-              (map obstacle/map->Obstacle
-                   (level-data :obstacles n))
-              (map exit/map->Exit
-                   (level-data :exits n)))})
+(defn reset [{:keys [initial] :as level}]
+  "(Re)sets the level time limit in milliseconds."
+  (assoc level :time (* (:time initial) 1000)))
+
+(defn spawn [n platform-factory obstacle-factory exit-factory]
+  (let [initial (level-data :initial n)]
+    (reset {:index n
+            :initial initial
+            :objects (concat
+                       (map platform-factory
+                            (level-data :platforms n))
+                       (map obstacle-factory
+                            (level-data :obstacles n))
+                       (map exit-factory
+                            (level-data :exits n)))})))
 
 (defn draw [{:keys [objects]}]
   (doseq [e objects]
     (object/draw e)))
 
 (defn progress [level]
-  (update level :objects (partial map object/progress)))
+  (-> level 
+      (update :objects (partial map object/progress))
+      (update :time #(max 0
+                          (- % (/ 1000 (q/current-frame-rate)))))))
 
 (defn collided-entities [{:keys [objects]} position]
   "Returns a collection representing the objects that the given positional has hit.
@@ -40,6 +46,6 @@
 (defn last? [{:keys [index]}]
   (>= (inc index) (count data/levels)))
 
-(defn move-next [{:keys [index] :as level}]
+(defn move-next [{:keys [index] :as level} platform-factory obstacle-factory exit-factory]
   (let [next-level (if (last? level) 0 (inc index))]
-    (spawn next-level)))
+    (spawn next-level platform-factory obstacle-factory exit-factory)))

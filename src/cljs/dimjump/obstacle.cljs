@@ -6,6 +6,7 @@
             [dimjump.corpse :as corpse]
             [dimjump.blood :as blood]
             [dimjump.object :as object]
+            [dimjump.level :as level]
             [dimjump.data :as data :refer [constants]]))
 
 (defn create-blood-splatter [{:keys [speed] :as dim}]
@@ -32,4 +33,5 @@
       (-> state
           (update :corpses conj (corpse/spawn position sprite))
           (update :blood concat (create-blood-splatter dim))
-          (update :dim dim/kill (:initial level))))))
+          (update :dim dim/kill (:initial level))
+          (update :level level/reset)))))
