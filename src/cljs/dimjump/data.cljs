@@ -74,12 +74,13 @@
   [{:initial {:y 300
               :x -20
               :speed 2
-              :time 30}
+              :time 90}
     :obstacles [(block 700 -10 20 10)]
     :platforms [(block 0 -1 500 10)
                 (block 550 -1 500 10)
                 (block 200 -40 70 10)
-                (block 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}})
+                (block 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
+                                      :min-x 200 :max-x 300 :speed 1})
                 (block 320 -70 10 10)
                 (block 330 -60 10 10)
                 (block 340 -50 10 10)

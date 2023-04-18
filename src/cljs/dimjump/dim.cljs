@@ -115,10 +115,12 @@
         next-velocity
         finalize-jump)))
 
-(defn correct-for-active-platform [dim]
-  "Ensures the dim is positioned correctly on the Y axis after landing on a platform"
+(defn correct-for-active-platform [dim {:keys [move-x]}]
+  "Ensures the dim is positioned correctly on the X and Y axis after landing on a platform.
+   This is because the active platform may be moving on either or both axis and the players relative
+   X/Y must take that into account."
   (let [pos (position/pos dim)
-        x (:x pos)
+        x (+ move-x (:x pos))
         y (floor-y dim)
         r (:rotation pos)]
     (-> dim
@@ -129,7 +131,7 @@
   "Handles dim colliding with a platform."
   (-> dim
       (assoc :active-platform platform)
-      correct-for-active-platform))
+      (correct-for-active-platform platform)))
 
 (defn sprite-for [dim]
   "Returns the PImage suitable for the given frame number"
