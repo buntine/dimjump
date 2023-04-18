@@ -171,6 +171,14 @@
         state)
       state)))
 
+(defn check-timeout [{:keys [level] :as state}]
+  "Kill the player when they run out of time"
+  (if (level/out-of-time? level)
+    (-> state
+        (update :dim dim/kill (:initial level))
+        (update :level level/reset))
+    state))
+
 (defn progress [state]
   (let [s (if (= (:phase state) 2)
             (-> state
@@ -181,7 +189,8 @@
                 progress-blood
                 clear-platform
                 detect-entity-collision
-                set-speed)
+                set-speed
+                check-timeout)
             state)]
     (if (= (:phase s) 1)
       (go-to-next-level s)

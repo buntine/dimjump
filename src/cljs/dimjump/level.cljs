@@ -49,3 +49,6 @@
 (defn move-next [{:keys [index] :as level} platform-factory obstacle-factory exit-factory]
   (let [next-level (if (last? level) 0 (inc index))]
     (spawn next-level platform-factory obstacle-factory exit-factory)))
+
+(defn out-of-time? [{:keys [time]}]
+  (<= time 0))
