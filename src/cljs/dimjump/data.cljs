@@ -35,13 +35,19 @@
   (def rel-x (partial rel :w))
   (def rel-y (partial rel :h)))
 
-(defn fade-cycle [{:keys [on off fade]
-                  :or {on 180 off 90 fade 30}}]
+(defn fade-cycle [{:keys [on off transition]
+                  :or {on 180 off 90 transition 30}}]
   "Sets up the structure for a fading object.
-   on = number of frames to stay fully opaque
-   off = number of frames to stay fully transparent
-   fade = number of frames to transition from on to off"
-    {:config {:on on :off off :fade fade}
+   Config:
+     on = number of frames to stay fully opaque
+     off = number of frames to stay fully transparent
+     fade-off = number of frames to transition from on to off
+     fade-on = number of frames to transition from off to on
+
+   alpha = the current alpha value
+   step = the number of frames through the current phase
+   phase = on | off | fade-on | fade-off"
+    {:config {:on on :off off :fade-off transition :fade-on transition}
      :alpha 255
      :step 0
      :phase :on})
@@ -72,7 +78,7 @@
     :platforms [(block 0 -1 500 10)
                 (block 550 -1 500 10)
                 (block 200 -40 70 10)
-                (block 250 -80 70 10)
+                (block 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}})
                 (block 320 -70 10 10)
                 (block 330 -60 10 10)
                 (block 340 -50 10 10)

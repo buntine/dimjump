@@ -14,8 +14,10 @@
   (not (and (= move-x 0) (= move-y 0))))
 
 (defn visible? [{:keys [fade-cycle]}]
+  "Is the object visible? A little bit of lenience is given here because
+   a super faded platform is basically invisible."
   (if-let [{:keys [alpha]} fade-cycle]
-    (> alpha 1)
+    (> alpha 25)
     true))
 
 (defn collision [{:keys [x y w h] :as object} {px :x py :y pw :w ph :h}]
@@ -65,19 +67,55 @@
                 (and (< move 0) (<= p min-p)))
             (- move)
             move))
+
          (next-move-x [{:keys [x min-x max-x move-x]}]
           (next-move x min-x max-x move-x))
+
          (next-move-y [{:keys [y min-y max-y move-y]}]
            (next-move y min-y max-y move-y))
+
          (next-x [{:keys [x min-x max-x move-x]}]
            (max min-x (min max-x (+ x move-x))))
+
          (next-y [{:keys [y min-y max-y move-y]}]
-           (max min-y (min max-y (+ y move-y))))]
+           (max min-y (min max-y (+ y move-y))))
+
+         (progress-step [config step phase]
+           (let [steps (phase config)
+                 next-step (inc step)]
+             (if (>= next-step steps)
+               0
+               next-step)))
+
+         (progress-phase [step phase]
+           (let [transitions {:on :fade-off :fade-off :off :off :fade-on :fade-on :on}]
+             (if (= step 0)
+               (phase transitions)
+               phase)))
+
+         (calculate-alpha [{:keys [fade-on fade-off]} step phase]
+           (let [a-on 255 a-off 0]
+             (case phase
+               :on a-on
+               :off a-off
+               :fade-on (min (* (/ a-on fade-off) step) a-on)
+               :fade-off (max (- a-on (* (/ a-on fade-off) step)) a-off))))
+
+         (progress-fade [{:keys [config alpha step phase] :as fade-cycle}]
+           (when alpha
+             (let [next-step (progress-step config step phase)
+                   next-phase (progress-phase next-step phase)
+                   next-alpha (calculate-alpha config next-step next-phase)]
+               (assoc fade-cycle
+                      :step next-step
+                      :phase next-phase
+                      :alpha next-alpha))))]
 
   (defn progress [entity]
-    "Updates position based on min-x and min-y, if necessary"
-    (assoc entity
-           :x (next-x entity)
-           :y (next-y entity)
-           :move-x (next-move-x entity)
-           :move-y (next-move-y entity))))
+    "Update display and position based on platform config, if necessary"
+    (-> entity
+        (assoc :x (next-x entity)
+               :y (next-y entity)
+               :move-x (next-move-x entity)
+               :move-y (next-move-y entity))
+        (update :fade-cycle progress-fade))))
