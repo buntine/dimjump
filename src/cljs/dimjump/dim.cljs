@@ -15,7 +15,7 @@
               :ducking [(q/load-image "/images/dim3.png")
                         (q/load-image "/images/dim4.png")]}
      :ducking false
-     :jumping false
+     :jump-gravity 0
      :active-platform nil
      :animation-speed 12}))
 
@@ -24,7 +24,6 @@
     (update dim flag not)))
 
 (def toggle-duck (toggle-flag :ducking))
-(def toggle-jump (toggle-flag :jumping))
 
 (defn floor-y [{:keys [active-platform] :as dim}]
   (if active-platform
@@ -36,7 +35,7 @@
   "Moves dim back to start of the screen, at the given Y position"
   (-> dim
       (assoc :speed speed)
-      (assoc :jumping false)
+      (assoc :jump-gravity 0)
       (assoc :active-platform nil)
       (position/add-point x y 0)))
 
@@ -47,27 +46,31 @@
         toggle-duck
         (update :h operator 2))))
 
-(defn jumpable? [{:keys [jumping active-platform] :as dim}]
-  "Returns true if dim is currently able to jump"
-  (and (not jumping) active-platform))
+(defn jumping? [{:keys [jump-gravity]}]
+  (> jump-gravity 0))
 
-(defn jump [{:keys [ducking] :as dim}]
+(defn jumpable? [{:keys [active-platform] :as dim}]
+  "Returns true if dim is currently able to jump"
+  (and (not (jumping? dim)) active-platform))
+
+(defn jump [{:keys [ducking active-platform] :as dim}]
   "Initiates a small or big jump, depending on ducking status"
   (if-not (jumpable? dim)
     dim
     (let [velocity (if ducking
                      (:velocity-small constants)
-                     (:velocity-big constants))]
+                     (:velocity-big constants))
+          gravity (or (:gravity active-platform) (:gravity constants))]
       (-> dim
-          toggle-jump
+          (assoc :jump-gravity gravity)
           (assoc :velocity velocity)))))
 
 (defn finalize-jump [dim]
   "If jump is finished then reset velocity and just status"
-  (if (and (:jumping dim)
+  (if (and (jumping? dim)
            (= (:y (position/pos dim)) (floor-y dim)))
     (-> dim
-        toggle-jump
+        (assoc :jump-gravity 0)
         (position/add-point (assoc (last (:points dim)) :rotation 0))
         (assoc :velocity 0))
     dim))
@@ -83,7 +86,7 @@
 
 (defn next-velocity [dim]
   "Updates velocity during a jump"
-  (if (:jumping dim)
+  (if (jumping? dim)
     (position/next-velocity dim)
     dim))
 
@@ -95,13 +98,13 @@
    (position/next-y-position
      dim
      (if consider-active-platform (floor-y dim) ##Inf)
-     #(if (:jumping %)
+     #(if (jumping? %)
         (:velocity %)
         (:fall-velocity constants)))))
 
 (defn next-rotation [dim]
   "Returns next rotation value for dim (during a jump)"
-  (if (:jumping dim)
+  (if (jumping? dim)
     (position/next-rotation dim)
     (position/current-rotation dim)))
 

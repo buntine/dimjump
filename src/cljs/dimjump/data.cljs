@@ -54,8 +54,8 @@
 
 (defn block
   ([x y w h] (block x y w h {}))
-  ([x y w h {:keys [min-x max-x min-y max-y speed fade]
-             :or {min-x x max-x x min-y y max-y y speed 0}
+  ([x y w h {:keys [min-x max-x min-y max-y speed fade gravity]
+             :or {min-x x max-x x min-y y max-y y speed 0 gravity (:gravity constants)}
              :as opts}]
     (merge opts
            {:x (rel-x x)
@@ -68,6 +68,7 @@
             :max-y (rel-y max-y)
             :move-x (- speed)
             :move-y (- speed)
+            :gravity gravity
             :fade-cycle (when fade (fade-cycle fade))})))
 
 (def levels
@@ -80,7 +81,7 @@
                 (block 550 -1 500 10)
                 (block 200 -40 70 10)
                 (block 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
-                                      :min-x 200 :max-x 300 :speed 1})
+                                      :min-x 200 :max-x 300 :speed 1 :gravity 0.3})
                 (block 320 -70 10 10)
                 (block 330 -60 10 10)
                 (block 340 -50 10 10)

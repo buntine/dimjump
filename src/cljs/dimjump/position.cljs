@@ -66,9 +66,9 @@
   "Produces the next velocity (for a jumping/falling object)"
   ([object]
    (next-velocity object (:fall-velocity constants)))
-  ([object max-velocity]
+  ([{:keys [jump-gravity] :as object} max-velocity]
    (update object :velocity #(min max-velocity
-                                  (+ % (:gravity constants))))))
+                                  (+ % (if (> jump-gravity 0) jump-gravity (:gravity constants)))))))
 
 (defn next-y-position
   "Returns the next Y position for the object.
