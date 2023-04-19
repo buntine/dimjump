@@ -11,6 +11,7 @@
      :max-velocity (min (- velocity) (:max-velocity constants))
      :stay false
      :degradation 0.6
+     :move-x 0
      :alpha 255}))
 
 (defn visible? [{alpha :alpha}]
@@ -20,13 +21,15 @@
   (not stay))
 
 (defn unstay [blood]
-  (assoc blood :stay false))
+  (assoc blood
+         :stay false
+         :move-x 0))
 
-(defn stay [blood]
-  (-> blood
-      (assoc :stay true
-             :speed 0
-             :velocity 0)))
+(defn stay [blood {:keys [move-x]}]
+  (assoc blood :stay true
+               :speed 0
+               :move-x move-x
+               :velocity 0))
 
 (defn draw [{:keys [alpha w h] :as blood}]
   "Renders blood with fade-off trail relative to current speed"
@@ -51,9 +54,9 @@
     (position/next-rotation blood)
     (position/current-rotation blood)))
 
-(defn progress [{:keys [max-velocity stay rotation] :as blood}]
+(defn progress [{:keys [max-velocity stay rotation move-x] :as blood}]
   "Receives blood state and returns next state."
-  (let [next-x (position/next-x-position blood)
+  (let [next-x (+ move-x (position/next-x-position blood))
         next-y (position/next-y-position blood)
         next-r (next-rotation blood)]
     (if stay

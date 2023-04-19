@@ -117,7 +117,8 @@
        (let [collisions (level/collided-entities level (position/pos b))]
          (if (empty? collisions)
            (blood/unstay b)
-           (blood/stay b))))]
+           (let [[entity _] (first collisions)]
+             (blood/stay b entity)))))]
     (update state
             :blood
             (partial map attach-blood))))
