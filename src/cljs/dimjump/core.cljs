@@ -25,9 +25,7 @@
      :blood []
      :sound true
      :images {:pause (q/load-image "/images/pause.png")
-              :end (q/load-image "/images/end.png")
-              :sky (q/load-image "/images/sky.png")
-              :ground (q/load-image "/images/ground.png")}
+              :end (q/load-image "/images/end.png")}
      :dim (dim/spawn (:initial l))}))
 
 (defn start-game [state]
@@ -39,9 +37,6 @@
 
 (defn finish-game [state]
   (assoc state :phase 3))
-
-(defn draw-backdrop [state]
-  (q/image (get-in state [:images :sky]) 0 0))
 
 (defn draw-hud [{:keys [level dim]}]
   (let [{w :w h :h} constants
@@ -97,7 +92,6 @@
   (q/background (q/color 176 222 249))
   (q/text-font (data/text 12))
   (q/image-mode :corner)
-  (draw-backdrop state)
   (draw-hud state)
   (level/draw (:level state))
 
