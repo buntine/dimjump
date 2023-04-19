@@ -177,7 +177,16 @@
         (update :level level/reset))
     state))
 
+(defn force-jump [{:keys [dim] :as state}]
+  "If player has landed on a trampoline-style platform, force a jump"
+  (if-let [platform (:active-platform dim)]
+    (if (:bounce? platform)
+      (jump state)
+      state)
+    state))
+
 (defn progress [state]
+  "Produce the next game state from the current state"
   (let [s (if (= (:phase state) 2)
             (-> state
                 (update :level level/progress)
@@ -187,6 +196,7 @@
                 progress-blood
                 clear-platform
                 detect-entity-collision
+                force-jump
                 set-speed
                 check-timeout)
             state)]
