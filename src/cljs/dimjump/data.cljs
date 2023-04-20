@@ -24,6 +24,7 @@
    :grass-height 3
    :obstacle-color [80 80 80]
    :platform-color [150 121 105]
+   :trampoline-color [9 121 105]
    :grass-color [3 192 74]})
 
 (letfn [(rel [dimension c]

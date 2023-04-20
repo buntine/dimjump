@@ -6,13 +6,14 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defrecord Platform
-  [x y w h min-x max-y min-y speed move-x move-y fade-cycle]
+  [x y w h min-x max-y min-y speed move-x move-y fade-cycle bounce? gravity]
   object/Entity
 
-  (draw [{:keys [fade-cycle]}]
+  (draw [{:keys [fade-cycle bounce?]}]
     (let [{:keys [alpha]
-           :or {alpha 255}} fade-cycle]
-      (q/with-fill (conj (constants :platform-color) alpha)
+           :or {alpha 255}} fade-cycle
+          bg-color (constants (if bounce? :trampoline-color :platform-color))]
+      (q/with-fill (conj bg-color alpha)
         (q/rect x (- y h) w h))
 
       (q/with-fill (conj (constants :grass-color) alpha)
