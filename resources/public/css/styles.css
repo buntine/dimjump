@@ -38,8 +38,8 @@ div#game-wrapper {
 canvas#game {
   z-index: 100;
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 640px;
+  height: 360px;
 }
 
 span#loading {
