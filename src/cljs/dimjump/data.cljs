@@ -55,8 +55,8 @@
 
 (defn block
   ([x y w h] (block x y w h {}))
-  ([x y w h {:keys [min-x max-x min-y max-y speed fade gravity bounce?]
-             :or {min-x x max-x x min-y y max-y y speed 0 gravity (:gravity constants) bounce? false}
+  ([x y w h {:keys [min-x max-x min-y max-y speed fade]
+             :or {min-x x max-x x min-y y max-y y speed 0}
              :as opts}]
     (merge opts
            {:x (rel-x x)
@@ -69,9 +69,14 @@
             :max-y (rel-y max-y)
             :move-x (- speed)
             :move-y (- speed)
-            :gravity gravity
-            :bounce? bounce?
             :fade-cycle (when fade (fade-cycle fade))})))
+
+(defn pf
+  ([x y w h] (block x y w h {}))
+  ([x y w h {:keys [gravity bounce?]
+             :or {gravity (:gravity constants) bounce? false}
+             :as opts}]
+    (block x y w h opts)))
 
 (def levels
   [{:initial {:y 300
@@ -79,19 +84,19 @@
               :speed 2
               :time 90}
     :obstacles [(block 700 -10 20 10)]
-    :platforms [(block 0 -1 500 10)
-                (block 550 -1 500 10)
-                (block 200 -40 70 10)
-                (block 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
-                                      :min-x 200 :max-x 300 :speed 1 :gravity 0.3
-                                      :bounce? true})
-                (block 320 -70 10 10)
-                (block 330 -60 10 10)
-                (block 340 -50 10 10)
-                (block 350 -40 10 10)
-                (block 360 -30 10 10)
-                (block 370 -20 10 10)
-                (block 380 -10 10 10)
-                (block -50 -300 10 500)]
+    :platforms [(pf 0 -1 500 10)
+                (pf 550 -1 500 10)
+                (pf 200 -40 70 10)
+                (pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
+                                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
+                                   :bounce? true})
+                (pf 320 -70 10 10)
+                (pf 330 -60 10 10)
+                (pf 340 -50 10 10)
+                (pf 350 -40 10 10)
+                (pf 360 -30 10 10)
+                (pf 370 -20 10 10)
+                (pf 380 -10 10 10)
+                (pf -50 -300 10 500)]
     :exits [(block (- (:w constants) 60) -80 26 38)]}
   ])
