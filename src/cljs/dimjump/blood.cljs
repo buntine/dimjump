@@ -21,6 +21,11 @@
           (q/rect 0 0 w h)
           (q/pop-matrix)))))
 
+  (pos [blood]
+    "Returns a map of current position and dimensions (x, y, w, h, rotation)"
+    (merge (last points)
+           (select-keys blood [:w :h])))
+
   (next-rotation [blood]
     "Returns next rotation value for blood"
     (if (moving? blood)

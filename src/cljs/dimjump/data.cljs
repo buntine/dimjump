@@ -19,7 +19,7 @@
    :max-velocity 12
    :gravity 0.8
    :blood-degradation 0.6
-   :animation-speed 12
+   :animation-speed 9
    :hud-color [10 49 56]
    :exit-color [40 40 40]
    :cover-color [156 215 249 200]

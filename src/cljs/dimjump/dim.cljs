@@ -5,7 +5,7 @@
             [dimjump.coordinate :as coordinate]))
 
 (defrecord Dim
-  [points velocity x-block move-x speed w h deaths frames ducking jump-gravity active-platform]
+  [points velocity x-block move-x speed deaths frames ducking jump-gravity active-platform]
   coordinate/Coordinate
 
   (draw [dim]
@@ -33,6 +33,12 @@
       (coordinate/rotate dim)
       (coordinate/rotation dim)))
 
+  (pos [dim]
+    "Returns a map of current position and dimensions (x, y, w, h, rotation)"
+    (let [f (frame dim)]
+      (merge (last points)
+             (select-keys f [:w :h]))))
+
   (progress [dim]
     "Receives player state and returns next state."
     (let [next-x (coordinate/next-x-position dim)
@@ -46,28 +52,52 @@
 (defn spawn [opts]
   (map->Dim (merge
               (coordinate/spawn opts)
-              {:w 16
-               :h 24
-               :deaths 0
-               :frames {:standing [(q/load-image "/images/dim1.png")
-                                   (q/load-image "/images/dim2.png")]
-                        :ducking [(q/load-image "/images/dim3.png")
-                                  (q/load-image "/images/dim4.png")]}
+              {:deaths 0
+               :frames {:standing [{:g (q/load-image "/images/dim_up1.png")
+                                    :w 18
+                                    :h 16}
+                                   {:g (q/load-image "/images/dim_up2.png")
+                                    :w 17
+                                    :h 17}
+                                   {:g (q/load-image "/images/dim_up3.png")
+                                    :w 16
+                                    :h 18}]
+                        :ducking [{:g (q/load-image "/images/dim_down1.png")
+                                   :w 9
+                                   :h 7}
+                                  {:g (q/load-image "/images/dim_down2.png")
+                                   :w 8
+                                   :h 8}
+                                  {:g (q/load-image "/images/dim_down3.png")
+                                   :w 7
+                                   :h 9}]}
                :ducking false
                :jump-gravity 0
                :active-platform nil})))
 
+(defn frame [{:keys [frames ducking]}]
+  "Returns the current sprite frame suitable for display."
+  (let [usable-frames ((if ducking :ducking :standing) frames)]
+    (usable-frames
+      (mod
+        (int (/ (q/frame-count)
+                (:animation-speed constants))) 3))))
+
+(defn sprite-for [dim]
+  "Returns the PImage suitable for the given frame number"
+  (:g (frame dim)))
 (letfn [(toggle-flag [flag]
           (fn [dim]
             (update dim flag not)))]
 
-  (def toggle-duck (toggle-flag :ducking)))
+  (def duck (toggle-flag :ducking)))
 
 (defn floor-y [{:keys [active-platform] :as dim}]
-  (if active-platform
-    (- (quadrangle/y-top active-platform)
-       (/ (:h dim) 2))
-    ##Inf))
+  (let [f (frame dim)]
+    (if active-platform
+      (- (quadrangle/y-top active-platform)
+         (/ (:h f) 2))
+      ##Inf)))
 
 (defn reset [dim {:keys [x y speed]}]
   "Moves dim back to start of the screen, at the given Y position"
@@ -76,13 +106,6 @@
       (assoc :jump-gravity 0)
       (assoc :active-platform nil)
       (coordinate/add-point x y 0)))
-
-(defn duck [dim]
-  "Toggles ducking and doubles/halves height of player accordingly"
-  (let [operator (if (:ducking dim) * /)]
-    (-> dim
-        toggle-duck
-        (update :h operator 2))))
 
 (defn jumping? [{:keys [jump-gravity]}]
   (> jump-gravity 0))
@@ -144,12 +167,11 @@
   "Ensures the dim is positioned correctly on the X and Y axis after landing on a platform.
    This is because the active platform may be moving on either or both axis and the players relative
    X/Y must take that into account."
-  (let [pos (coordinate/pos dim)
-        x (+ move-x (:x pos))
-        y (floor-y dim)
-        r (:rotation pos)]
+  (let [{:keys [x rotation]} (coordinate/pos dim)
+        nx (+ move-x x)
+        ny (floor-y dim)]
     (-> dim
-        (coordinate/rectify-point x y r)
+        (coordinate/rectify-point nx ny rotation)
         finalize-jump)))
 
 (defn collide-with-platform [dim platform]
@@ -157,11 +179,4 @@
   (-> dim
       (assoc :active-platform platform)
       (correct-for-active-platform platform)))
-
-(defn sprite-for [dim]
-  "Returns the PImage suitable for the given frame number"
-  (let [all-frames (:frames dim)
-        frames ((if (:ducking dim) :ducking :standing) all-frames)]
-    (frames (mod (int (/ (q/frame-count) (:animation-speed constants))) 2))))
-
 

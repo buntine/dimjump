@@ -5,6 +5,7 @@
   "Represents a spawnable coordinate on screen. Coordinates have a collection of 'points', in order to represent trails."
   (draw [coord] "Draws the coordinate to the canvas")
   (next-rotation [coord] "Produces the next rotation value for the coordinate")
+  (pos [coord] "Returns a map of current position and dimensions (x, y, w, h, rotation)")
   (progress [coord] "Produces the next state for the given coordinate"))
 
 (defn spawn [{:keys [x y speed velocity] :or [velocity 0]}]
@@ -16,25 +17,20 @@
    :x-block nil
    :speed speed})
 
-(defn pos [{:keys [points] :as coord}]
-  "Returns a map of current position and dimensions (x, y, w, h, rotation)"
-  (merge (last points)
-         (select-keys coord [:w :h])))
-
 (defn past? [coord x]
   "Returns true if coordinate has travelled past given X point"
   (let [pos (pos coord)]
     (>= (:x pos) x)))
 
-(defn fully-past? [coord x]
+(defn fully-past? [coord x-point]
   "Returns true if coordinate has travelled completely past given X point"
-  (let [pos (pos coord)]
-    (>= (- (:x pos) (/ (:w coord) 2)) x)))
+  (let [{:keys [x w]} (pos coord)]
+    (>= (- x (/ w 2)) x-point)))
 
-(defn fully-before? [coord x]
+(defn fully-before? [coord x-point]
   "Returns true if coordinate is fully before given X point"
-  (let [pos (pos coord)]
-    (<= (+ (:x pos) (/ (:w coord) 2)) x)))
+  (let [{:keys [x w]} (pos coord)]
+    (<= (+ x (/ w 2)) x-point)))
 
 (defn offscreen-right? [coord]
   (fully-past? coord (:w constants)))
@@ -43,12 +39,12 @@
   (fully-before? coord 0))
 
 (defn offscreen-top? [coord]
-  (let [{y :y} (pos coord)]
-    (<= (+ y (/ (:h coord) 2)) 0)))
+  (let [{:keys [y h]} (pos coord)]
+    (<= (+ y (/ h 2)) 0)))
 
 (defn offscreen-bottom? [coord]
-  (let [{y :y} (pos coord)]
-    (>= (- y (/ (:h coord) 2)) (:h constants))))
+  (let [{:keys [y h]} (pos coord)]
+    (>= (- y (/ h 2)) (:h constants))))
 
 (defn add-point 
   "Adds a new positional point for the coordinate. Each coordinate has a set of 'points', each
@@ -98,8 +94,9 @@
   "Ensures a 'block' is adhered to, which will prevent the coordinate from
    passing through an coordinate that has blocked the X axis."
   (when x-block
-    (let [half-width (/ (:w (pos coord)) 2)
-          {:keys [x dir]} x-block]
+    (let [{:keys [w]} (pos coord)
+          {:keys [x dir]} x-block
+          half-width (/ w 2)]
       (case dir
         :left (when (> speed 0)
                 (- x half-width))
