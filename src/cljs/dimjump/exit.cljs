@@ -1,11 +1,11 @@
 (ns dimjump.exit
   (:require [quil.core :as q :include-macros true]
-            [dimjump.object :as object]
+            [dimjump.quadrangle :as quadrangle]
             [dimjump.data :as data :refer [constants]]))
 
 (defrecord Exit
   [x y w h min-x max-y min-y speed move-x move-y fade-cycle]
-  object/Entity
+  quadrangle/Quadrangle
 
   (draw [{:keys [fade-cycle]}]
     (let [{:keys [alpha]

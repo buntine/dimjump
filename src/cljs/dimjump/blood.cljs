@@ -1,11 +1,11 @@
 (ns dimjump.blood
   (:require [quil.core :as q :include-macros true]
-            [dimjump.position :as position]
+            [dimjump.coordinate :as coordinate]
             [dimjump.data :as data :refer [constants]]))
 
 (defn spawn [{:keys [velocity] :as opts}]
   (merge
-    (position/spawn (update opts :speed #(+ (- % 2) (rand-int 3))))
+    (coordinate/spawn (update opts :speed #(+ (- % 2) (rand-int 3))))
     {:w 3
      :h 3
      :max-velocity (min (- velocity) (:max-velocity constants))
@@ -34,7 +34,7 @@
 (defn draw [{:keys [alpha w h] :as blood}]
   "Renders blood with fade-off trail relative to current speed"
   (let [points (reverse (:points blood))
-        trail (take (count points) (position/trail-opacities))
+        trail (take (count points) (coordinate/trail-opacities))
         trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
                                           points)]
     (doseq [[{x :x y :y rotation :rotation} opacity] trail-with-opacities]
@@ -51,18 +51,18 @@
 (defn next-rotation [blood]
   "Returns next rotation value for blood"
   (if (moving? blood)
-    (position/next-rotation blood)
-    (position/current-rotation blood)))
+    (coordinate/next-rotation blood)
+    (coordinate/current-rotation blood)))
 
 (defn progress [{:keys [max-velocity stay rotation move-x] :as blood}]
   "Receives blood state and returns next state."
-  (let [next-x (+ move-x (position/next-x-position blood))
-        next-y (position/next-y-position blood)
+  (let [next-x (+ move-x (coordinate/next-x-position blood))
+        next-y (coordinate/next-y-position blood)
         next-r (next-rotation blood)]
     (if stay
       (-> blood
           next-opacity
-          (position/add-point next-x next-y rotation))
+          (coordinate/add-point next-x next-y rotation))
       (-> blood
-          (position/add-point next-x next-y next-r)
-          (position/next-velocity max-velocity)))))
+          (coordinate/add-point next-x next-y next-r)
+          (coordinate/next-velocity max-velocity)))))

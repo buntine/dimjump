@@ -1,8 +1,8 @@
-(ns dimjump.object
+(ns dimjump.quadrangle
   (:require [quil.core :as q :include-macros true]))
 
-(defprotocol Entity
-  "Represents a spawnable entity on screen. Entities have dimensions, can be collided with, etc."
+(defprotocol Quadrangle
+  "Represents a spawnable quardangle entity on screen. Entities have four sides, dimensions and can be collided with, etc."
   (draw [entity] "Draws the entity to the canvas")
   (on-collision [entity direction state] "Should handle when player hits an entity. Return the updated game state."))
 
@@ -14,19 +14,19 @@
   (not (and (= move-x 0) (= move-y 0))))
 
 (defn visible? [{:keys [fade-cycle]}]
-  "Is the object visible? A little bit of lenience is given here because
+  "Is the quadrangle visible? A little bit of lenience is given here because
    a super faded platform is basically invisible."
   (if-let [{:keys [alpha]} fade-cycle]
     (> alpha 25)
     true))
 
-(defn collision [{:keys [x y w h] :as object} {px :x py :y pw :w ph :h}]
-  "Determines if the given positional object has collided with the entity.
+(defn collision [{:keys [x y w h] :as quadrangle} {px :x py :y pw :w ph :h}]
+  "Determines if the given quadrangle has collided with the coordinate.
    If a collision is detected, a keyword indicating the direction of the
    collision is returned: :top, :left, :bottom, :right, :inside.
 
    nil indicates no collision."
-  (when (visible? object)
+  (when (visible? quadrangle)
     (let [p-top (- py (/ ph 2))
           p-bottom (+ py (/ ph 2))
           p-left (- px (/ pw 2))

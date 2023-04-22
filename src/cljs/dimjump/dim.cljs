@@ -1,12 +1,12 @@
 (ns dimjump.dim
   (:require [quil.core :as q :include-macros true]
             [dimjump.data :as data :refer [constants]]
-            [dimjump.object :as object]
-            [dimjump.position :as position]))
+            [dimjump.quadrangle :as quadrangle]
+            [dimjump.coordinate :as coordinate]))
 
 (defn spawn [opts]
   (merge
-    (position/spawn opts)
+    (coordinate/spawn opts)
     {:w 16
      :h 24
      :deaths 0
@@ -27,7 +27,7 @@
 
 (defn floor-y [{:keys [active-platform] :as dim}]
   (if active-platform
-    (- (object/y-top active-platform)
+    (- (quadrangle/y-top active-platform)
        (/ (:h dim) 2))
     ##Inf))
 
@@ -37,7 +37,7 @@
       (assoc :speed speed)
       (assoc :jump-gravity 0)
       (assoc :active-platform nil)
-      (position/add-point x y 0)))
+      (coordinate/add-point x y 0)))
 
 (defn duck [dim]
   "Toggles ducking and doubles/halves height of player accordingly"
@@ -68,10 +68,10 @@
 (defn finalize-jump [dim]
   "If jump is finished then reset velocity and just status"
   (if (and (jumping? dim)
-           (= (:y (position/pos dim)) (floor-y dim)))
+           (= (:y (coordinate/pos dim)) (floor-y dim)))
     (-> dim
         (assoc :jump-gravity 0)
-        (position/add-point (assoc (last (:points dim)) :rotation 0))
+        (coordinate/add-point (assoc (last (:points dim)) :rotation 0))
         (assoc :velocity 0))
     dim))
 
@@ -87,7 +87,7 @@
 (defn next-velocity [dim]
   "Updates velocity during a jump"
   (if (jumping? dim)
-    (position/next-velocity dim)
+    (coordinate/next-velocity dim)
     dim))
 
 (defn next-y-position
@@ -95,7 +95,7 @@
   ([dim]
    (next-y-position dim true))
   ([dim consider-active-platform]
-   (position/next-y-position
+   (coordinate/next-y-position
      dim
      (if consider-active-platform (floor-y dim) ##Inf)
      #(if (jumping? %)
@@ -105,16 +105,16 @@
 (defn next-rotation [dim]
   "Returns next rotation value for dim (during a jump)"
   (if (jumping? dim)
-    (position/next-rotation dim)
-    (position/current-rotation dim)))
+    (coordinate/next-rotation dim)
+    (coordinate/current-rotation dim)))
 
 (defn progress [dim]
   "Receives player state and returns next state."
-  (let [next-x (position/next-x-position dim)
+  (let [next-x (coordinate/next-x-position dim)
         next-y (next-y-position dim false)
         next-r (next-rotation dim)]
     (-> dim
-        (position/add-point next-x next-y next-r)
+        (coordinate/add-point next-x next-y next-r)
         next-velocity
         finalize-jump)))
 
@@ -122,12 +122,12 @@
   "Ensures the dim is positioned correctly on the X and Y axis after landing on a platform.
    This is because the active platform may be moving on either or both axis and the players relative
    X/Y must take that into account."
-  (let [pos (position/pos dim)
+  (let [pos (coordinate/pos dim)
         x (+ move-x (:x pos))
         y (floor-y dim)
         r (:rotation pos)]
     (-> dim
-        (position/rectify-point x y r)
+        (coordinate/rectify-point x y r)
         finalize-jump)))
 
 (defn collide-with-platform [dim platform]
@@ -146,7 +146,7 @@
   "Renders dim with fade-off trail relative to current speed"
   (let [sprite (sprite-for dim)
         points (reverse (:points dim))
-        trail (take (count points) (position/trail-opacities))
+        trail (take (count points) (coordinate/trail-opacities))
         x-scale (if (>= (:speed dim) 0) 1.0 -1.0) ; Determine which way Dim is facing / rotating
         trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
                                           points)]

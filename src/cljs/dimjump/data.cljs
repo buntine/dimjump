@@ -38,7 +38,7 @@
 
 (defn fade-cycle [{:keys [on off transition]
                   :or {on 180 off 90 transition 30}}]
-  "Sets up the structure for a fading object.
+  "Sets up the structure for a fading quadrangle.
    Config:
      on = number of frames to stay fully opaque
      off = number of frames to stay fully transparent

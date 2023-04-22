@@ -3,11 +3,11 @@
             [quil.middleware :as m]
             [dimjump.dim :as dim]
             [dimjump.level :as level]
-            [dimjump.object :as object]
+            [dimjump.quadrangle :as quadrangle]
             [dimjump.corpse :as corpse]
             [dimjump.blood :as blood]
             [dimjump.sound :as sound]
-            [dimjump.position :as position]
+            [dimjump.coordinate :as coordinate]
             [dimjump.obstacle :refer [map->Obstacle]]
             [dimjump.platform :refer [map->Platform]]
             [dimjump.exit :refer [map->Exit]]
@@ -111,7 +111,7 @@
    particule hits a *moving* obstacle then it just keeps going through it."
   (letfn
     [(attach-blood [b]
-       (let [collisions (level/collided-entities level (position/pos b))]
+       (let [collisions (level/collided-entities level (coordinate/pos b))]
          (if (empty? collisions)
            (blood/unstay b)
            (let [[entity _] (first collisions)]
@@ -127,10 +127,10 @@
 
 (defn detect-entity-collision [{:keys [level dim] :as state}]
   "Handles the dim colliding with an entity on the current level."
-  (let [es (level/collided-entities level (position/pos dim))]
+  (let [es (level/collided-entities level (coordinate/pos dim))]
     (if (empty? es)
       state
-      (reduce (fn [s [e dir]] (object/on-collision e dir s)) state es))))
+      (reduce (fn [s [e dir]] (quadrangle/on-collision e dir s)) state es))))
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
@@ -164,8 +164,8 @@
   (let [k (q/key-as-keyword)]
     (if (q/key-pressed?)
       (case k
-        :left (update state :dim position/speed-down)
-        :right (update state :dim position/speed-up)
+        :left (update state :dim coordinate/speed-down)
+        :right (update state :dim coordinate/speed-up)
         state)
       state)))
 

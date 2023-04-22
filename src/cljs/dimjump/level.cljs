@@ -1,5 +1,5 @@
 (ns dimjump.level
-  (:require [dimjump.object :as object]
+  (:require [dimjump.quadrangle :as quadrangle]
             [dimjump.data :as data]
             [quil.core :as q]))
 
@@ -14,34 +14,34 @@
   (let [initial (level-data :initial n)]
     (reset {:index n
             :initial initial
-            :objects (concat
-                       (map platform-factory
-                            (level-data :platforms n))
-                       (map obstacle-factory
-                            (level-data :obstacles n))
-                       (map exit-factory
-                            (level-data :exits n)))})))
+            :quadrangles (concat
+                           (map platform-factory
+                                (level-data :platforms n))
+                           (map obstacle-factory
+                                (level-data :obstacles n))
+                           (map exit-factory
+                                (level-data :exits n)))})))
 
-(defn draw [{:keys [objects]}]
-  (doseq [e objects]
-    (object/draw e)))
+(defn draw [{:keys [quadrangles]}]
+  (doseq [e quadrangles]
+    (quadrangle/draw e)))
 
 (defn progress [level]
   (-> level 
-      (update :objects (partial map object/progress))
+      (update :quadrangles (partial map quadrangle/progress))
       (update :time #(max 0
                           (- % (/ 1000 (q/current-frame-rate)))))))
 
-(defn collided-entities [{:keys [objects]} position]
-  "Returns a collection representing the objects that the given positional has hit.
+(defn collided-entities [{:keys [quadrangles]} position]
+  "Returns a collection representing the quadrangles that the given positional has hit.
    The structure is: [[entity, direction], ...]"
   (remove
     nil?
     (map
       (fn [o]
-        (when-let [c (object/collision o position)]
+        (when-let [c (quadrangle/collision o position)]
           [o c]))
-      objects)))
+      quadrangles)))
 
 (defn last? [{:keys [index]}]
   (>= (inc index) (count data/levels)))
