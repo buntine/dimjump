@@ -1,11 +1,18 @@
 (ns dimjump.coordinate
   (:require [dimjump.data :as data :refer [constants]]))
 
+(defprotocol Coordinate
+  "Represents a spawnable coordinate on screen. Coordinates have a collection of 'points', in order to represent trails."
+  (draw [coord] "Draws the coordinate to the canvas")
+  (next-rotation [coord] "Produces the next rotation value for the coordinate")
+  (progress [coord] "Produces the next state for the given coordinate"))
+
 (defn spawn [{:keys [x y speed velocity] :or [velocity 0]}]
   {:points (take 5 (repeat {:x x
                             :y y
                             :rotation 0}))
    :velocity velocity
+   :move-x 0
    :x-block nil
    :speed speed})
 
@@ -108,11 +115,11 @@
     (or (block coord)
         (+ x speed))))
 
-(defn current-rotation [coord]
+(defn rotation [coord]
   "Returns current rotation value for coordinate"
   (:rotation (pos coord)))
 
-(defn next-rotation [coord]
+(defn rotate [coord]
   "Returns next rotation value for coordinate"
   (let [{rotation :rotation} (pos coord)]
     (+ rotation (* Math/PI 0.079753))))

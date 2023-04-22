@@ -4,26 +4,64 @@
             [dimjump.quadrangle :as quadrangle]
             [dimjump.coordinate :as coordinate]))
 
+(defrecord Dim
+  [points velocity x-block move-x speed w h deaths frames ducking jump-gravity active-platform]
+  coordinate/Coordinate
+
+  (draw [dim]
+    "Renders dim with fade-off trail relative to current speed"
+    (let [sprite (sprite-for dim)
+          points (reverse points)
+          trail (take (count points) (coordinate/trail-opacities))
+          x-scale (if (>= (:speed dim) 0) 1.0 -1.0) ; Determine which way Dim is facing / rotating
+          trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
+                                            points)]
+      (doseq [[{x :x y :y rotation :rotation} opacity] trail-with-opacities]
+        (q/push-matrix)
+        (q/image-mode :center)
+        (q/tint 255 opacity)
+        (q/translate x y)
+        (q/scale x-scale 1.0)
+        (q/rotate rotation)
+        (q/image sprite 0 0)
+        (q/no-tint)
+        (q/pop-matrix))))
+
+  (next-rotation [dim]
+    "Returns next rotation value for dim (during a jump)"
+    (if (jumping? dim)
+      (coordinate/rotate dim)
+      (coordinate/rotation dim)))
+
+  (progress [dim]
+    "Receives player state and returns next state."
+    (let [next-x (coordinate/next-x-position dim)
+          next-y (next-y-position dim false)
+          next-r (coordinate/next-rotation dim)]
+      (-> dim
+          (coordinate/add-point next-x next-y next-r)
+          next-velocity
+          finalize-jump))))
+
 (defn spawn [opts]
-  (merge
-    (coordinate/spawn opts)
-    {:w 16
-     :h 24
-     :deaths 0
-     :frames {:standing [(q/load-image "/images/dim1.png")
-                         (q/load-image "/images/dim2.png")]
-              :ducking [(q/load-image "/images/dim3.png")
-                        (q/load-image "/images/dim4.png")]}
-     :ducking false
-     :jump-gravity 0
-     :active-platform nil
-     :animation-speed 12}))
+  (map->Dim (merge
+              (coordinate/spawn opts)
+              {:w 16
+               :h 24
+               :deaths 0
+               :frames {:standing [(q/load-image "/images/dim1.png")
+                                   (q/load-image "/images/dim2.png")]
+                        :ducking [(q/load-image "/images/dim3.png")
+                                  (q/load-image "/images/dim4.png")]}
+               :ducking false
+               :jump-gravity 0
+               :active-platform nil})))
 
-(defn toggle-flag [flag]
-  (fn [dim]
-    (update dim flag not)))
+(letfn [(toggle-flag [flag]
+          (fn [dim]
+            (update dim flag not)))]
 
-(def toggle-duck (toggle-flag :ducking))
+  (def toggle-duck (toggle-flag :ducking)))
 
 (defn floor-y [{:keys [active-platform] :as dim}]
   (if active-platform
@@ -102,22 +140,6 @@
         (:velocity %)
         (:fall-velocity constants)))))
 
-(defn next-rotation [dim]
-  "Returns next rotation value for dim (during a jump)"
-  (if (jumping? dim)
-    (coordinate/next-rotation dim)
-    (coordinate/current-rotation dim)))
-
-(defn progress [dim]
-  "Receives player state and returns next state."
-  (let [next-x (coordinate/next-x-position dim)
-        next-y (next-y-position dim false)
-        next-r (next-rotation dim)]
-    (-> dim
-        (coordinate/add-point next-x next-y next-r)
-        next-velocity
-        finalize-jump)))
-
 (defn correct-for-active-platform [dim {:keys [move-x]}]
   "Ensures the dim is positioned correctly on the X and Y axis after landing on a platform.
    This is because the active platform may be moving on either or both axis and the players relative
@@ -140,23 +162,6 @@
   "Returns the PImage suitable for the given frame number"
   (let [all-frames (:frames dim)
         frames ((if (:ducking dim) :ducking :standing) all-frames)]
-    (frames (mod (int (/ (q/frame-count) (:animation-speed dim))) 2))))
+    (frames (mod (int (/ (q/frame-count) (:animation-speed constants))) 2))))
 
-(defn draw [dim]
-  "Renders dim with fade-off trail relative to current speed"
-  (let [sprite (sprite-for dim)
-        points (reverse (:points dim))
-        trail (take (count points) (coordinate/trail-opacities))
-        x-scale (if (>= (:speed dim) 0) 1.0 -1.0) ; Determine which way Dim is facing / rotating
-        trail-with-opacities (map-indexed #(vector %2 (nth trail %1))
-                                          points)]
-    (doseq [[{x :x y :y rotation :rotation} opacity] trail-with-opacities]
-      (q/push-matrix)
-      (q/image-mode :center)
-      (q/tint 255 opacity)
-      (q/translate x y)
-      (q/scale x-scale 1.0)
-      (q/rotate rotation)
-      (q/image sprite 0 0)
-      (q/no-tint)
-      (q/pop-matrix))))
+

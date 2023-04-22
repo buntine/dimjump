@@ -49,9 +49,6 @@
       (q/text (str "Level " (inc (:index level)) " with " (:deaths dim) " deaths")
               (- w 5) 17))))
 
-(defn draw-dim [state]
-  (dim/draw (:dim state)))
-
 (defn draw-with-cover [f]
   (let [{w :w h :h} constants]
     (q/with-fill
@@ -99,12 +96,12 @@
     (corpse/draw c))
   
   (doseq [b (:blood state)]
-    (blood/draw b))
+    (coordinate/draw b))
 
   (case (:phase state)
     0 (draw-start-game state)
     3 (draw-end-game state)
-    2 (draw-dim state)))
+    2 (coordinate/draw (:dim state))))
 
 (defn detect-blood-collision [{:keys [blood level] :as state}]
   "Stops any blood particles that hit an obstacle. Currently, if a blood
@@ -142,7 +139,7 @@
   "Continues blood splatters and removes any that are no longer visible"
   (update state :blood #(filter
                            blood/visible?
-                           (map blood/progress %))))
+                           (map coordinate/progress %))))
 
 (defn place-dim [{:keys [dim level] :as state}]
   "Places the dim correctly for the current level"
@@ -190,7 +187,7 @@
   (let [s (if (= (:phase state) 2)
             (-> state
                 (update :level level/progress)
-                (update :dim dim/progress)
+                (update :dim coordinate/progress)
                 progress-corpses
                 detect-blood-collision
                 progress-blood
