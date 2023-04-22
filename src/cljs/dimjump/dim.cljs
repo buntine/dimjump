@@ -63,14 +63,14 @@
                                     :w 16
                                     :h 18}]
                         :ducking [{:g (q/load-image "/images/dim_down1.png")
-                                   :w 9
-                                   :h 7}
+                                   :w 22
+                                   :h 12}
                                   {:g (q/load-image "/images/dim_down2.png")
-                                   :w 8
-                                   :h 8}
+                                   :w 21
+                                   :h 13}
                                   {:g (q/load-image "/images/dim_down3.png")
-                                   :w 7
-                                   :h 9}]}
+                                   :w 20
+                                   :h 14}]}
                :ducking false
                :jump-gravity 0
                :active-platform nil})))
