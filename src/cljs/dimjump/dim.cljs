@@ -179,4 +179,3 @@
   (-> dim
       (assoc :active-platform platform)
       (correct-for-active-platform platform)))
-

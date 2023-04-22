@@ -127,7 +127,11 @@
   (let [es (level/collided-entities level (coordinate/pos dim))]
     (if (empty? es)
       state
-      (reduce (fn [s [e dir]] (quadrangle/on-collision e dir s)) state es))))
+      (do
+(when (= :right (second (first es)))
+  (println (first (first es)))
+  (println (coordinate/pos dim)))
+      (reduce (fn [s [e dir]] (quadrangle/on-collision e dir s)) state es)))))
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"

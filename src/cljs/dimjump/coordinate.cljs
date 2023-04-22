@@ -17,10 +17,10 @@
    :x-block nil
    :speed speed})
 
-(defn past? [coord x]
+(defn past? [coord x-point]
   "Returns true if coordinate has travelled past given X point"
-  (let [pos (pos coord)]
-    (>= (:x pos) x)))
+  (let [{:keys [x]} (pos coord)]
+    (>= x x-point)))
 
 (defn fully-past? [coord x-point]
   "Returns true if coordinate has travelled completely past given X point"
@@ -118,7 +118,7 @@
 
 (defn rotate [coord]
   "Returns next rotation value for coordinate"
-  (let [{rotation :rotation} (pos coord)]
+  (let [{:keys [rotation]} (pos coord)]
     (+ rotation (* Math/PI 0.079753))))
 
 (letfn [(speed-threshold [{:keys [x-block]} blocking-dir speed-const]
