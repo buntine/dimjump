@@ -10,16 +10,16 @@
   "(Re)sets the level time limit in milliseconds."
   (assoc level :time (* (:time initial) 1000)))
 
-(defn spawn [n platform-factory obstacle-factory exit-factory]
+(defn spawn [n entity-factory]
   (let [initial (level-data :initial n)]
     (reset {:index n
             :initial initial
             :quadrangles (concat
-                           (map platform-factory
+                           (map entity-factory
                                 (level-data :platforms n))
-                           (map obstacle-factory
+                           (map entity-factory
                                 (level-data :obstacles n))
-                           (map exit-factory
+                           (map entity-factory
                                 (level-data :exits n)))})))
 
 (defn draw [{:keys [quadrangles]}]
@@ -46,9 +46,9 @@
 (defn last? [{:keys [index]}]
   (>= (inc index) (count data/levels)))
 
-(defn move-next [{:keys [index] :as level} platform-factory obstacle-factory exit-factory]
+(defn move-next [{:keys [index] :as level} entity-factory]
   (let [next-level (if (last? level) 0 (inc index))]
-    (spawn next-level platform-factory obstacle-factory exit-factory)))
+    (spawn next-level entity-factory)))
 
 (defn out-of-time? [{:keys [time]}]
   (<= time 0))

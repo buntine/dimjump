@@ -8,9 +8,10 @@
             [dimjump.blood :as blood]
             [dimjump.sound :as sound]
             [dimjump.coordinate :as coordinate]
-            [dimjump.obstacle :refer [map->Obstacle]]
-            [dimjump.platform :refer [map->Platform]]
-            [dimjump.exit :refer [map->Exit]]
+            [dimjump.obstacles.oilspill]
+            [dimjump.platforms.rock]
+            [dimjump.exits.sign]
+            [dimjump.factories.entity :as entity-factory]
             [dimjump.data :as data :refer [constants]]))
 
 (defn setup []
@@ -18,7 +19,7 @@
   (q/frame-rate 60)
   (.focus (.getElementById js/document "game"))
 
-  (let [l (level/spawn 0 map->Platform map->Obstacle map->Exit)]
+  (let [l (level/spawn 0 entity-factory/entity)]
     {:phase 0 ; 0: Intro/Pause, 1: Cue next level, 2: Play, 3: Finished
      :level l
      :corpses []
@@ -157,7 +158,7 @@
     (-> state
         (assoc :phase 2)
         (assoc :blood [])
-        (update :level level/move-next map->Platform map->Obstacle map->Exit)
+        (update :level level/move-next entity-factory/entity)
         place-dim)))
 
 (defn set-speed [state]

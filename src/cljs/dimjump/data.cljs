@@ -76,11 +76,18 @@
             :fade-cycle (when fade (fade-cycle fade))})))
 
 (defn pf
-  ([x y w h] (block x y w h {}))
-  ([x y w h {:keys [gravity bounce?]
+  ([kind x y w h] (pf kind x y w h {}))
+  ([kind x y w h {:keys [gravity bounce?]
              :or {gravity (:gravity constants) bounce? false}
              :as opts}]
-    (block x y w h opts)))
+    (block x y w h (merge opts {:kind kind}))))
+
+(defn ob
+  ([kind x y w h] (ob kind x y w h {}))
+  ([kind x y w h opts]
+     (block x y w h (merge opts {:kind kind}))))
+
+(def ex ob)
 
 ; Special-case to allow a block to align to the bottom of the viewport.
 (def bottom (/ (:h constants) (:block-size constants)))
@@ -90,13 +97,13 @@
               :x -20
               :speed 2
               :time 90}
-    :obstacles [(block 12 -3 2 1)]
-    :platforms [(pf 0 bottom 60 2)
-                (pf 30 -1 6 3)
-                (pf 42 -1 3 1 {:gravity 0.4 :bounce? true})
+    :obstacles [(ob :oilspill 12 -3 2 1)]
+    :platforms [(pf :rock 0 bottom 60 2)
+                (pf :rock 30 -1 6 3)
+                (pf :rock 42 -1 3 1 {:gravity 0.4 :bounce? true})
                 ;(pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
                 ;                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
                 ;                   :bounce? true})
                 ]
-    :exits [(block -4 -10 3 5)]}
+    :exits [(ex :sign -4 -10 3 5)]}
   ])
