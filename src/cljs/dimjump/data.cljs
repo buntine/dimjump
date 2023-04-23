@@ -10,6 +10,7 @@
 (def constants
   {:w (:w dimensions)
    :h (:h dimensions)
+   :block-size 8
    :speed-min -4.0
    :speed-max 4.0
    :speed-jump 0.2
@@ -18,7 +19,7 @@
    :fall-velocity 5
    :max-velocity 12
    :gravity 0.8
-   :blood-degradation 0.6
+   :blood-degradation 1.6
    :animation-speed 9
    :hud-color [10 49 56]
    :exit-color [40 40 40]
@@ -32,9 +33,10 @@
 (letfn [(rel [dimension c]
           "If < 0, the coordinate (c) is interpreted as being offset from the bottom/right of the screen.
            Otherwise, from the top/left of the screen (e.g 0,0 is top left)."
-          (if (< c 0)
-            (+ (dimension constants) c)
-            c))]
+          (let [o (* c (:block-size constants))]
+            (if (< c 0)
+              (+ (dimension constants) o)
+              o)))]
   (def rel-x (partial rel :w))
   (def rel-y (partial rel :h)))
 
@@ -63,8 +65,8 @@
     (merge opts
            {:x (rel-x x)
             :y (rel-y y)
-            :w w
-            :h h
+            :w (* w (:block-size constants))
+            :h (* h (:block-size constants))
             :min-x (rel-x min-x)
             :max-x (rel-x max-x)
             :min-y (rel-y min-y)
@@ -80,25 +82,21 @@
              :as opts}]
     (block x y w h opts)))
 
+; Special-case to allow a block to align to the bottom of the viewport.
+(def bottom (/ (:h constants) (:block-size constants)))
+
 (def levels
   [{:initial {:y 300
               :x -20
               :speed 2
               :time 90}
-    :obstacles [(block 700 -10 20 10)]
-    :platforms [(pf 0 -1 500 10)
-                (pf 550 -1 500 10)
-                (pf 200 -40 70 10)
-                (pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
-                                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
-                                   :bounce? true})
-                (pf 320 -70 10 10)
-                (pf 330 -60 10 10)
-                (pf 340 -50 10 10)
-                (pf 350 -40 10 10)
-                (pf 360 -30 10 10)
-                (pf 370 -20 10 10)
-                (pf 380 -10 10 10)
-                (pf -50 -300 10 500)]
-    :exits [(block (- (:w constants) 60) -80 26 38)]}
+    :obstacles [(block 12 -3 2 1)]
+    :platforms [(pf 0 bottom 60 2)
+                (pf 30 -1 6 3)
+                (pf 42 -1 3 1 {:gravity 0.4 :bounce? true})
+                ;(pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
+                ;                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
+                ;                   :bounce? true})
+                ]
+    :exits [(block -4 -10 3 5)]}
   ])
