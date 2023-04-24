@@ -195,8 +195,8 @@
                 progress-blood
                 clear-platform
                 (detect-entity-collision previous-platform)
-                force-jump
                 set-speed
+                force-jump
                 check-timeout)
             state)]
     (if (= (:phase s) 1)

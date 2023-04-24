@@ -105,7 +105,7 @@
     :obstacles [(ob :oilspill 12 -3 2 1)]
     :platforms [(pf :rock 0 bottom 85 2)
                 (pf :rock 30 -1 6 3)
-                (pf :rock 34 -5 6 1 {:min-x 24 :max-x 36 :speed 1})
+                (pf :rock 34 -4 6 2 {:min-x 24 :max-x 36 :speed 1})
                 (pf :rock 52 -1 3 1 {:gravity 0.4 :bounce? true})
                 ;(pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
                 ;                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
