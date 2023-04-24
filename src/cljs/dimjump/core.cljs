@@ -123,16 +123,12 @@
       (assoc-in [:dim :x-block] nil)
       (assoc-in [:dim :active-platform] nil)))
 
-(defn detect-entity-collision [{:keys [level dim] :as state}]
+(defn detect-entity-collision [{:keys [level dim] :as state} previous-platform]
   "Handles the dim colliding with an entity on the current level."
-  (let [es (level/collided-entities level (coordinate/pos dim))]
+  (let [es (level/collided-entities level (coordinate/pos dim) previous-platform)]
     (if (empty? es)
       state
-      (do
-(when (= :right (second (first es)))
-  (println (first (first es)))
-  (println (coordinate/pos dim)))
-      (reduce (fn [s [e dir]] (quadrangle/on-collision e dir s)) state es)))))
+      (reduce (fn [s [e dir]] (quadrangle/on-collision e dir s)) state es))))
 
 (defn progress-corpses [state]
   "Continues corpses and removes any that are no longer visible"
@@ -187,9 +183,10 @@
       state)
     state))
 
-(defn progress [state]
+(defn progress [{:keys [dim] :as state}]
   "Produce the next game state from the current state"
-  (let [s (if (= (:phase state) 2)
+  (let [previous-platform (:active-platform dim)
+        s (if (= (:phase state) 2)
             (-> state
                 (update :level level/progress)
                 (update :dim coordinate/progress)
@@ -197,7 +194,7 @@
                 detect-blood-collision
                 progress-blood
                 clear-platform
-                detect-entity-collision
+                (detect-entity-collision previous-platform)
                 force-jump
                 set-speed
                 check-timeout)

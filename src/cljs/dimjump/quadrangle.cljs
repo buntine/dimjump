@@ -20,7 +20,7 @@
     (> alpha 25)
     true))
 
-(defn collision [{:keys [x y w h] :as quadrangle} {px :x py :y pw :w ph :h}]
+(defn collision [{:keys [x y w h id] :as quadrangle} {px :x py :y pw :w ph :h} {cid :id}]
   "Determines if the given quadrangle has collided with the coordinate.
    If a collision is detected, a keyword indicating the direction of the
    collision is returned: :top, :left, :bottom, :right, :inside.
@@ -31,32 +31,35 @@
           p-bottom (+ py (/ ph 2))
           p-left (- px (/ pw 2))
           p-right (+ px (/ pw 2))
-          o-top (- y h)
-          o-bottom y
-          o-left x
-          o-right (+ x w)
-          top? (and (< p-left o-right)
-                    (< o-left p-right)
-                    (< p-top o-top)
-                    (<= o-top p-bottom))
-          left? (and (>= p-right o-left)
-                     (< p-left o-left)
-                     (< py o-bottom)
-                     (> py o-top))
-          right? (and (> p-left o-left)
-                      (<= p-left o-right)
-                      (< py o-bottom)
-                      (> py o-top))
-          bottom? (and (< p-left o-right)
-                       (< o-left p-right)
-                       (< p-top o-bottom)
-                       (> p-bottom o-top))
+          q-top (- y h)
+          q-bottom y
+          q-left x
+          q-right (+ x w)
+          top? (and (< p-left q-right)
+                    (< q-left p-right)
+                    (< p-top q-top)
+                    (<= q-top p-bottom))
+          left? (and (>= p-right q-left) ; End of dim is after or on start of platform
+                     (< p-left q-left)   ; Start of dim is before start of platform
+                     (< p-top q-bottom)     ; Top of dim is higher than bottom of platform
+                     (> p-bottom q-top)       ; Bottom of dim is lower than top of platform
+                     (not= id cid))      ; Dim is not currently on that platform
+          right? (and (> p-right q-right)
+                      (<= p-left q-right)
+                      (< p-top q-bottom)     ; Top of dim is higher than bottom of platform
+                      (> p-bottom q-top)       ; Bottom of dim is lower than top of platform
+                      (not= id cid))      ; Dim is not currently on that platform
+          bottom? (and (< px q-right)
+                       (> px q-left )
+                       (<= p-top q-bottom)
+                       (> p-bottom q-bottom)
+                       (not= id cid))
           inside? false]
       (cond
+        bottom? :bottom
+        top? :top
         left? :left
         right? :right
-        top? :top
-        bottom? :bottom
         inside? :inside))))
 
 (letfn [(next-move [p min-p max-p move]

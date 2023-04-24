@@ -32,16 +32,18 @@
       (update :time #(max 0
                           (- % (/ 1000 (q/current-frame-rate)))))))
 
-(defn collided-entities [{:keys [quadrangles]} position]
+(defn collided-entities
+  ([l p] (collided-entities l p nil))
+  ([{:keys [quadrangles]} position current-platform]
   "Returns a collection representing the quadrangles that the given positional has hit.
    The structure is: [[entity, direction], ...]"
   (remove
     nil?
     (map
       (fn [o]
-        (when-let [c (quadrangle/collision o position)]
+        (when-let [c (quadrangle/collision o position current-platform)]
           [o c]))
-      quadrangles)))
+      quadrangles))))
 
 (defn last? [{:keys [index]}]
   (>= (inc index) (count data/levels)))

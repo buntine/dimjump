@@ -7,4 +7,4 @@
   "Spawns a new exitplatform quadrangle with the appropriate config for an Exit Sign"
   (exit/map->Exit
     (merge opts
-           {:background {:frames [(q/load-image "/images/rock_1.png")]}})))
+           {:background {:frames [(q/load-image "/images/exit_sign_1.png")]}})))

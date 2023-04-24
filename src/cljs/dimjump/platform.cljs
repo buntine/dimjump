@@ -6,7 +6,7 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defrecord Platform
-  [x y w h min-x max-y min-y speed move-x move-y fade-cycle bounce? gravity]
+  [id x y w h min-x max-y min-y speed move-x move-y fade-cycle bounce? gravity]
   quadrangle/Quadrangle
 
   (draw [{:keys [fade-cycle bounce?]}]

@@ -57,13 +57,18 @@
      :step 0
      :phase :on})
 
+(defn generate-id []
+  (apply str (repeatedly 8
+                         #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789"))))
+
 (defn block
   ([x y w h] (block x y w h {}))
   ([x y w h {:keys [min-x max-x min-y max-y speed fade]
              :or {min-x x max-x x min-y y max-y y speed 0}
              :as opts}]
     (merge opts
-           {:x (rel-x x)
+           {:id (generate-id)
+            :x (rel-x x)
             :y (rel-y y)
             :w (* w (:block-size constants))
             :h (* h (:block-size constants))
@@ -98,9 +103,10 @@
               :speed 2
               :time 90}
     :obstacles [(ob :oilspill 12 -3 2 1)]
-    :platforms [(pf :rock 0 bottom 60 2)
+    :platforms [(pf :rock 0 bottom 85 2)
                 (pf :rock 30 -1 6 3)
-                (pf :rock 42 -1 3 1 {:gravity 0.4 :bounce? true})
+                (pf :rock 34 -5 6 1 {:min-x 24 :max-x 36 :speed 1})
+                (pf :rock 52 -1 3 1 {:gravity 0.4 :bounce? true})
                 ;(pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
                 ;                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
                 ;                   :bounce? true})

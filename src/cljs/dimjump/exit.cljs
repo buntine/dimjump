@@ -4,7 +4,7 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defrecord Exit
-  [x y w h min-x max-y min-y speed move-x move-y fade-cycle]
+  [id x y w h min-x max-y min-y speed move-x move-y fade-cycle]
   quadrangle/Quadrangle
 
   (draw [{:keys [fade-cycle]}]
