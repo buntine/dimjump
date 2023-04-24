@@ -70,7 +70,7 @@
    (next-velocity coord (:fall-velocity constants)))
   ([{:keys [jump-gravity] :as coord} max-velocity]
    (update coord :velocity #(min max-velocity
-                                  (+ % (if (> jump-gravity 0) jump-gravity (:gravity constants)))))))
+                                 (+ % (if (> jump-gravity 0) jump-gravity (:gravity constants)))))))
 
 (defn next-y-position
   "Returns the next Y position for the coordinate.
@@ -98,9 +98,9 @@
           {:keys [x dir]} x-block
           half-width (/ w 2)]
       (case dir
-        :left (when (> speed 0)
+        :left (when (>= speed 0)
                 (- x half-width))
-        :right (when (< speed 0)
+        :right (when (<= speed 0)
                 (+ x half-width))))))
 
 (defn next-x-position [{:keys [speed] :as coord}]

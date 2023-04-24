@@ -38,16 +38,17 @@
           top? (and (< p-left q-right)
                     (< q-left p-right)
                     (< p-top q-top)
+                    (< py q-top)         ; Middle of dim is higher than top of platform
                     (<= q-top p-bottom))
           left? (and (>= p-right q-left) ; End of dim is after or on start of platform
                      (< p-left q-left)   ; Start of dim is before start of platform
-                     (< p-top q-bottom)     ; Top of dim is higher than bottom of platform
-                     (> p-bottom q-top)       ; Bottom of dim is lower than top of platform
+                     (< p-top q-bottom)  ; Top of dim is higher than bottom of platform
+                     (> p-bottom q-top)  ; Bottom of dim is lower than top of platform
                      (not= id cid))      ; Dim is not currently on that platform
           right? (and (> p-right q-right)
                       (<= p-left q-right)
-                      (< p-top q-bottom)     ; Top of dim is higher than bottom of platform
-                      (> p-bottom q-top)       ; Bottom of dim is lower than top of platform
+                      (< p-top q-bottom)  ; Top of dim is higher than bottom of platform
+                      (> p-bottom q-top)  ; Bottom of dim is lower than top of platform
                       (not= id cid))      ; Dim is not currently on that platform
           bottom? (and (< px q-right)
                        (> px q-left )
