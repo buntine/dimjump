@@ -113,7 +113,8 @@
               :x -20
               :speed 2
               :time 90}
-    :obstacles [(ob :oilspill 12 -3 2 1)]
+    :obstacles [(ob :oilspill 12 -3 2 1)
+                (ob :oilspill 58 -4 6 10)]
     :platforms [(pf :rock :zero bottom 85 2)
                 (pf :rock 30 -1 6 3)
                 (pf :rock 34 -4 6 10 {:min-x 24 :max-x 36 :speed 1})

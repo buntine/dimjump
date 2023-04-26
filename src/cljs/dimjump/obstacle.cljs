@@ -16,7 +16,7 @@
       (range -16 -2))))
 
 (defrecord Obstacle
-  [id x y w h min-x max-y min-y speed move-x move-y fade-cycle]
+  [id x y w h min-x max-y min-y speed move-x move-y fade-cycle background]
   quadrangle/Quadrangle
 
   (draw [{:keys [fade-cycle]}]

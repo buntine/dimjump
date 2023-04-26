@@ -3,8 +3,11 @@
             [dimjump.factories.entity :as entity-factory]
             [dimjump.platform :as platform]))
 
-(defmethod entity-factory/entity :rock [opts]
+(defmethod entity-factory/entity :rock [{:keys [rotation] :as opts :or {rotation 0}}]
   "Spawns a new platform quadrangle with the appropriate config for a rock wall"
   (platform/map->Platform
-    (merge opts
-           {:background {:frames [(q/load-image "/images/rock_1.png")]}})))
+    (merge (dissoc opts :rotation)
+           {:background {:background [100 100 100]
+                         :layers []
+                         :rotation rotation
+                         :frames [(q/load-image "/images/rock_1.png")]}})))
