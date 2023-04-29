@@ -9,15 +9,34 @@
   [id x y w h min-x max-y min-y speed move-x move-y fade-cycle bounce? gravity background]
   quadrangle/Quadrangle
 
-  (draw [{:keys [fade-cycle bounce?]}]
+  (draw [{:keys [fade-cycle background]}]
     (let [{:keys [alpha]
            :or {alpha 255}} fade-cycle
-          bg-color (constants (if bounce? :trampoline-color :platform-color))]
-      (q/with-fill (conj bg-color alpha)
-        (q/rect x (- y h) w h))
+          {:keys [frames]} background
+          canvas (.getElementById js/document  "game")
+          ctx (.getContext canvas "2d")
+          img (.getElementById js/document (quadrangle/image-for frames))
+          pattern (.createPattern ctx img "repeat")]
 
-      (q/with-fill (conj (constants :grass-color) alpha)
-        (q/rect x (- y h) w (constants :grass-height)))))
+      (set! (.-fillStyle ctx) pattern)
+      (set! (.-globalAlpha ctx) (/ alpha 255))
+
+      (.beginPath ctx)
+      (.rect ctx x (- y h) w h)
+      (.closePath ctx)
+      (.fill ctx)
+
+      (set! (.-globalAlpha ctx) 255)))
+
+  ;(draw [{:keys [fade-cycle bounce?]}]
+  ;  (let [{:keys [alpha]
+  ;         :or {alpha 255}} fade-cycle
+  ;        bg-color (constants (if bounce? :trampoline-color :platform-color))]
+  ;    (q/with-fill (conj bg-color alpha)
+  ;      (q/rect x (- y h) w h))
+;
+;      (q/with-fill (conj (constants :grass-color) alpha)
+;        (q/rect x (- y h) w (constants :grass-height)))))
 
   (on-collision [entity direction state]
     (case direction

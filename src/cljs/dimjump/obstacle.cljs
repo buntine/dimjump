@@ -29,11 +29,14 @@
           pattern (.createPattern ctx img "repeat")]
 
       (set! (.-fillStyle ctx) pattern)
+      (set! (.-globalAlpha ctx) (/ alpha 255))
 
       (.beginPath ctx)
       (.rect ctx x (- y h) w h)
       (.closePath ctx)
-      (.fill ctx)))
+      (.fill ctx)
+
+      (set! (.-globalAlpha ctx) 255)))
 
   (on-collision [_ _ {:keys [sound dim level] :as state}]
     (if sound
