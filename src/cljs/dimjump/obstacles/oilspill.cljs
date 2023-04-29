@@ -10,5 +10,4 @@
            {:background {:color [59 219 54]
                          :layers []
                          :rotation rotation
-                         :frames [(q/load-image "/images/oilspill_1.png")
-                                  (q/load-image "/images/oilspill_2.png")]}})))
+                         :frames ["oilspill_1" "oilspill_2"]}})))

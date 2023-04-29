@@ -10,4 +10,4 @@
            {:background {:background [100 100 100]
                          :layers []
                          :rotation rotation
-                         :frames [(q/load-image "/images/rock_1.png")]}})))
+                         :frames ["rock_1"]}})))

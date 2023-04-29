@@ -10,4 +10,4 @@
            {:background {:background [100 100 100]
                          :layers []
                          :rotation rotation
-                         :frames [(q/load-image "/images/exit_sign_1.png")]}})))
+                         :frames ["exit_sign_1"]}})))

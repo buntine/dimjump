@@ -1,5 +1,6 @@
 (ns dimjump.quadrangle
-  (:require [quil.core :as q :include-macros true]))
+  (:require [quil.core :as q :include-macros true]
+            [dimjump.data :as data :refer [constants]]))
 
 (defprotocol Quadrangle
   "Represents a spawnable quardangle entity on screen. Entities have four sides, dimensions and can be collided with, etc."
@@ -19,6 +20,14 @@
   (if-let [{:keys [alpha]} fade-cycle]
     (> alpha 25)
     true))
+
+(defn image-for [frames]
+  "Returns the background frame suitable for current display."
+  (let [c (count frames)]
+    (frames
+      (mod
+        (int (/ (q/frame-count)
+                (:tile-speed constants))) c))))
 
 (defn collision [{:keys [x y w h id] :as quadrangle} {px :x py :y pw :w ph :h} {cid :id}]
   "Determines if the given quadrangle has collided with the coordinate.
