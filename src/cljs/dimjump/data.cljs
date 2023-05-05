@@ -23,13 +23,7 @@
    :animation-speed 9
    :tile-speed 18
    :hud-color [10 49 56]
-   :exit-color [40 40 40]
-   :cover-color [156 215 249 200]
-   :grass-height 3
-   :obstacle-color [80 80 80]
-   :platform-color [150 121 105]
-   :trampoline-color [9 121 105]
-   :grass-color [3 192 74]})
+   :cover-color [156 215 249 200]})
 
 (letfn [(rel [dimension c]
           "If < 0, the coordinate (c) is interpreted as being offset from the bottom/right of the screen.
@@ -110,7 +104,7 @@
 (def bottom (/ (:h constants) (:tile-size constants)))
 
 (def levels
-  [{:initial {:y 300
+  [{:initial {:y 280
               :x -20
               :speed 2
               :time 90}
@@ -119,7 +113,7 @@
     :platforms [(pf :rock :zero bottom 85 2)
                 (pf :rock 30 -1 6 3)
                 (pf :rock 34 -4 6 10 {:fade {:on 200 :off 100 :transition 60} :min-x 24 :max-x 36 :speed 1})
-                (pf :rock 52 -1 3 1 {:gravity 0.4 :bounce? true})
+                (pf :trampoline 52 -1 3 1 {:gravity 0.4})
                 ;(pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
                 ;                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
                 ;                   :bounce? true})

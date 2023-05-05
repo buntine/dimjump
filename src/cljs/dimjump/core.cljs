@@ -10,6 +10,7 @@
             [dimjump.coordinate :as coordinate]
             [dimjump.obstacles.oilspill]
             [dimjump.platforms.rock]
+            [dimjump.platforms.trampoline]
             [dimjump.exits.sign]
             [dimjump.factories.entity :as entity-factory]
             [dimjump.data :as data :refer [constants]]))

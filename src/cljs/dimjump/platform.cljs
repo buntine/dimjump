@@ -9,7 +9,7 @@
   [id x y w h min-x max-y min-y speed move-x move-y fade-cycle bounce? gravity background]
   quadrangle/Quadrangle
 
-  (draw [{:keys [fade-cycle background]}]
+  (draw [{:keys [fade-cycle background bounce?]}]
     (let [{:keys [alpha]
            :or {alpha 255}} fade-cycle
           {:keys [frames]} background
@@ -27,16 +27,6 @@
       (.fill ctx)
 
       (set! (.-globalAlpha ctx) 255)))
-
-  ;(draw [{:keys [fade-cycle bounce?]}]
-  ;  (let [{:keys [alpha]
-  ;         :or {alpha 255}} fade-cycle
-  ;        bg-color (constants (if bounce? :trampoline-color :platform-color))]
-  ;    (q/with-fill (conj bg-color alpha)
-  ;      (q/rect x (- y h) w h))
-;
-;      (q/with-fill (conj (constants :grass-color) alpha)
-;        (q/rect x (- y h) w (constants :grass-height)))))
 
   (on-collision [entity direction state]
     (case direction
