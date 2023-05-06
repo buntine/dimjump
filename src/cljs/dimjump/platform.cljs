@@ -12,19 +12,24 @@
   (draw [{:keys [fade-cycle background bounce?]}]
     (let [{:keys [alpha]
            :or {alpha 255}} fade-cycle
-          {:keys [frames]} background
+          {:keys [frames layers]} background
           canvas (.getElementById js/document  "game")
           ctx (.getContext canvas "2d")
-          img (.getElementById js/document (quadrangle/image-for frames))
-          pattern (.createPattern ctx img "repeat")]
+          bg-img (.getElementById js/document (quadrangle/image-for frames))
+          pattern (.createPattern ctx bg-img "repeat")
+          y-pos (- y h)]
 
       (set! (.-fillStyle ctx) pattern)
       (set! (.-globalAlpha ctx) (/ alpha 255))
 
       (.beginPath ctx)
-      (.rect ctx x (- y h) w h)
+      (.rect ctx x y-pos w h)
       (.closePath ctx)
       (.fill ctx)
+
+      (doseq [{img :img l-y :y} layers]
+        (let [l-img (.getElementById js/document img)]
+          (.drawImage ctx l-img x (+ y-pos l-y))))
 
       (set! (.-globalAlpha ctx) 255)))
 

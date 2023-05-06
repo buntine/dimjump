@@ -21,6 +21,7 @@
     [:img {:id "oilspill_2" :src "/images/oilspill_2.png"}]
     [:img {:id "rock_1" :src "/images/rock_1.png"}]
     [:img {:id "exit_sign_1" :src "/images/exit_sign_1.png"}]
+    [:img {:id "trampoline_1" :src "/images/trampoline_1.png"}]
     [:canvas {:id "game"}]])
 
 (defn homepage []

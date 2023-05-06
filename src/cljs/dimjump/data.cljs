@@ -113,7 +113,7 @@
     :platforms [(pf :rock :zero bottom 85 2)
                 (pf :rock 30 -1 6 3)
                 (pf :rock 34 -4 6 10 {:fade {:on 200 :off 100 :transition 60} :min-x 24 :max-x 36 :speed 1})
-                (pf :trampoline 52 -1 3 1 {:gravity 0.4})
+                (pf :trampoline 52 -1 2 1 {:gravity 0.4})
                 ;(pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
                 ;                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
                 ;                   :bounce? true})
