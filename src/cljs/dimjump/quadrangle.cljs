@@ -29,6 +29,15 @@
         (int (/ (q/frame-count)
                 (:tile-speed constants))) c))))
 
+(defn draw-rect [ctx x y w h]
+  "Draws the quadrangle to the screen"
+  (.beginPath ctx)
+  (.rect ctx x y w h)
+  (.closePath ctx)
+  (.setTransform ctx 1 0 0 1 x y)
+  (.fill ctx)
+  (.setTransform ctx 1 0 0 1 0 0))
+
 (defn collision [{:keys [x y w h id] :as quadrangle} {px :x py :y pw :w ph :h} {cid :id}]
   "Determines if the given quadrangle has collided with the coordinate.
    If a collision is detected, a keyword indicating the direction of the

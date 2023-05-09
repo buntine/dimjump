@@ -22,14 +22,14 @@
       (set! (.-fillStyle ctx) pattern)
       (set! (.-globalAlpha ctx) (/ alpha 255))
 
-      (.beginPath ctx)
-      (.rect ctx x y-pos w h)
-      (.closePath ctx)
-      (.fill ctx)
+      (quadrangle/draw-rect ctx x y-pos w h)
 
       (doseq [{img :img l-y :y} layers]
-        (let [l-img (.getElementById js/document img)]
-          (.drawImage ctx l-img x (+ y-pos l-y))))
+        (let [l-img (.getElementById js/document img)
+              l-pattern (.createPattern ctx l-img "repeat-x")]
+          (set! (.-fillStyle ctx) l-pattern)
+
+          (quadrangle/draw-rect ctx x (+ y-pos l-y) w h)))
 
       (set! (.-globalAlpha ctx) 255)))
 
