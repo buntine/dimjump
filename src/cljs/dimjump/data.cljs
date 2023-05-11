@@ -17,7 +17,7 @@
    :velocity-big -10
    :velocity-small -8
    :fall-velocity 5
-   :max-velocity 12
+   :max-velocity 11
    :gravity 0.8
    :blood-degradation 1.6
    :animation-speed 9

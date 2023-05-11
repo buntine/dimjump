@@ -73,7 +73,10 @@
                        (<= p-top q-bottom)
                        (> p-bottom q-bottom)
                        (not= id cid))
-          inside? false]
+          inside? (and (>= px q-left)
+                       (<= px q-right)
+                       (>= py q-top)
+                       (<= py q-bottom))]
       (cond
         bottom? :bottom
         top? :top
