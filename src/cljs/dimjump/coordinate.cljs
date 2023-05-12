@@ -90,18 +90,18 @@
   "Applies a block to the X-axis."
   (assoc coord :x-block {:x x :dir dir}))
 
-(defn block [{:keys [x-block speed] :as coord}]
+(defn block [{:keys [x-block] :as coord}]
   "Ensures a 'block' is adhered to, which will prevent the coordinate from
-   passing through an coordinate that has blocked the X axis."
+   passing through an coordinate that has blocked the X axis.
+
+   Returns either nil or the X position which the player cannot pass."
   (when x-block
     (let [{:keys [w]} (pos coord)
           {:keys [x dir]} x-block
           half-width (/ w 2)]
       (case dir
-        :left (when (>= speed 0)
-                (- x half-width))
-        :right (when (<= speed 0)
-                (+ x half-width))))))
+        :left (- x half-width 1)
+        :right (+ x half-width 1)))))
 
 (defn next-x-position [{:keys [speed] :as coord}]
   "Returns next X position for coordinate"
