@@ -112,11 +112,9 @@
                 (ob :oilspill 58 -4 6 10 {:rotation 270})]
     :platforms [(pf :rock :zero bottom 85 2)
                 (pf :rock 30 -1 6 3)
+                (pf :spikes 33 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 23 :max-x 35 :speed 1 :rotation 270})
                 (pf :rock 34 -4 6 10 {:fade {:on 200 :off 100 :transition 60} :min-x 24 :max-x 36 :speed 1})
-                (pf :trampoline 52 -1 2 1 {:gravity 0.4})
-                ;(pf 250 -80 70 10 {:fade {:on 200 :off 100 :transition 60}
-                ;                   :min-x 200 :max-x 300 :speed 1 :gravity 0.3
-                ;                   :bounce? true})
-                ]
+                (pf :spikes 40 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 30 :max-x 42 :speed 1 :rotation 90})
+                (pf :trampoline 52 -1 2 1 {:gravity 0.4})]
     :exits [(ex :sign -4 -10 3 5)]}
   ])

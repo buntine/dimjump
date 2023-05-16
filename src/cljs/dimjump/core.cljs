@@ -9,6 +9,7 @@
             [dimjump.sound :as sound]
             [dimjump.coordinate :as coordinate]
             [dimjump.obstacles.oilspill]
+            [dimjump.obstacles.spikes]
             [dimjump.platforms.rock]
             [dimjump.platforms.trampoline]
             [dimjump.exits.sign]
