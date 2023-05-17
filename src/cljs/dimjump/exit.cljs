@@ -27,7 +27,7 @@
 
       (doseq [{img :img l-y :y} layers]
         (let [l-img (.getElementById js/document img)
-              l-pattern (.createPattern ctx l-img "repeat-x")]
+              l-pattern (.createPattern ctx l-img "no-repeat")]
           (.setTransform pattern matrix)
           (set! (.-fillStyle ctx) l-pattern)
 
