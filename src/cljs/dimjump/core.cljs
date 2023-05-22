@@ -11,6 +11,7 @@
             [dimjump.obstacles.oilspill]
             [dimjump.obstacles.spikes]
             [dimjump.platforms.rock]
+            [dimjump.platforms.pipe]
             [dimjump.platforms.trampoline]
             [dimjump.exits.sign]
             [dimjump.factories.entity :as entity-factory]

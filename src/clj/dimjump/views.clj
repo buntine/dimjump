@@ -27,6 +27,9 @@
       [:img {:id "rock_top_1" :src "/images/rock_top_1.png"}]
       [:img {:id "exit_sign_1" :src "/images/exit_sign_1.png"}]
       [:img {:id "trampoline_1" :src "/images/trampoline_1.png"}]]
+      [:img {:id "pipe_edge_l" :src "/images/pipe_edge_l.png"}]
+      [:img {:id "pipe_edge_r" :src "/images/pipe_edge_r.png"}]
+      [:img {:id "pipe_1" :src "/images/pipe_1.png"}]
     [:canvas {:id "game"}]])
 
 (defn homepage []
