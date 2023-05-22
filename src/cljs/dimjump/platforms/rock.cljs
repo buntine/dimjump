@@ -9,6 +9,6 @@
     (merge (dissoc opts :rotation)
            {:background {:background [100 100 100]
                          :layers [{:img "rock_top_1" :y 0}]
-                         :stub ["rock_edge_l" "rock_edge_r"]
+                         :stub ["rock_edge_l" "rock_edge_r" 0]
                          :rotation rotation
                          :frames ["rock_1"]}})))

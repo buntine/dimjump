@@ -36,11 +36,11 @@
           (quadrangle/draw-rect ctx x (+ y-pos l-y) w h)))
 
       (when stub
-        (let [[l r] stub
+        (let [[l r offset] stub
               l-img (.getElementById js/document l)
               r-img (.getElementById js/document r)]
-          (.drawImage ctx l-img (- x (:tile-size constants)) y-pos)
-          (.drawImage ctx r-img (+ x w) y-pos)))
+          (.drawImage ctx l-img (- x (:tile-size constants) offset) y-pos)
+          (.drawImage ctx r-img (+ x w offset) y-pos)))
 
       (set! (.-globalAlpha ctx) 255)))
 
