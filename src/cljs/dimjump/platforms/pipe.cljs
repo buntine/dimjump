@@ -8,7 +8,8 @@
   "Spawns a new platform quadrangle with the appropriate config for a length of pipe"
   (platform/map->Platform
     (merge (dissoc opts :rotation)
-           {:background {:background [100 100 100]
+           {:fall {:velocity 0}
+            :background {:background [100 100 100]
                          :layers []
                          :stub ["pipe_edge_l" "pipe_edge_r" (- (:tile-size constants))]
                          :rotation rotation

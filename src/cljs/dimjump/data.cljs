@@ -91,7 +91,8 @@
   ([kind x y w h {:keys [gravity bounce?]
              :or {gravity (:gravity constants) bounce? false}
              :as opts}]
-    (quadrangle x y w h (merge opts {:kind kind}))))
+    (quadrangle x y w h (merge opts {:activated false
+                                     :kind kind}))))
 
 (defn ob
   ([kind x y w h] (ob kind x y w h {}))

@@ -6,7 +6,7 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defrecord Platform
-  [id x y w h min-x max-y min-y speed move-x move-y fade-cycle bounce? gravity background]
+  [id x y w h min-x max-y min-y speed move-x move-y fade-cycle bounce? gravity background activated]
   quadrangle/Quadrangle
 
   (draw [{:keys [fade-cycle background bounce?]}]
@@ -46,7 +46,10 @@
 
   (on-collision [entity direction state]
     (case direction
-      :top (update state :dim dim/collide-with-platform entity)
+      :top (let [next-state (update state :dim dim/collide-with-platform entity)]
+             (if (not activated)
+               (update-in next-state [:level :quadrangles] quadrangle/initiate-quadrangle id)
+               next-state))
       :left (update state :dim coordinate/apply-x-block x :left)
       :right (update state :dim coordinate/apply-x-block (+ x w) :right)
       :bottom (update state :dim dim/halt-jump)

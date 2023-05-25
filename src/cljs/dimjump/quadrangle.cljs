@@ -29,6 +29,16 @@
         (int (/ (q/frame-count)
                 (:tile-speed constants))) c))))
 
+(defn initiate-quadrangle
+  "Returns the provided collection of quadrangles, with the one identified by ID
+   activated. Platforms are 'active' the moment the player first lands on them."
+  [quadrangles pid]
+  (map (fn [{:keys [id] :as q}]
+         (if (= id pid)
+           (assoc q :activated true)
+           q))
+       quadrangles))
+
 (defn draw-rect [ctx x y w h]
   "Draws the quadrangle to the screen"
   (.beginPath ctx)
