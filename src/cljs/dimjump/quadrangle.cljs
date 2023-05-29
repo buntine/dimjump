@@ -3,8 +3,9 @@
             [dimjump.data :as data :refer [constants]]))
 
 (defprotocol Quadrangle
-  "Represents a spawnable quardangle entity on screen. Entities have four sides, dimensions and can be collided with, etc."
+  "Represents a spawnable quadrangle entity on screen. Entities have four sides, dimensions and can be collided with, etc."
   (draw [entity] "Draws the entity to the canvas")
+  (activated-progress [entity] "Called when the quadrangle is activated (player has touched it). Should return the updated quadrangle.")
   (on-collision [entity direction state] "Should handle when player hits an entity. Return the updated game state."))
 
 (defn y-top [{:keys [y h]}]
@@ -103,17 +104,19 @@
             (- move)
             move))
 
-         (next-move-x [{:keys [x min-x max-x move-x]}]
-          (next-move x min-x max-x move-x))
+         (next-move-x [{:keys [x min-x max-x move-x] :as e}]
+          (assoc e :move-x (next-move x min-x max-x move-x)))
 
-         (next-move-y [{:keys [y min-y max-y move-y]}]
-           (next-move y min-y max-y move-y))
+         (next-move-y [{:keys [y min-y max-y move-y] :as e}]
+           (assoc e :move-y (next-move y min-y max-y move-y)))
 
-         (next-x [{:keys [x min-x max-x move-x]}]
-           (max min-x (min max-x (+ x move-x))))
+         (next-x [{:keys [x min-x max-x move-x] :as e}]
+           (assoc e :x (max min-x (min max-x (+ x move-x)))))
 
-         (next-y [{:keys [y min-y max-y move-y]}]
-           (max min-y (min max-y (+ y move-y))))
+         (next-y [{:keys [y min-y max-y move-y] :as e}]
+           (if (= min-y max-y) ; Bit of a hack to prevent this from interferring with 'falling' platforms.
+             e
+             (assoc e :y (max min-y (min max-y (+ y move-y))))))
 
          (progress-step [config step phase]
            (let [steps (phase config)
@@ -144,13 +147,19 @@
                (assoc fade-cycle
                       :step next-step
                       :phase next-phase
-                      :alpha next-alpha))))]
+                      :alpha next-alpha))))
+
+         (specialist-activated-progress [{:keys [activated] :as entity}]
+           (if activated
+             (activated-progress entity)
+             entity))]
 
   (defn progress [entity]
     "Update display and position based on platform config, if necessary"
     (-> entity
-        (assoc :x (next-x entity)
-               :y (next-y entity)
-               :move-x (next-move-x entity)
-               :move-y (next-move-y entity))
-        (update :fade-cycle progress-fade))))
+        next-x
+        next-y
+        next-move-x
+        next-move-y
+        (update :fade-cycle progress-fade)
+        specialist-activated-progress)))

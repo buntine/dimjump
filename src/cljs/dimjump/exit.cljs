@@ -35,7 +35,9 @@
 
       (set! (.-globalAlpha ctx) 255)))
 
-
+  ; NOOP
+  (activated-progress [entity]
+    entity)
 
   (on-collision [_ _ state]
     (assoc state :phase 1)))

@@ -44,6 +44,11 @@
 
       (set! (.-globalAlpha ctx) 255)))
 
+  (activated-progress [{:keys [fall] :as entity}]
+    (if fall
+      (update entity :y inc)
+      entity))
+
   (on-collision [entity direction state]
     (case direction
       :top (let [next-state (update state :dim dim/collide-with-platform entity)]

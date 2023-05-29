@@ -47,6 +47,10 @@
 
       (set! (.-globalAlpha ctx) 255)))
 
+  ; NOOP
+  (activated-progress [entity]
+    entity)
+
   (on-collision [_ _ {:keys [sound dim level] :as state}]
     (if sound
       (sound/play-sound :splat))
