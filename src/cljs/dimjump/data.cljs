@@ -111,10 +111,10 @@
               :x -20
               :speed 2
               :time 90}
-    :obstacles [(ob :oilspill 12 -3 2 1)
-                (ob :oilspill 58 -4 6 10 {:rotation 270})]
-    :platforms [(pf :rock :zero bottom 85 2)
-                (pf :pipe 10 -5 6 1)
+    :obstacles [(ob :oilspill 58 -4 6 10 {:rotation 270})]
+    :platforms [(pf :rock :zero bottom 12 2)
+                (pf :rock 17 bottom 68 2)
+                (pf :pipe 11 -5 6 1)
                 (pf :rock 30 -1 6 3)
                 (pf :spikes 33 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 23 :max-x 35 :speed 1 :rotation 270})
                 (pf :rock 34 -4 6 10 {:fade {:on 200 :off 100 :transition 60} :min-x 24 :max-x 36 :speed 1})
