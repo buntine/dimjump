@@ -44,9 +44,15 @@
 
       (set! (.-globalAlpha ctx) 255)))
 
-  (activated-progress [{:keys [fall] :as entity}]
+  (activated-progress [{:keys [fall y] :as entity}]
     (if fall
-      (update entity :y inc)
+      (let [{:keys [progress]} fall
+            next-progress (min 1 (+ progress (:easing-step constants)))
+            easing (- 1 (Math/cos (/ (* next-progress Math/PI) 2)))
+            next-y (+ y (* easing (:easing-factor constants)))]
+        (-> entity
+            (assoc :y next-y)
+            (assoc-in [:fall :progress] next-progress)))
       entity))
 
   (on-collision [entity direction state]

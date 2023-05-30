@@ -22,6 +22,8 @@
    :blood-degradation 1.6
    :animation-speed 9
    :tile-speed 18
+   :easing-factor 3
+   :easing-step 0.05
    :hud-color [10 49 56]
    :cover-color [156 215 249 200]})
 
