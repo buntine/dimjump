@@ -29,6 +29,7 @@
 (defn progress [level]
   (-> level 
       (update :quadrangles (partial map quadrangle/progress))
+      (update :quadrangles (partial remove quadrangle/kill?))
       (update :time #(max 0
                           (- % (/ 1000 (q/current-frame-rate)))))))
 

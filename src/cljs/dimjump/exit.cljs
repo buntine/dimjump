@@ -39,5 +39,8 @@
   (activated-progress [entity]
     entity)
 
+  (kill? [_]
+    false)
+
   (on-collision [_ _ state]
     (assoc state :phase 1)))

@@ -6,6 +6,7 @@
   "Represents a spawnable quadrangle entity on screen. Entities have four sides, dimensions and can be collided with, etc."
   (draw [entity] "Draws the entity to the canvas")
   (activated-progress [entity] "Called when the quadrangle is activated (player has touched it). Should return the updated quadrangle.")
+  (kill? [entity] "If returns true, the quadrangle will be removed from the active level. e.g falling platform has gone off the bottom of the screen")
   (on-collision [entity direction state] "Should handle when player hits an entity. Return the updated game state."))
 
 (defn y-top [{:keys [y h]}]

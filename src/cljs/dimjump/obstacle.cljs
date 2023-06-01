@@ -51,6 +51,9 @@
   (activated-progress [entity]
     entity)
 
+  (kill? [_]
+    false)
+
   (on-collision [_ _ {:keys [sound dim level] :as state}]
     (if sound
       (sound/play-sound :splat))
