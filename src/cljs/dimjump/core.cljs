@@ -36,7 +36,6 @@
   (assoc state :phase 2))
 
 (defn pause-game [state]
-  (sound/pause-sound "invaded_city")
   (assoc state :phase 0))
 
 (defn finish-game [state]
