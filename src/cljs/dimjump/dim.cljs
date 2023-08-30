@@ -86,6 +86,7 @@
 (defn sprite-for [dim]
   "Returns the PImage suitable for the given frame number"
   (:g (frame dim)))
+
 (letfn [(toggle-flag [flag]
           (fn [dim]
             (update dim flag not)))]
@@ -102,9 +103,11 @@
 (defn reset [dim {:keys [x y speed]}]
   "Moves dim back to start of the screen, at the given Y position"
   (-> dim
-      (assoc :speed speed)
-      (assoc :jump-gravity 0)
-      (assoc :active-platform nil)
+      (assoc
+        :speed speed
+        :jump-gravity 0
+        :active-platform nil
+        :ducking false)
       (coordinate/add-point x y 0)))
 
 (defn jumping? [{:keys [jump-gravity]}]
