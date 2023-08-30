@@ -31,7 +31,7 @@ To start a web server for the application, run each of these commands in a separ
 
 ## License
 
-Copyright © 2018 Andrew Buntine
+Copyright © 2018 - 2023 Andrew Buntine
 
 ## Credits
 
