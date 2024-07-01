@@ -12,8 +12,10 @@
 (defn create-blood-splatter [{:keys [speed] :as dim}]
   (let [position (coordinate/pos dim)]
     (map
-      #(blood/spawn (merge position {:velocity % :speed speed}))
-      (range -16 -2))))
+      #(blood/spawn (merge position
+                           {:velocity (max -18 (- (rand-int %) 5))
+                            :speed speed}))
+      (range -34 0))))
 
 (defrecord Obstacle
   [id x y w h min-x max-y min-y speed move-x move-y fade-cycle background]

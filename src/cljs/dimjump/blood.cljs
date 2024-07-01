@@ -48,8 +48,8 @@
 (defn spawn [{:keys [velocity] :as opts}]
   (map->Blood (merge
                 (coordinate/spawn (update opts :speed #(+ (- % 2) (rand-int 3))))
-                {:w 3
-                 :h 3
+                {:w 2
+                 :h 2
                  :max-velocity (min (- velocity) (:max-velocity constants))
                  :stay false
                  :alpha 255})))
