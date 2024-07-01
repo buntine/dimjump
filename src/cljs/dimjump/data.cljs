@@ -1,10 +1,6 @@
 (ns dimjump.data
   (:require [quil.core :as q :include-macros true]))
 
-(def text
-  (memoize (fn [size]
-             (q/create-font "AddStandard" size))))
-
 (def dimensions {:w 640 :h 360})
 
 (def constants

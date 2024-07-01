@@ -22,6 +22,9 @@
   (q/frame-rate 60)
   (.focus (.getElementById js/document "game"))
 
+;  (let [url "https://www.fontsquirrel.com/fonts/download/roboto"]
+;    (q/set-state! :font (q/load-font url)))
+
   (let [l (level/spawn 0 entity-factory/entity)]
     {:phase 0 ; 0: Intro/Pause, 1: Cue next level, 2: Play, 3: Finished
      :level l
@@ -90,7 +93,7 @@
 
 (defn draw [state]
   (q/background (q/color 176 222 249))
-  (q/text-font (data/text 12))
+  ;(q/text-font (q/state :font) 12)
   (q/image-mode :corner)
   (draw-hud state)
   (level/draw (:level state))
@@ -208,9 +211,9 @@
 (defn init []
   (q/defsketch dim-jump
     :host "game"
-    :rendered "p2d"
-    :settings #(q/smooth 2)
+    :renderer :p2d
     :size (vals data/dimensions)
+    :settings #(q/smooth 2)
     :setup setup
     :draw draw
     :key-pressed key-pressed
