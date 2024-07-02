@@ -50,51 +50,58 @@
   (.fill ctx)
   (.setTransform ctx 1 0 0 1 0 0))
 
-(defn collision [{:keys [x y w h id] :as quadrangle} {px :x py :y pw :w ph :h} {cid :id}]
+(defn collision
   "Determines if the given quadrangle has collided with the coordinate.
    If a collision is detected, a keyword indicating the direction of the
    collision is returned: :top, :left, :bottom, :right, :inside.
 
+   Accepts a predicate that will operate on the quadrangle. If false, the
+   quadrangle will not be considered for collision.
+
    nil indicates no collision."
-  (when (visible? quadrangle)
-    (let [p-top (- py (/ ph 2))
-          p-bottom (+ py (/ ph 2))
-          p-left (- px (/ pw 2))
-          p-right (+ px (/ pw 2))
-          q-top (- y h)
-          q-bottom y
-          q-left x
-          q-right (+ x w)
-          top? (and (< p-left q-right)
-                    (< q-left p-right)
-                    (< p-top q-top)
-                    (< py q-top)         ; Middle of dim is higher than top of platform
-                    (<= q-top p-bottom))
-          left? (and (>= p-right q-left) ; End of dim is after or on start of platform
-                     (< p-left q-left)   ; Start of dim is before start of platform
-                     (< p-top q-bottom)  ; Top of dim is higher than bottom of platform
-                     (> p-bottom q-top)  ; Bottom of dim is lower than top of platform
-                     (not= id cid))      ; Dim is not currently on that platform
-          right? (and (> p-right q-right)
-                      (<= p-left q-right)
-                      (< p-top q-bottom)  ; Top of dim is higher than bottom of platform
-                      (> p-bottom q-top)  ; Bottom of dim is lower than top of platform
-                      (not= id cid))      ; Dim is not currently on that platform
-          bottom? (and (< px q-right)
-                       (> px q-left )
-                       (<= p-top q-bottom)
-                       (> p-bottom q-bottom)
-                       (not= id cid))
-          inside? (and (>= px q-left)
-                       (<= px q-right)
-                       (>= py q-top)
-                       (<= py q-bottom))]
-      (cond
-        bottom? :bottom
-        top? :top
-        left? :left
-        right? :right
-        inside? :inside))))
+  ([quadrangle position platform]
+   (collision quadrangle position platform (fn [_] true)))
+  ([{:keys [x y w h id] :as quadrangle} {px :x py :y pw :w ph :h} {cid :id} pred]
+    (when (and (visible? quadrangle)
+               (pred quadrangle))
+      (let [p-top (- py (/ ph 2))
+            p-bottom (+ py (/ ph 2))
+            p-left (- px (/ pw 2))
+            p-right (+ px (/ pw 2))
+            q-top (- y h)
+            q-bottom y
+            q-left x
+            q-right (+ x w)
+            top? (and (< p-left q-right)
+                      (< q-left p-right)
+                      (< p-top q-top)
+                      (< py q-top)         ; Middle of dim is higher than top of platform
+                      (<= q-top p-bottom))
+            left? (and (>= p-right q-left) ; End of dim is after or on start of platform
+                       (< p-left q-left)   ; Start of dim is before start of platform
+                       (< p-top q-bottom)  ; Top of dim is higher than bottom of platform
+                       (> p-bottom q-top)  ; Bottom of dim is lower than top of platform
+                       (not= id cid))      ; Dim is not currently on that platform
+            right? (and (> p-right q-right)
+                        (<= p-left q-right)
+                        (< p-top q-bottom)  ; Top of dim is higher than bottom of platform
+                        (> p-bottom q-top)  ; Bottom of dim is lower than top of platform
+                        (not= id cid))      ; Dim is not currently on that platform
+            bottom? (and (< px q-right)
+                         (> px q-left )
+                         (<= p-top q-bottom)
+                         (> p-bottom q-bottom)
+                         (not= id cid))
+            inside? (and (>= px q-left)
+                         (<= px q-right)
+                         (>= py q-top)
+                         (<= py q-bottom))]
+        (cond
+          bottom? :bottom
+          top? :top
+          left? :left
+          right? :right
+          inside? :inside)))))
 
 (letfn [(next-move [p min-p max-p move]
           "Inverts the movement factor when a moving entity hits it's min

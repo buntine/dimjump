@@ -110,15 +110,16 @@
     2 (coordinate/draw (:dim state))))
 
 (defn detect-blood-collision [{:keys [blood level] :as state}]
-  "Stops any blood particles that hit an obstacle. Currently, if a blood
-   particule hits a *moving* obstacle then it just keeps going through it."
+  "Stops any blood particles that hit an applicable obstacle."
   (letfn
     [(attach-blood [b]
        (let [collisions (level/collided-entities level (coordinate/pos b))]
          (if (empty? collisions)
            (blood/unstay b)
            (let [[entity _] (first collisions)]
-             (blood/stay b entity)))))]
+             (if (:blood-collision? entity)
+               (blood/stay b entity)
+               (blood/unstay b))))))]
     (update state
             :blood
             (partial map attach-blood))))
