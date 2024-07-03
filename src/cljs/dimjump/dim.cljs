@@ -104,7 +104,8 @@
   "Moves dim back to start of the screen, at the given Y position"
   (-> dim
       (assoc
-        :speed speed
+        :speed (max speed
+                    (abs (:speed dim)))
         :jump-gravity 0
         :active-platform nil
         :ducking false)
