@@ -13,9 +13,9 @@
   (let [position (coordinate/pos dim)]
     (map
       #(blood/spawn (merge position
-                           {:velocity (max -18 (- (rand-int %) 5))
+                           {:velocity (max (:blood-velocity constants) (- (rand-int %) 5))
                             :speed speed}))
-      (range -34 0))))
+      (range (:blood-particles constants) 0))))
 
 (defrecord Obstacle
   [id x y w h min-x max-y min-y speed move-x move-y fade-cycle background]

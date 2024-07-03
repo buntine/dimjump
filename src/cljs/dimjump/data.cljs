@@ -20,6 +20,8 @@
    :tile-speed 18
    :easing-factor 3
    :easing-step 0.05
+   :blood-velocity -18
+   :blood-particles -34
    :hud-color [10 49 56]
    :cover-color [156 215 249 200]})
 
