@@ -105,19 +105,39 @@
 ; Special-case to allow a quadrangle to align to the bottom of the viewport.
 (def bottom (/ (:h constants) (:tile-size constants)))
 
+; Special-case to allow a quadrangle to be full width.
+(def full-width (+ (/ (:w constants) (:tile-size constants)) 1))
+
 (def levels
-  [{:initial {:y 280
+  [{:initial {:y 150
               :x -20
               :speed 2
               :time 90}
-    :obstacles [(ob :oilspill 58 -4 6 10 {:rotation 270})]
-    :platforms [(pf :rock :zero bottom 12 2)
-                (pf :rock 17 bottom 68 2)
-                (pf :pipe 11 -5 6 1)
-                (pf :rock 30 -1 6 3)
-                (pf :spikes 33 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 23 :max-x 35 :speed 1 :rotation 270})
-                (pf :rock 34 -4 6 10 {:fade {:on 200 :off 100 :transition 60} :min-x 24 :max-x 36 :speed 1})
-                (pf :spikes 40 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 30 :max-x 42 :speed 1 :rotation 90})
-                (pf :trampoline 52 -1 2 1 {:gravity 0.4})]
-    :exits [(ex :sign -4 -10 3 5)]}
-  ])
+    :obstacles [(ob :oilspill 28 -11 6 2)
+                (ob :oilspill 52 -11 6 2)]
+    :platforms [(pf :rock :zero -10 full-width 2)]
+    :exits [(ex :sign -4 -12 3 5)]}
+
+   {:initial {:y 150
+              :x -20
+              :speed 2
+              :time 90}
+    :obstacles [(ob :oilspill 32 -11 6 2)
+                (ob :oilspill 54 -11 6 2)]
+    :platforms [(pf :rock :zero -10 full-width 2)]
+    :exits [(ex :sign -4 -12 3 5)]}])
+
+;{:initial {:y 280
+;              :x -20
+;              :speed 2
+;              :time 90}
+;    :obstacles [(ob :oilspill 58 -4 6 10 {:rotation 270})]
+;    :platforms [(pf :rock :zero bottom 12 2)
+;                (pf :rock 17 bottom 68 2)
+;                (pf :pipe 11 -5 6 1)
+;                (pf :rock 30 -1 6 3)
+;                (pf :spikes 33 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 23 :max-x 35 :speed 1 :rotation 270})
+;                (pf :rock 34 -4 6 10 {:fade {:on 200 :off 100 :transition 60} :min-x 24 :max-x 36 :speed 1})
+;                (pf :spikes 40 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 30 :max-x 42 :speed 1 :rotation 90})
+;                (pf :trampoline 52 -1 2 1 {:gravity 0.4})]
+;    :exits [(ex :sign -4 -10 3 5)]}
