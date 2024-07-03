@@ -68,8 +68,7 @@
    to start 1 tile off the left of the screen. This is basically to prevent a bug where
    the player falls through a platform when travelling off the left of the screen and
    appearing on the right."
-    (merge {:blood-collision? true}
-           opts
+    (merge opts
            {:id (generate-id)
             :x (case x
                  :zero (* -1 (:tile-size constants))
@@ -83,6 +82,7 @@
             :max-y (rel-y max-y)
             :move-x (- speed)
             :move-y (- speed)
+            :blood-collision? true
             :fade-cycle (when fade (fade-cycle fade))})))
 
 (defn pf
@@ -113,9 +113,9 @@
                 (pf :rock 17 bottom 68 2)
                 (pf :pipe 11 -5 6 1)
                 (pf :rock 30 -1 6 3)
-                (pf :spikes 33 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 23 :max-x 35 :speed 1 :rotation 270 :blood-collision? false})
+                (pf :spikes 33 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 23 :max-x 35 :speed 1 :rotation 270})
                 (pf :rock 34 -4 6 10 {:fade {:on 200 :off 100 :transition 60} :min-x 24 :max-x 36 :speed 1})
-                (pf :spikes 40 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 30 :max-x 42 :speed 1 :rotation 90 :blood-collision? false})
+                (pf :spikes 40 -4 1 10 {:fade {:on 200 :off 100 :transition 60} :min-x 30 :max-x 42 :speed 1 :rotation 90})
                 (pf :trampoline 52 -1 2 1 {:gravity 0.4})]
     :exits [(ex :sign -4 -10 3 5)]}
   ])
