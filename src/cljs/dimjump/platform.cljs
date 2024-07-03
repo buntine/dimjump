@@ -57,8 +57,6 @@
 
   ; Falling platform has gone off the bottom of the screen.
   (kill? [{:keys [activated] :as entity}]
-    (when (and activated (> (quadrangle/y-top entity) (:h constants)))
-      (println "kill"))
     (and activated (> (quadrangle/y-top entity) (:h constants))))
 
   (on-collision [entity direction state]
