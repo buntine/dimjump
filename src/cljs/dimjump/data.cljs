@@ -100,16 +100,32 @@
   ([kind x y w h opts]
      (quadrangle x y w h (merge opts {:kind kind}))))
 
+(defn perc
+  "Returns a number representing the percentage of the given dimension."
+  [dim n]
+  (let [full (/ (dim constants) (:tile-size constants))]
+    (-> (/ n 100)
+        (* full)
+        int
+        Math/round)))
+
+(def wperc
+  (partial perc :w))
+
+(def hperc
+  (partial perc :h))
+
 (def ex ob)
 
 ; Special-case to allow a quadrangle to align to the bottom of the viewport.
 (def bottom (/ (:h constants) (:tile-size constants)))
 
 ; Special-case to allow a quadrangle to be full width.
-(def full-width (+ (/ (:w constants) (:tile-size constants)) 1))
+(def full-width (+ (/ (:w constants) (:tile-size constants)) 2))
 
 (def levels
-  [{:initial {:y 150
+  [; 0
+   {:initial {:y 150
               :x -20
               :speed 2
               :time 90}
@@ -118,14 +134,23 @@
     :platforms [(pf :rock :zero -10 full-width 2)]
     :exits [(ex :sign -4 -12 3 5)]}
 
-   {:initial {:y 150
-              :x -20
+   ; 1
+   {:initial {:y 30
+              :x 30
               :speed 2
               :time 90}
-    :obstacles [(ob :oilspill 32 -11 6 2)
-                (ob :oilspill 54 -11 6 2)]
-    :platforms [(pf :rock :zero -10 full-width 2)]
-    :exits [(ex :sign -4 -12 3 5)]}])
+    :obstacles [(ob :spikes :zero -1 full-width 1)
+                (ob :spikes 0 36 1 20 {:rotation 90})]
+    :platforms [(pf :rock :zero 1 full-width 1 {:rotation 180})
+                (pf :rock :zero 10 (wperc 85) 2)
+                (pf :rock (wperc 10) 20 (wperc 90) 2)
+                (pf :rock 2 30 21 2)
+                (pf :rock 28 30 20 2)
+                (pf :rock 54 30 29 2)
+                (pf :rock :zero bottom full-width 1)
+                (pf :rock 0 10 1 10)
+                (pf :rock -1 30 1 12)]
+    :exits [(ex :sign -8 28 3 5)]}])
 
 ;{:initial {:y 280
 ;              :x -20
