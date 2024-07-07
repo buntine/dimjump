@@ -140,6 +140,8 @@
               :speed 2
               :time 90}
     :obstacles [(ob :spikes :zero -1 full-width 1)
+                (ob :oilspill 30 19 3 2)
+                (ob :oilspill 50 19 3 2)
                 (ob :spikes 0 36 1 20 {:rotation 90})]
     :platforms [(pf :rock :zero 1 full-width 1 {:rotation 180})
                 (pf :rock :zero 10 (wperc 85) 2)
