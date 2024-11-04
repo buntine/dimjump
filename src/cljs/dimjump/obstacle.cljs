@@ -65,4 +65,4 @@
           (update :corpses conj (corpse/spawn position sprite))
           (update :blood concat (create-blood-splatter dim))
           (update :dim dim/kill (:initial level))
-          (update :level level/reset)))))
+          (update :level level/reset-platforms)))))

@@ -41,6 +41,15 @@
            q))
        quadrangles))
 
+(defn kill [{:keys [disabled] :as entity}]
+  "Disables the entity if it's ready to be killed (e.g fallen off the screen)."
+  (if (and (not disabled) (kill? entity))
+    (-> entity
+        (assoc :disabled true
+               :activated false)
+        (assoc-in [:fall :progress] 0))
+    entity))
+
 (defn draw-rect [ctx x y w h]
   "Draws the quadrangle to the screen"
   (.beginPath ctx)
@@ -162,12 +171,14 @@
              (activated-progress entity)
              entity))]
 
-  (defn progress [entity]
+  (defn progress [{:keys [disabled] :as entity}]
     "Update display and position based on platform config, if necessary"
-    (-> entity
-        next-x
-        next-y
-        next-move-x
-        next-move-y
-        (update :fade-cycle progress-fade)
-        specialist-activated-progress)))
+    (if disabled
+      entity
+      (-> entity
+          next-x
+          next-y
+          next-move-x
+          next-move-y
+          (update :fade-cycle progress-fade)
+          specialist-activated-progress))))

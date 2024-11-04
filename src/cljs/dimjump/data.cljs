@@ -22,6 +22,7 @@
    :easing-step 0.05
    :blood-velocity -18
    :blood-particles -34
+   :starting-level 2
    :hud-color [10 49 56]
    :cover-color [156 215 249 200]})
 
@@ -53,8 +54,9 @@
      :phase :on})
 
 (defn generate-id []
-  (apply str (repeatedly 8
-                         #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789"))))
+  (apply str
+         (repeatedly 8
+                     #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789"))))
 
 (defn quadrangle
   ([x y w h] (quadrangle x y w h {}))
@@ -89,10 +91,11 @@
 
 (defn pf
   ([kind x y w h] (pf kind x y w h {}))
-  ([kind x y w h {:keys [gravity bounce?]
-             :or {gravity (:gravity constants) bounce? false}
+  ([kind x y w h {:keys [gravity bounce? resettable]
+             :or {gravity (:gravity constants) bounce? false resettable false}
              :as opts}]
     (quadrangle x y w h (merge opts {:activated false
+                                     :disabled false
                                      :kind kind}))))
 
 (defn ob
@@ -152,7 +155,18 @@
                 (pf :rock :zero bottom full-width 1)
                 (pf :rock 0 10 1 10)
                 (pf :rock -1 30 1 12)]
-    :exits [(ex :sign -8 28 3 5)]}])
+    :exits [(ex :sign -8 28 3 5)]}
+
+   ; 2
+   {:initial {:y 10
+              :x -20
+              :speed 3
+              :time 20}
+    :obstacles [(ob :spikes :zero bottom full-width 1)]
+    :platforms [(pf :pipe :zero 40 10 1 {:resettable true})
+                (pf :pipe 10 40 10 1 {:resettable true})
+                (pf :pipe 20 40 10 1)]}
+  ])
 
 ;{:initial {:y 280
 ;              :x -20

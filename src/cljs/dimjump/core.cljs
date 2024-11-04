@@ -25,7 +25,7 @@
 ;  (let [url "https://www.fontsquirrel.com/fonts/download/roboto"]
 ;    (q/set-state! :font (q/load-font url)))
 
-  (let [l (level/spawn 0 entity-factory/entity)]
+  (let [l (level/spawn (:starting-level constants) entity-factory/entity)]
     {:phase 0 ; 0: Intro/Pause, 1: Cue next level, 2: Play, 3: Finished
      :level l
      :corpses []
@@ -95,8 +95,8 @@
   (q/background (q/color 176 222 249))
   ;(q/text-font (q/state :font) 12)
   (q/image-mode :corner)
-  (draw-hud state)
   (level/draw (:level state))
+  (draw-hud state)
 
   (doseq [c (:corpses state)]
     (corpse/draw c))
@@ -178,7 +178,8 @@
   (if (level/out-of-time? level)
     (-> state
         (update :dim dim/kill (:initial level))
-        (update :level level/reset))
+        (update :level level/reset-platforms)
+        (update :level level/reset-time))
     state))
 
 (defn force-jump [{:keys [dim] :as state}]
