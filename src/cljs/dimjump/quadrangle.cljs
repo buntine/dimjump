@@ -47,7 +47,8 @@
     (-> entity
         (assoc :disabled true
                :activated false)
-        (assoc-in [:fall :progress] 0))
+        (assoc-in [:fall :progress] 0)
+        (assoc-in [:fall :lead] (:fall-lead constants)))
     entity))
 
 (defn draw-rect [ctx x y w h]

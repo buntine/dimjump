@@ -47,13 +47,17 @@
 
   (activated-progress [{:keys [fall y] :as entity}]
     (if fall
-      (let [{:keys [progress]} fall
-            next-progress (min 1 (+ progress (:easing-step constants)))
-            easing (- 1 (Math/cos (/ (* next-progress Math/PI) 2)))
-            next-y (+ y (* easing (:easing-factor constants)))]
-        (-> entity
-            (assoc :y next-y)
-            (assoc-in [:fall :progress] next-progress)))
+      (let [{:keys [progress lead]} fall]
+        (if (= lead 0)
+          (let [next-progress (min 1 (+ progress (:easing-step constants)))
+                easing (- 1 (Math/cos (/ (* next-progress Math/PI) 2)))
+                next-y (+ y (* easing (:easing-factor constants)))]
+            (-> entity
+                (assoc :y next-y)
+                (assoc-in [:fall :progress] next-progress)))
+          (let [next-lead (- lead 1)]
+            (-> entity
+                (assoc-in [:fall :lead] next-lead)))))
       entity))
 
   ; Falling platform has gone off the bottom of the screen.

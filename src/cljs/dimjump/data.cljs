@@ -13,13 +13,14 @@
    :velocity-big -10
    :velocity-small -8
    :fall-velocity 5
+   :fall-lead 30
    :max-velocity 11
    :gravity 0.8
    :blood-degradation 1.6
    :animation-speed 9
    :tile-speed 18
    :easing-factor 3
-   :easing-step 0.05
+   :easing-step 0.03
    :blood-velocity -18
    :blood-particles -34
    :starting-level 2
@@ -159,13 +160,16 @@
 
    ; 2
    {:initial {:y 10
-              :x -20
-              :speed 3
+              :x 10
+              :speed 0
               :time 20}
     :obstacles [(ob :spikes :zero bottom full-width 1)]
     :platforms [(pf :pipe :zero 40 10 1 {:resettable true})
-                (pf :pipe 10 40 10 1 {:resettable true})
-                (pf :pipe 20 40 10 1)]}
+                (pf :pipe 9 40 10 1 {:resettable true})
+                (pf :pipe 19 40 10 1 {:resettable true})
+                (pf :pipe 29 40 10 1 {:resettable true})
+                (pf :pipe 39 40 10 1 {:resettable true})
+                (pf :pipe 49 40 10 1 {:resettable true})]}
   ])
 
 ;{:initial {:y 280
