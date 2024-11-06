@@ -55,8 +55,10 @@
             (-> entity
                 (assoc :y next-y)
                 (assoc-in [:fall :progress] next-progress)))
-          (let [next-lead (- lead 1)]
+          (let [next-lead (- lead 1)
+                next-y (if (= 0 (mod lead 2)) (+ y 2) (- y 2))]
             (-> entity
+                (assoc :y next-y)
                 (assoc-in [:fall :lead] next-lead)))))
       entity))
 

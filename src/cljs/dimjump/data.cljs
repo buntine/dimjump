@@ -13,7 +13,7 @@
    :velocity-big -10
    :velocity-small -8
    :fall-velocity 5
-   :fall-lead 30
+   :fall-lead 24
    :max-velocity 11
    :gravity 0.8
    :blood-degradation 1.6
