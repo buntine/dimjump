@@ -62,7 +62,7 @@
 (defn quadrangle
   ([x y w h] (quadrangle x y w h {}))
   ([x y w h {:keys [min-x max-x min-y max-y speed fade]
-             :or {min-x x max-x x min-y y max-y y speed 0}
+             :or {min-x x max-x x min-y y max-y y speed 0 phase 0}
              :as opts}]
   "Produces a new quadrangle for inclusion in a level. Quadrangles are defined
    by their dimensions, kind and behaviour.
@@ -133,6 +133,7 @@
               :x -20
               :speed 2
               :time 90}
+    :current-phase 0
     :obstacles [(ob :oilspill 28 -11 6 2)
                 (ob :oilspill 52 -11 6 2)]
     :platforms [(pf :rock :zero -10 full-width 2)]
@@ -143,6 +144,7 @@
               :x 30
               :speed 2
               :time 90}
+    :current-phase 0
     :obstacles [(ob :spikes :zero -1 full-width 1)
                 (ob :oilspill 30 19 3 2)
                 (ob :oilspill 50 19 3 2)
@@ -163,11 +165,12 @@
               :x 10
               :speed 0
               :time 20}
+    :current-phase 0
     :obstacles [(ob :spikes :zero bottom full-width 1)]
     :platforms [(pf :pipe :zero 40 10 1 {:resettable true})
                 (pf :pipe 9 40 10 1 {:resettable true})
                 (pf :pipe 19 40 10 1 {:resettable true})
-                (pf :pipe 29 40 10 1 {:resettable true})
+                (pf :pipe 29 40 10 1 {:resettable true :phase 1})
                 (pf :pipe 39 40 10 1 {:resettable true})
                 (pf :pipe 49 40 10 1 {:resettable true})]}
   ])

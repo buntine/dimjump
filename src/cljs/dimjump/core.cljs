@@ -178,6 +178,7 @@
   (if (level/out-of-time? level)
     (-> state
         (update :dim dim/kill (:initial level))
+        (update :level level/reset-phase)
         (update :level level/reset-platforms)
         (update :level level/reset-time))
     state))

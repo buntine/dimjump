@@ -10,23 +10,36 @@
   "(Re)sets the level time limit in milliseconds."
   (assoc level :time (* (:time initial) 1000)))
 
+(defn reset-phase [level]
+  "Sets the level phase back to zero. Levels can have multiple phases, in which certain
+   platforms are only visible on particulat phases."
+  (assoc level :current-phase 0))
+
+(defn platforms-for-phase [{:keys [quadrangles current-phase] :as level}]
+  "Enables/disables platforms relative to the current level phase."
+  (letfn [(inspect-platform [{:keys [phase] :as platform}]
+            (assoc platform :disabled (> phase current-phase)))]
+    (update level
+            :quadrangles
+            (partial map inspect-platform))))
+
 (defn reset-platforms [{:keys [quadrangles] :as level}]
   "Resets the platforms back to their original positions if they are configured to do so."
   (letfn [(reset-platform [{:keys [disabled resettable initial] :as platform :or {disabled false resettable false}}]
             (if (and disabled resettable)
               (assoc platform
                      :x (:x initial)
-                     :y (:y initial)
-                     :disabled false)
+                     :y (:y initial))
               platform))]
-    (update level
-            :quadrangles
-            (partial map reset-platform))))
+    (-> level
+        (update :quadrangles (partial map reset-platform))
+        platforms-for-phase)))
 
 (defn spawn [n entity-factory]
   (let [initial (level-data :initial n)
         level {:index n
                :initial initial
+               :current-phase (level-data :current-phase n)
                :quadrangles (concat
                               (map entity-factory
                                    (level-data :platforms n))
@@ -34,7 +47,9 @@
                                    (level-data :obstacles n))
                               (map entity-factory
                                    (level-data :exits n)))}]
-    (reset-time level)))
+    (-> level
+        reset-time
+        platforms-for-phase)))
 
 (defn draw [{:keys [quadrangles]}]
   (doseq [e quadrangles]
