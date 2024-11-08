@@ -71,8 +71,9 @@
    nil indicates no collision."
   ([quadrangle position platform]
    (collision quadrangle position platform (fn [_] true)))
-  ([{:keys [x y w h id] :as quadrangle} {px :x py :y pw :w ph :h} {cid :id} pred]
+  ([{:keys [x y w h id disabled] :as quadrangle} {px :x py :y pw :w ph :h} {cid :id} pred]
     (when (and (visible? quadrangle)
+               (not disabled)
                (pred quadrangle))
       (let [p-top (- py (/ ph 2))
             p-bottom (+ py (/ ph 2))
